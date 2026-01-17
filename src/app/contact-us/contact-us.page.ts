@@ -5,6 +5,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
   selector: 'app-contact-us',
   templateUrl: './contact-us.page.html',
   styleUrls: ['./contact-us.page.scss'],
+  standalone: false,
 })
 export class ContactUsPage implements OnInit {
 

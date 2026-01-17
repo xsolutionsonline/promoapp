@@ -5,6 +5,7 @@ import { ModalController, Events } from '@ionic/angular';
   selector: 'app-product-sort',
   templateUrl: './product-sort.page.html',
   styleUrls: ['./product-sort.page.scss'],
+  standalone: false,
 })
 export class ProductSortPage implements OnInit {
   isBtn = true;
@@ -34,7 +35,7 @@ export class ProductSortPage implements OnInit {
     while (this.val < 5) {
       this.radioItems[this.val].checked = false;
       this.val = this.val + 1;
-      
+
     }
     this.val=0;
     this.isBtn = true;

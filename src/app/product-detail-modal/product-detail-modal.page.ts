@@ -5,6 +5,7 @@ import { ModalController, Events } from '@ionic/angular';
   selector: 'app-product-detail-modal',
   templateUrl: './product-detail-modal.page.html',
   styleUrls: ['./product-detail-modal.page.scss'],
+  standalone: false,
 })
 export class ProductDetailModalPage implements OnInit {
 

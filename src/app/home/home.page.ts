@@ -11,6 +11,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
+  standalone: false,
 })
 export class HomePage {
   // @ViewChild(IonSlides, { static: true }) autoSlides: IonSlides;

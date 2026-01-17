@@ -5,6 +5,7 @@ import { ModalController, Events } from '@ionic/angular';
   selector: 'app-product-color',
   templateUrl: './product-color.page.html',
   styleUrls: ['./product-color.page.scss'],
+  standalone: false,
 })
 export class ProductColorPage implements OnInit {
   bgColor = "";

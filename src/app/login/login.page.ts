@@ -6,6 +6,7 @@ import { NavController } from '@ionic/angular';
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
+  standalone: false,
 })
 export class LoginPage implements OnInit {
   public login = false;

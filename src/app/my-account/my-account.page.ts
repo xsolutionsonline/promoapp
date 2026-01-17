@@ -7,6 +7,7 @@ import { DataServiceService } from '../services/data-service.service';
   selector: 'app-my-account',
   templateUrl: './my-account.page.html',
   styleUrls: ['./my-account.page.scss'],
+  standalone: false,
 })
 export class MyAccountPage implements OnInit {
   public login = false;

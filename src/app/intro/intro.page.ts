@@ -7,6 +7,7 @@ import { DataServiceService } from '../services/data-service.service';
   selector: 'app-intro',
   templateUrl: './intro.page.html',
   styleUrls: ['./intro.page.scss'],
+  standalone: false,
 })
 export class IntroPage implements OnInit {
   @ViewChild(IonSlides, { static: true }) introSlides: IonSlides;

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { SplashScreenPage } from './splash-screen.page';
@@ -7,7 +7,7 @@ describe('SplashScreenPage', () => {
   let component: SplashScreenPage;
   let fixture: ComponentFixture<SplashScreenPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SplashScreenPage ],
       imports: [IonicModule.forRoot()]

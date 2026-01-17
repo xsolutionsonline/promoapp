@@ -5,6 +5,7 @@ import { ModalController, Events } from '@ionic/angular';
   selector: 'app-home-model',
   templateUrl: './home-model.page.html',
   styleUrls: ['./home-model.page.scss'],
+  standalone: false,
 })
 export class HomeModelPage implements OnInit {
 

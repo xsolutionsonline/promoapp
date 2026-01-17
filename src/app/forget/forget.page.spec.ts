@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { ForgetPage } from './forget.page';
@@ -7,7 +7,7 @@ describe('ForgetPage', () => {
   let component: ForgetPage;
   let fixture: ComponentFixture<ForgetPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ForgetPage ],
       imports: [IonicModule.forRoot()]

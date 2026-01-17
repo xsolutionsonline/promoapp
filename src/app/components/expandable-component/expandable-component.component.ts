@@ -4,6 +4,7 @@ import { Component, OnInit, ViewChild, ElementRef, Input, Renderer2 } from '@ang
   selector: 'app-expandable-component',
   templateUrl: './expandable-component.component.html',
   styleUrls: ['./expandable-component.component.scss'],
+  standalone: false,
 })
 export class ExpandableComponentComponent {
   @ViewChild("expandWrapper", { read: ElementRef, static: false }) private expandWrapper: ElementRef;

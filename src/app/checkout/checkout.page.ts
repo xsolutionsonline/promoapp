@@ -6,6 +6,7 @@ import { LoadingController } from '@ionic/angular';
   selector: 'app-checkout',
   templateUrl: './checkout.page.html',
   styleUrls: ['./checkout.page.scss'],
+  standalone: false,
 })
 export class CheckoutPage implements OnInit {
   paymentBtn = true;

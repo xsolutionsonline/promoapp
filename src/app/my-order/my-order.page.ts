@@ -5,6 +5,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
   selector: 'app-my-order',
   templateUrl: './my-order.page.html',
   styleUrls: ['./my-order.page.scss'],
+  standalone: false,
 })
 export class MyOrderPage implements OnInit {
   seg2 = 2;

@@ -11,6 +11,7 @@ import { from } from 'rxjs';
   selector: 'app-category-detail',
   templateUrl: './category-detail.page.html',
   styleUrls: ['./category-detail.page.scss'],
+  standalone: false,
 })
 export class CategoryDetailPage implements OnInit {
   // for enabling and disabling grid and list buttons
@@ -30,7 +31,7 @@ export class CategoryDetailPage implements OnInit {
   public sizeActive = false;
   // for category id get from home page
   public categoryId = "";
-  //for category 
+  //for category
   public categoryHeader = "Formal Shoes";
   public categoryLoop = [
     { image: "assets/images/shoes/formal/1.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: false, sale: false },

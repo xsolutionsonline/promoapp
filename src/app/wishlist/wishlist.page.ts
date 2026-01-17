@@ -6,6 +6,7 @@ import { ModalController, Events, ToastController, NavController } from '@ionic/
   selector: 'app-wishlist',
   templateUrl: './wishlist.page.html',
   styleUrls: ['./wishlist.page.scss'],
+  standalone: false,
 })
 export class WishlistPage implements OnInit {
   public visEmptyWishlist = false;

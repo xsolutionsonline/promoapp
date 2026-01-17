@@ -6,6 +6,7 @@ import { ModalController, Events, ToastController } from '@ionic/angular';
   selector: 'app-review',
   templateUrl: './review.page.html',
   styleUrls: ['./review.page.scss'],
+  standalone: false,
 })
 export class ReviewPage implements OnInit {
   public raingNum = "0.00";

@@ -8,6 +8,7 @@ import { ProductDetailModalPage } from '../product-detail-modal/product-detail-m
   selector: 'app-product-detail',
   templateUrl: './product-detail.page.html',
   styleUrls: ['./product-detail.page.scss'],
+  standalone: false,
 })
 export class ProductDetailPage implements OnInit {
   public visProductSuccessful = true;
@@ -96,7 +97,7 @@ export class ProductDetailPage implements OnInit {
     this.events.publish('blurValue', "blur(0px)");
     this.visiablePopup = false;//for disable blur effect
   }
-  //for color 
+  //for color
   isColorCheck(item) {
     if (item.selectSize == true) {
       item.selectSize = true;

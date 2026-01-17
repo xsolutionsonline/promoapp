@@ -5,6 +5,7 @@ import { NavController } from '@ionic/angular';
   selector: 'app-blank-modal',
   templateUrl: './blank-modal.page.html',
   styleUrls: ['./blank-modal.page.scss'],
+  standalone: false,
 })
 export class BlankModalPage implements OnInit {
 

@@ -6,6 +6,7 @@ import { Events } from '@ionic/angular';
   selector: 'app-forget',
   templateUrl: './forget.page.html',
   styleUrls: ['./forget.page.scss'],
+  standalone: false,
 })
 export class ForgetPage implements OnInit {
   //for blur effect

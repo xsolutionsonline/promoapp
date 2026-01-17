@@ -8,7 +8,8 @@ import { ModalController, Events } from '@ionic/angular';
   styleUrls: ['./product-price.page.scss'],
   styles: [
     '.range-pin{ background: red  }'
-  ]
+  ],
+  standalone: false,
 })
 export class ProductPricePage implements OnInit {
   isBtn = true;

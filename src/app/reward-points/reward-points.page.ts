@@ -5,6 +5,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
   selector: 'app-reward-points',
   templateUrl: './reward-points.page.html',
   styleUrls: ['./reward-points.page.scss'],
+  standalone: false,
 })
 export class RewardPointsPage implements OnInit {
   public rewardCards = [

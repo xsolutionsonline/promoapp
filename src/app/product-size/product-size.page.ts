@@ -5,6 +5,7 @@ import { ModalController, Events } from '@ionic/angular';
   selector: 'app-product-size',
   templateUrl: './product-size.page.html',
   styleUrls: ['./product-size.page.scss'],
+  standalone: false,
 })
 export class ProductSizePage implements OnInit {
   isBtn = true;

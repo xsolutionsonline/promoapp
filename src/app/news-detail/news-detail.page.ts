@@ -5,6 +5,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
   selector: 'app-news-detail',
   templateUrl: './news-detail.page.html',
   styleUrls: ['./news-detail.page.scss'],
+  standalone: false,
 })
 export class NewsDetailPage implements OnInit {
 

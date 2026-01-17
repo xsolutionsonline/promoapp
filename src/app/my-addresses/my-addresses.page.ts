@@ -5,6 +5,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
   selector: 'app-my-addresses',
   templateUrl: './my-addresses.page.html',
   styleUrls: ['./my-addresses.page.scss'],
+  standalone: false,
 })
 export class MyAddressesPage implements OnInit {
   public shipping = false;
