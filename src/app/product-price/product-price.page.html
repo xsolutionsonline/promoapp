@@ -1,0 +1,14 @@
+<ion-content class="content-price">
+  <ion-item class="header-item" lines="none">
+    <ion-icon slot="end" name="close" (click)="dismiss()"></ion-icon>
+  </ion-item>
+  <h2>Price Range:</h2>
+  <ion-item class="item-range" mode="ios" lines="none">
+    <ion-range id="dual-range" min="0" max="300" (ionChange)="range()" [(ngModel)]="structure" dual-knobs pin="true">
+    </ion-range>
+  </ion-item>
+  <div>
+    <ion-button mode="ios" disabled="{{isBtn}}" (click)="dismiss()" class="apply-btn">APPLY</ion-button>
+    <ion-button mode="ios" (click)="reset()" class="reset-btn">RESET</ion-button>
+  </div>
+</ion-content>

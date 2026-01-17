@@ -1,0 +1,12 @@
+.expand-wrapper {
+    transition: max-height 1s ease-in-out;
+    overflow: hidden;
+    height: auto;
+    width: 100%;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  
+  .collapsed {
+    max-height: 0 !important;
+  }

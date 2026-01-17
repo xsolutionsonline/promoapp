@@ -1,0 +1,18 @@
+<ion-content class="content-sort">
+  <ion-item class="header-item" lines="none">
+    <ion-icon slot="end" name="close" (click)="dismiss()"></ion-icon>
+  </ion-item>
+  <h2>Sort By:</h2>
+  <ion-list>
+    <ion-radio-group>
+      <ion-item class="radio-item" mode="ios" *ngFor="let item of radioItems; let i=index" lines="full" (click)="btnEnbDis(i)">
+        <p>{{item.text}}</p>
+        <ion-radio mode="ios" slot="end" checked="{{item.checked}}"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+  <div>
+    <ion-button mode="ios" disabled="{{isBtn}}" (click)="dismiss()" class="apply-btn">APPLY</ion-button>
+    <ion-button mode="ios" (click)="reset()" class="reset-btn">RESET</ion-button>
+  </div>
+</ion-content>

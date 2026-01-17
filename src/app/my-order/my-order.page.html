@@ -1,0 +1,301 @@
+<ion-content class="order-content">
+  <ion-item class="item-searcbar" lines="none">
+    <ion-menu-button class="menu-btn" slot="start">
+      <ion-icon src="assets/icon/menu.svg"></ion-icon>
+    </ion-menu-button>
+    <ion-searchbar name="search" placeholder="search">
+    </ion-searchbar>
+    <ion-button shape="round" slot="end" routerLink="/cart" routerDirection="forward">
+      <ion-badge class="home-badge">
+        0
+      </ion-badge>
+      <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
+    </ion-button>
+  </ion-item>
+  <ion-item lines="none" class="item-back">
+    <ion-icon slot="start" routerLink="/my-account" routerDirection="backward" src="assets/icon/back.svg">
+    </ion-icon>
+    <p>My Orders</p>
+  </ion-item>
+  <ion-card class="card-header animated fadeIn">
+    <ion-thumbnail>
+      <ion-img src="assets/images/other/category-header.jpg">
+      </ion-img>
+    </ion-thumbnail>
+  </ion-card>
+  <ion-grid class="ion-no-padding segment">
+    <ion-row>
+      <ion-col class="ion-align-self-center" (click)="segmentSelected('inProgress')" *ngIf="inProgress">
+        <p>In Progress</p>
+      </ion-col>
+      <ion-col class="ion-align-self-center animated fadeInRight" (click)="segmentSelected('inProgressActive')"
+        *ngIf="inProgressActive">
+        <div class="highlighed-segment">
+          <p class="animated fadeIn">In Progress</p>
+        </div>
+      </ion-col>
+      <ion-col size="0.2" class="line-col">
+        <div class="vertical-line"></div>
+      </ion-col>
+      <ion-col class="ion-align-self-center" (click)="segmentSelected('delivered')" *ngIf="delivered">
+        <p>Delivered</p>
+      </ion-col>
+      <ion-col class="ion-align-self-center  animated fadeInLeft" (click)="segmentSelected('deliveredActive')"
+        *ngIf="deliveredActive && animationLeft">
+        <div class="highlighed-segment">
+          <p>Delivered</p>
+        </div>
+      </ion-col>
+      <ion-col class="ion-align-self-center animated fadeInRight" (click)="segmentSelected('deliveredActive')"
+        *ngIf="deliveredActive && !animationLeft">
+        <div class="highlighed-segment">
+          <p>Delivered</p>
+        </div>
+      </ion-col>
+      <ion-col size="0.2" class="line-col">
+        <div class="vertical-line"></div>
+      </ion-col>
+      <ion-col class="ion-align-self-center" (click)="segmentSelected('cancelled')" *ngIf="cancelled">
+        <p>Cancelled</p>
+      </ion-col>
+      <ion-col class="ion-align-self-center animated fadeInLeft" (click)="segmentSelected('cancelledActive')"
+        *ngIf="cancelledActive">
+        <div class="highlighed-segment">
+          <p>Cancelled</p>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <!-- segment in progress -->
+  <div *ngIf="inProgressActive">
+    <ion-card class="card-total-price animated fadeInUp" *ngFor="let item of progressItems">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <p>Order ID</p>
+          </ion-col>
+          <ion-col size="6">
+            <p>{{item.orderId}}</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <p>Date</p>
+          </ion-col>
+          <ion-col size="6">
+            <p>{{item.date}}</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <p>Price</p>
+          </ion-col>
+          <ion-col size="6">
+            <p>{{item.price}}</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <p class="para-status"><b>Status</b></p>
+          </ion-col>
+          <ion-col size="6">
+            <p class="para-status"><b>{{item.status}}</b></p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </div>
+  <!-- segment delivered -->
+  <div *ngIf="deliveredActive">
+    <div *ngIf="!visDeliveredDetails">
+      <ion-card class="card-total-price animated fadeInUp" *ngFor="let item of deliceredItems" (click)="deliveredFun()">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6">
+              <p>Order id</p>
+            </ion-col>
+            <ion-col size="6">
+              <p>{{item.orderId}}</p>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="6">
+              <p>Date</p>
+            </ion-col>
+            <ion-col size="6">
+              <p>{{item.date}}</p>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="6">
+              <p>Price</p>
+            </ion-col>
+            <ion-col size="6">
+              <p>{{item.price}}</p>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="6">
+              <p class="para-status"><b>Status</b></p>
+            </ion-col>
+            <ion-col size="6">
+              <p class="para-status"><b>{{item.status}}</b></p>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+    </div>
+    <!-- delivery detail cards -->
+    <div *ngIf="visDeliveredDetails">
+      <ion-card class="card-total-price animated fadeInUp" *ngFor="let card of deliveredCards">
+        <ion-card-header>
+          {{card.headerText}}
+        </ion-card-header>
+        <ion-card-content>
+          {{card.contentText}}
+        </ion-card-content>
+      </ion-card>
+      <ion-card class="card-total-price animated fadeInUp">
+        <ion-card-header>
+          Product Details
+        </ion-card-header>
+        <ion-grid class="ion-no-padding grid-product-details">
+          <ion-row>
+            <!-- for image -->
+            <ion-col size="4">
+              <ion-img class="animated fadeInUp" src="assets/images/shoes/featured/2.png"></ion-img>
+            </ion-col>
+            <ion-col size="8">
+              <ion-grid class="grid-inner-details">
+                <ion-row>
+                  <ion-col size="12">
+                    <p>Product Title Will Be Go Here! Product Title</p>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col size="2">
+                    <p class="quantity-para">x1</p>
+                  </ion-col>
+                  <ion-col size="10" class="price-col">
+                    <p>$90</p>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col size="1.5" class="color-col">
+                    <div class="octagon-top" style="border-bottom:8px solid #1C197A"></div>
+                    <div class="octagon" style="background: #1C197A"></div>
+                    <div class="octagon-bottom" style="border-top:8px solid #1C197A"></div>
+                  </ion-col>
+                  <ion-col size="2" class="size-col">
+                    <div class="div-size">
+                      S
+                    </div>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+      <ion-card class="card-total-price animated fadeInUp">
+        <ion-card-header>
+          Sub Total
+        </ion-card-header>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6">
+              <p>Product Price :</p>
+            </ion-col>
+            <ion-col size="6">
+              <p>90.00$</p>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="6">
+              <p>Shipping Cost :</p>
+            </ion-col>
+            <ion-col size="6">
+              <p>0.00$</p>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="6">
+              <p>Tax :</p>
+            </ion-col>
+            <ion-col size="6">
+              <p>0.00$</p>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="6">
+              <p>Discount :</p>
+            </ion-col>
+            <ion-col size="6">
+              <p>0.00$</p>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="6">
+              <p><b>Total</b></p>
+            </ion-col>
+            <ion-col size="6">
+              <p><b>90.00$</b></p>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+      <ion-card class="card-total-price animated fadeInUp">
+        <ion-card-header>
+          Payment Method
+        </ion-card-header>
+        <ion-card-content>
+          Cash On Delivery
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+  <!-- segment cancelled -->
+  <div *ngIf="cancelledActive">
+    <ion-card class="card-total-price animated fadeInUp" *ngFor="let item of cancelledItems">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <p>Order id</p>
+          </ion-col>
+          <ion-col size="6">
+            <p>{{item.orderId}}</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <p>Date</p>
+          </ion-col>
+          <ion-col size="6">
+            <p>{{item.date}}</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <p>Price</p>
+          </ion-col>
+          <ion-col size="6">
+            <p>{{item.price}}</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <p class="para-status"><b>Status</b></p>
+          </ion-col>
+          <ion-col size="6">
+            <p class="para-status"><b>{{item.status}}</b></p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <p class="para-cancelled">{{item.cancelledReason}}</p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </div>
+</ion-content>

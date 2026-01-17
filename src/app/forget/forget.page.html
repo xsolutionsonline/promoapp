@@ -1,0 +1,39 @@
+<ion-content class="forget-content">
+  <div style='filter:var(--my-var)'>
+    <ion-card class="header-card">
+      <div class="header-content">
+        <ion-avatar class="animated fadeIn">
+          <div>
+            <ion-icon src="assets/icon/m-text.svg"></ion-icon>
+          </div>
+        </ion-avatar>
+        <h2>Reset Your Password</h2>
+      </div>
+    </ion-card>
+    <ion-item class="animated fadeInRight item" lines="none">
+      <ion-input [(ngModel)]="email" (ionChange)="forgetPass()" placeholder="Enter Your Email" type="email"></ion-input>
+    </ion-item>
+  </div>
+  <div class="main-popup" *ngIf="visiablePopup">
+    <div class="inner-div-sucess">
+      <div class="sucess-div-icon">
+        <ion-icon src="assets/icon/checked.svg"></ion-icon>
+        <p>You will receive an email shortly. Open it
+          and follow the instructions
+          to reset your password.</p>
+      </div>
+      <div class="cart-div">
+        <ion-button (click)="dismiss()" class="cart-btn animated fadeInLeft">
+          ok
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>
+<ion-footer>
+  <div class="btn-div" style='filter:var(--my-var)'>
+    <ion-button class="animated fadeIn" shape="round" (click)="isforgetPassword()" disabled="{{resetBtn}}">
+      <p>Reset Password</p>
+    </ion-button>
+  </div>
+</ion-footer>

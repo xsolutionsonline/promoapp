@@ -1,0 +1,256 @@
+<ion-content class="cart-content">
+  <ion-item class="item-searcbar" lines="none">
+    <ion-menu-button class="menu-btn" slot="start">
+      <ion-icon src="assets/icon/menu.svg"></ion-icon>
+    </ion-menu-button>
+    <ion-searchbar name="search" placeholder="search">
+    </ion-searchbar>
+    <ion-button shape="round" slot="end">
+      <ion-badge class="home-badge">
+        {{cartItemsCount}}
+      </ion-badge>
+      <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
+    </ion-button>
+  </ion-item>
+  <ion-item lines="none" class="item-back">
+    <ion-icon slot="start" routerLink="/product-detail" routerDirection="backward" src="assets/icon/back.svg">
+    </ion-icon>
+    <p>Cart</p>
+    <p class="item-count-para">{{cartItemsCount}} {{displayItems}}</p>
+  </ion-item>
+  <ion-card class="card-header animated fadeIn">
+    <ion-thumbnail>
+      <ion-img src="assets/images/other/category-header.jpg">
+      </ion-img>
+    </ion-thumbnail>
+  </ion-card>
+  <div *ngIf="!visCartEmpty">
+    <div *ngFor="let item of cartItems">
+      <!-- if card is not edited -->
+      <div *ngIf="item.visDeleteItem">
+        <ion-card class="cart-items-card animated fadeInUp" *ngIf="item.visCard">
+          <ion-grid class="ion-no-padding">
+            <ion-row>
+              <!-- for image -->
+              <ion-col size="4">
+                <ion-img class="animated fadeInUp" src="{{item.img}}"></ion-img>
+              </ion-col>
+              <ion-col size="8">
+                <ion-grid class="grid-inner-details">
+                  <ion-row>
+                    <ion-col size="12">
+                      <p>{{item.name}}</p>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="2">
+                      <p class="quantity-para">x{{item.quantity}}</p>
+                    </ion-col>
+                    <ion-col size="10" class="price-col">
+                      <p>${{item.price}}</p>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="1.5" class="color-col">
+                      <div class="octagon-top" [ngStyle]="{'border-bottom':item.bgRadius}"></div>
+                      <div class="octagon" [ngStyle]="{'background': item.color}"></div>
+                      <div class="octagon-bottom" [ngStyle]="{'border-top':item.bgRadius}"></div>
+                    </ion-col>
+                    <ion-col size="2" class="size-col">
+                      <div class="div-size">
+                        {{item.size}}
+                      </div>
+                    </ion-col>
+                    <ion-col size="8.5" class="btn-col ion-align-self-center">
+                      <ion-button (click)="editProduct(item)">
+                        Edit
+                        <ion-icon src="assets/icon/edit.svg"></ion-icon>
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+        <!-- if card is edited -->
+        <ion-card class="cart-items-card animated fadeIn" *ngIf="!item.visCard">
+          <ion-grid class="ion-no-padding">
+            <ion-row>
+              <!-- for image -->
+              <ion-col size="4">
+                <ion-img class="animated fadeInUp" src="{{item.img}}"></ion-img>
+              </ion-col>
+              <ion-col size="8">
+                <ion-grid class="grid-inner-details">
+                  <ion-row>
+                    <ion-col size="12">
+                      <p>{{item.name}}</p>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row class="quantity-row">
+                    <ion-col class="ion-no-padding" size="2">
+                      <ion-button fill="clear" class="btn-add" (click)="addBtn()">
+                        <p>+</p>
+                      </ion-button>
+                    </ion-col>
+                    <ion-col class="ion-no-padding ion-align-self-center" size="2">
+                      <div>{{productQuantity}}</div>
+                    </ion-col>
+                    <ion-col class="ion-no-padding" size="2">
+                      <ion-button fill="clear" size="2" (click)="subBtn()">
+                        <p>-</p>
+                      </ion-button>
+                    </ion-col>
+                    <ion-col size="6" class="price-col">
+                      <p>${{productPrice}}</p>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="1.5" class="color-col">
+                      <div class="octagon-top" [ngStyle]="{'border-bottom':item.bgRadius}"></div>
+                      <div class="octagon" [ngStyle]="{'background': item.color}"></div>
+                      <div class="octagon-bottom" [ngStyle]="{'border-top':item.bgRadius}"></div>
+                    </ion-col>
+                    <ion-col size="2" class="size-col">
+                      <div class="div-size">
+                        {{item.size}}
+                      </div>
+                    </ion-col>
+                    <ion-col size="6.5" class="btn-col-cancel">
+                      <ion-button class="animated fadeInRight" (click)="cancel(item)">
+                        Cancel
+                        <ion-icon src="assets/icon/edit.svg"></ion-icon>
+                      </ion-button>
+                    </ion-col>
+                    <ion-col size="2" class="btn-col-cancel">
+                      <ion-icon class="del-icon animated fadeInRight" (click)="deleteItem(item)" src="assets/icon/wishlist-item-delete.svg"></ion-icon>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-grid class="grid-color">
+                  <ion-row>
+                    <ion-col size="3" *ngFor="let subItem of item.subItemsColor; let i=index" class="ion-no-padding">
+                      <div class="div-outer animated fadeIn" *ngIf="!subItem.selectSize" (click)="isColorCheck(subItem)">
+                        <div class="div-upper"></div>
+                        <div class="octagon-outer">
+                          <div class="octagon-top" [ngStyle]="{'border-bottom':subItem.bgRadius}"></div>
+                          <div class="octagon" [ngStyle]="{'background': subItem.color}"></div>
+                          <div class="octagon-bottom" [ngStyle]="{'border-top':subItem.bgRadius}"></div>
+                        </div>
+                        <p>{{subItem.text}}</p>
+                      </div>
+                      <div class="div-select  animated fadeIn" *ngIf="subItem.selectSize" (click)="isSelectedColorCheck(subItem)">
+                        <div class="div-upper"></div>
+                        <div class="octagon-outer">
+                          <div class="octagon-select-top" [ngStyle]="{'border-bottom':subItem.bgRadius}"></div>
+                          <div class="octagon-select" [ngStyle]="{'background': subItem.color}"></div>
+                          <div class="octagon-select-bottom" [ngStyle]="{'border-top':subItem.bgRadius}"></div>
+                        </div>
+                        <p>{{subItem.text}}</p>
+                        <ion-icon class="icon-tick" name="checkmark"></ion-icon>
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+                <!-- size grid -->
+                <ion-grid class="grid-size">
+                  <ion-row>
+                    <ion-col size="3" *ngFor="let subItem of item.subItemsSize; let i=index">
+                      <div class="div-outer animated fadeIn" *ngIf="!subItem.selectSize" (click)="isSizeCheck(subItem)">
+                        <div class="div-upper"></div>
+                        <div class="div-inner">
+                          {{subItem.name}}
+                        </div>
+                        <p>{{subItem.text}}</p>
+                      </div>
+                      <div class="div-select animated fadeIn" *ngIf="subItem.selectSize" (click)="isSelectSizeCheck(subItem)">
+                        <div class="div-upper"></div>
+                        <div class="div-inner">
+                          {{subItem.name}}
+                        </div>
+                        <p>{{subItem.text}}</p>
+                        <ion-icon class="icon-tick" name="checkmark"></ion-icon>
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12" class="update-col">
+                <ion-button (click)="update(item)" class="animated fadeInUp">Update</ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </div>
+    </div>
+
+    <ion-card class="coupon-card animated fadeInUp">
+      <p>Apply Coupon Code</p>
+      <div class="div-item">
+        <ion-item lines="none" class="item-input">
+          <ion-input shape="round" placeholder="Enter Your Coupon Code"></ion-input>
+          <ion-button shape="round">Apply</ion-button>
+        </ion-item>
+      </div>
+    </ion-card>
+    <ion-card class="card-total-price animated fadeInUp">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <p>Subtotal</p>
+          </ion-col>
+          <ion-col size="6">
+            <p>$180</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <p>Discount</p>
+          </ion-col>
+          <ion-col size="6">
+            <p>$0.00</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <p>Delivery</p>
+          </ion-col>
+          <ion-col size="6">
+            <p>Free</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <p><b>Total Price</b></p>
+          </ion-col>
+          <ion-col size="6">
+            <p><b>$180</b></p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </div>
+  <div *ngIf="visCartEmpty">
+    <div class="div-icon">
+      <ion-icon class="animated headShake" id="icon-animation" src="assets/icon/empty-cart.svg"></ion-icon>
+      <h2 class="header-text">Your Cart is Empty!</h2>
+      <ion-button fill="clear" routerLink="/category-detail" routerDirection="forward">
+        <u>Continue Shopping</u>
+      </ion-button>
+    </div>
+  </div>
+</ion-content>
+<ion-footer>
+  <div class="btn-div" style='filter:var(--my-var)'>
+    <ion-button class="animated fadeIn" shape="round" routerLink="/checkout" routerDirection="forward">
+      <p>Proceed</p>
+    </ion-button>
+  </div>
+</ion-footer>

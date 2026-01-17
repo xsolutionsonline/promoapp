@@ -1,0 +1,99 @@
+<ion-content class="news-content">
+  <ion-item class="item-searcbar" lines="none">
+    <ion-searchbar name="search" placeholder="search">
+    </ion-searchbar>
+    <ion-button shape="round" slot="end" routerLink="/cart" routerDirection="forward">
+      <ion-badge class="home-badge">
+        0
+      </ion-badge>
+      <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
+    </ion-button>
+  </ion-item>
+  <ion-item lines="none" class="item-back">
+    <ion-icon slot="start" routerLink="/home" routerDirection="backward" src="assets/icon/back.svg">
+    </ion-icon>
+    <p>News</p>
+  </ion-item>
+  <ion-card class="card-header animated fadeIn">
+    <ion-thumbnail>
+      <ion-img src="assets/images/other/category-header.jpg">
+      </ion-img>
+    </ion-thumbnail>
+  </ion-card>
+  <ion-card class="news-top-card">
+    <p class="title-para">Recently Viewed</p>
+    <ion-grid class="grid-top">
+      <ion-row>
+        <ion-col class="ion-no-padding">
+          <ion-thumbnail>
+            <ion-img class="animated fadeIn" src="assets/images/news/2.jpg"></ion-img>
+          </ion-thumbnail>
+          <p>Shoes Trends 2019</p>
+        </ion-col>
+        <ion-col class="ion-no-padding">
+          <ion-thumbnail>
+            <ion-img class="animated fadeIn" src="assets/images/news/1.jpg"></ion-img>
+          </ion-thumbnail>
+          <p>Trending Business Shoes</p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+  <ion-grid class="ion-no-padding segment">
+    <ion-row>
+      <ion-col class="ion-align-self-center" (click)="segmentSelected('latest')" *ngIf="latest">
+        <p>Latest</p>
+      </ion-col>
+      <ion-col class="ion-align-self-center animated fadeInRight" (click)="segmentSelected('latestActive')"
+        *ngIf="latestActive">
+        <div class="highlighed-segment">
+          <p class="animated fadeIn">Latest</p>
+        </div>
+      </ion-col>
+      <ion-col size="0.2" class="line-col">
+        <div class="vertical-line"></div>
+      </ion-col>
+      <ion-col class="ion-align-self-center" (click)="segmentSelected('categories')" *ngIf="categories">
+        <p>Categories</p>
+      </ion-col>
+      <ion-col class="ion-align-self-center animated fadeInLeft" (click)="segmentSelected('categoriesActive')"
+        *ngIf="categoriesActive">
+        <div class="highlighed-segment">
+          <p>Categories</p>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <!-- latest segment -->
+  <div *ngIf="latestActive">
+    <div class="latest-div" *ngFor="let item of latestItems">
+      <ion-card class="latest-img-card">
+        <ion-thumbnail>
+          <img class="animated fadeIn" src="{{item.img}}" />
+        </ion-thumbnail>
+      </ion-card>
+      <p class="para-text">{{item.date}}</p>
+      <h2 class="title-text">{{item.name}}</h2>
+      <p class="para-text">{{item.desc}}</p>
+      <ion-button routerLink="/news-detail" routerDirection="forward" fill="clear" class="read-btn">Read More
+        <ion-icon src="assets/icon/arrow-right-black.svg"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+  <!-- categories segment -->
+  <div *ngIf="categoriesActive">
+    <ion-grid class="grid-categories ion-no-padding">
+      <ion-row>
+        <ion-col size="6" class="ion-no-padding" *ngFor="let item of categoryItems">
+          <ion-card>
+            <ion-thumbnail>
+              <img class="animated fadeIn" src="{{item.img}}" />
+            </ion-thumbnail>
+            <h3>{{item.name}}</h3>
+            <p>{{item.post}} Posts</p>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

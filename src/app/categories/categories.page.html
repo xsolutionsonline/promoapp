@@ -1,0 +1,98 @@
+<ion-content class="categories-content">
+  <ion-item class="item-searcbar" lines="none">
+    <ion-menu-button class="menu-btn" slot="start">
+      <ion-icon src="assets/icon/menu.svg"></ion-icon>
+    </ion-menu-button>
+    <ion-searchbar name="search" placeholder="search">
+    </ion-searchbar>
+    <ion-button shape="round" slot="end" routerLink="/cart" routerDirection="forward">
+      <ion-badge class="home-badge">
+        0
+      </ion-badge>
+      <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
+    </ion-button>
+  </ion-item>
+  <ion-item lines="none" class="item-back">
+    <ion-icon slot="start" routerLink="/product-detail" routerDirection="backward" src="assets/icon/back.svg">
+    </ion-icon>
+    <p>Categories</p>
+  </ion-item>
+  <ion-card class="card-header animated fadeIn">
+    <ion-thumbnail>
+      <ion-img src="assets/images/other/category-header.jpg">
+      </ion-img>
+    </ion-thumbnail>
+  </ion-card>
+
+  <ion-list class="expand-list ion- no-padding">
+    <ion-item lines="none" *ngFor="let item of expandCard" class="ion-no-padding item-outer">
+      <ion-grid (click)="expandCardFun(item)" class="ion-no-padding">
+        <ion-card class="category-card animated fadeInUp">
+          <ion-thumbnail>
+            <!-- <ion-img src="{{item.img}}"></ion-img> -->
+            <img class="img" src="{{item.img}}" />
+            <div></div>
+          </ion-thumbnail>
+          <ion-item>
+            <p>{{item.name}}</p>
+            <ion-icon slot="end" src="assets/icon/right-arrow.svg" id="right-icon-0" *ngIf="item.visIconZero">
+            </ion-icon>
+            <ion-icon slot="end" src="assets/icon/right-arrow.svg" id="right-icon-1" *ngIf="item.visIconOne">
+            </ion-icon>
+            <ion-icon slot="end" src="assets/icon/right-arrow.svg" id="right-icon-2" *ngIf="item.visIconTwo">
+            </ion-icon>
+          </ion-item>
+        </ion-card>
+        <ion-row (click)="expandCardFun(item)">
+          <!-- expandable component "list component". You should  its referebce in "list-expandable" mobile file -->
+          <app-expandable-component expandHeight="400px" [expanded]="item.expanded" class="ion-no-padding expand-comp">
+            <ion-item lines="none" class="ion-no-padding item-inner" *ngFor="let subItem of item.subcategories">
+              <ion-card class="category-card-inner animated fadeInUp">
+                <ion-thumbnail>
+                  <!-- <ion-img src="{{subItem.img}}"></ion-img> -->
+                  <img class="img" src="{{subItem.img}}" />
+                  <div></div>
+                </ion-thumbnail>
+                <ion-item>
+                  <p>{{subItem.name}}</p>
+                </ion-item>
+              </ion-card>
+            </ion-item>
+          </app-expandable-component>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+
+  <!-- <ion-grid class="ion-no-padding" *ngFor="let expand of expandCard">
+    <ion-card class="category-card animated fadeIn" (click)="expandCardFun(expand)">
+      <ion-thumbnail>
+        <ion-img src="assets/images/category/4.jpg"></ion-img>
+        <div></div>
+      </ion-thumbnail>
+      <ion-item>
+        <p>Men Shoes</p>
+        <ion-icon slot="end" src="assets/icon/right-arrow.svg" class="animated slideInDown"></ion-icon>
+      </ion-item>
+      <ion-row>
+        <app-expandable-component expandHeight="280px" [expanded]="expand.expanded" class="ion-no-padding">
+          <ion-item lines="full" class="ion-no-padding" *ngFor="let list of [1,2,3,4]">
+            hannan
+          </ion-item>
+        </app-expandable-component>
+      </ion-row>
+    </ion-card>
+  </ion-grid> -->
+
+
+  <!-- <ion-card *ngFor="let category of categoryItems" class="category-card animated fadeIn">
+    <ion-thumbnail>
+      <ion-img src="{{category.img}}"></ion-img>
+      <div></div>
+    </ion-thumbnail>
+    <ion-item>
+      <p>{{category.name}}</p>
+      <ion-icon slot="end" src="assets/icon/right-arrow.svg" class="animated slideInDown"></ion-icon>
+    </ion-item>
+  </ion-card> -->
+</ion-content>

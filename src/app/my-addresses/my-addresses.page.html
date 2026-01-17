@@ -1,0 +1,73 @@
+<ion-content class="address-content">
+  <ion-item class="item-searcbar" lines="none">
+    <ion-menu-button class="menu-btn" slot="start">
+      <ion-icon src="assets/icon/menu.svg"></ion-icon>
+    </ion-menu-button>
+    <ion-searchbar name="search" placeholder="search">
+    </ion-searchbar>
+    <ion-button shape="round" slot="end" routerLink="/cart" routerDirection="forward">
+      <ion-badge class="home-badge">
+        0
+      </ion-badge>
+      <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
+    </ion-button>
+  </ion-item>
+  <ion-item lines="none" class="item-back">
+    <ion-icon slot="start" routerLink="/my-account" routerDirection="backward" src="assets/icon/back.svg">
+    </ion-icon>
+    <p>My Addresses</p>
+  </ion-item>
+  <ion-card class="card-header animated fadeIn">
+    <ion-thumbnail>
+      <ion-img src="assets/images/other/category-header.jpg">
+      </ion-img>
+    </ion-thumbnail>
+  </ion-card>
+  <ion-grid class="ion-no-padding segment">
+    <ion-row>
+      <ion-col class="ion-align-self-center" (click)="segmentSelected('shipping')" *ngIf="shipping">
+        <p>Shipping</p>
+      </ion-col>
+      <ion-col class="ion-align-self-center animated fadeInRight" (click)="segmentSelected('shippingActive')" *ngIf="shippingActive">
+        <div class="highlighed-segment">
+          <p class="animated fadeIn">Shipping</p>
+        </div>
+      </ion-col>
+      <ion-col size="0.2" class="line-col">
+        <div class="vertical-line"></div>
+      </ion-col>
+      <ion-col class="ion-align-self-center" (click)="segmentSelected('billing')" *ngIf="billing">
+        <p>Billing</p>
+      </ion-col>
+      <ion-col class="ion-align-self-center animated fadeInLeft" (click)="segmentSelected('billingActive')" *ngIf="billingActive">
+        <div class="highlighed-segment">
+          <p>Billing</p>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <div *ngIf="shippingActive">
+    <ion-list class="list">
+      <div *ngFor="let item of listInputItems">
+        <ion-item class="animated fadeInUp" lines="none">
+          <ion-input placeholder="{{item.placeHolder}}" type="{{item.type}}"></ion-input>
+        </ion-item>
+      </div>
+    </ion-list>
+    <div class="div-btn">
+      <ion-button>Update</ion-button>
+    </div>
+  </div>
+  <div *ngIf="billingActive">
+    <ion-list class="list">
+      <div *ngFor="let item of listInputItems">
+        <ion-item class="animated fadeInUp" lines="none">
+          <ion-input placeholder="{{item.placeHolder}}" type="{{item.type}}"></ion-input>
+        </ion-item>
+      </div>
+    </ion-list>
+    <div class="div-btn">
+      <ion-button>Update</ion-button>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,54 @@
+<ion-content class="account-content">
+  <ion-item lines="none">
+    <ion-menu-button class="menu-btn" slot="start">
+      <ion-icon src="assets/icon/menu.svg"></ion-icon>
+    </ion-menu-button>
+    <ion-searchbar name="search" placeholder="search">
+    </ion-searchbar>
+    <ion-button shape="round" slot="end" routerLink="/cart" routerDirection="forward">
+      <ion-badge class="home-badge">
+        0
+      </ion-badge>
+      <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
+    </ion-button>
+  </ion-item>
+  <ion-item lines="none" class="item-back">
+    <ion-icon slot="start" routerLink="/home" routerDirection="backward" src="assets/icon/back.svg">
+    </ion-icon>
+    <p>My Account</p>
+  </ion-item>
+  <ion-card class="card-header animated fadeIn">
+    <ion-thumbnail>
+      <ion-img src="assets/images/other/category-header.jpg">
+      </ion-img>
+    </ion-thumbnail>
+  </ion-card>
+  <ion-card class="card-username">
+    <ion-item lines="none" *ngIf="visProfileItem">
+      <ion-avatar slot="start">
+        <ion-img src="assets/images/other/face-images/4.png"></ion-img>
+      </ion-avatar>
+      <ion-label>
+        <p>
+          Your Name Here
+        </p>
+        <ion-button fill="clear">
+          <ion-icon src="assets/icon/logout.svg"></ion-icon>
+          Logout
+        </ion-button>
+      </ion-label>
+    </ion-item>
+  </ion-card>
+  <ion-list class="list">
+    <div *ngFor="let item of listInputItems">
+      <ion-item class="animated fadeInRight" lines="none">
+        <ion-input placeholder="{{item.placeHolder}}" type="{{item.type}}"></ion-input>
+      </ion-item>
+    </div>
+  </ion-list>
+  <div class="update-div">
+    <ion-button class="update-btn" (click)="updateProfile()">
+      Update
+    </ion-button>
+  </div>
+</ion-content>

@@ -1,0 +1,132 @@
+<ion-content class="wishlist-content">
+  <div *ngIf="!visEmptyWishlist">
+    <div style='filter:var(--my-var)'>
+      <ion-item class="item-searcbar" lines="none">
+        <ion-menu-button class="menu-btn" slot="start">
+          <ion-icon src="assets/icon/menu.svg"></ion-icon>
+        </ion-menu-button>
+        <ion-searchbar name="search" placeholder="search">
+        </ion-searchbar>
+        <ion-button shape="round" slot="end" routerLink="/cart" routerDirection="forward">
+          <ion-badge class="home-badge">
+            0
+          </ion-badge>
+          <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
+        </ion-button>
+      </ion-item>
+      <ion-item lines="none" class="item-back">
+        <ion-icon slot="start" routerLink="/product-detail" routerDirection="backward" src="assets/icon/back.svg">
+        </ion-icon>
+        <p>Wishlist</p>
+      </ion-item>
+      <ion-card class="card-header animated fadeIn">
+        <ion-thumbnail>
+          <ion-img src="assets/images/other/category-header.jpg">
+          </ion-img>
+        </ion-thumbnail>
+      </ion-card>
+      <!-- grid wishlist -->
+      <div class="list-card" *ngFor="let product of wishlistItems">
+        <ion-grid class="grid-list" *ngIf="product.visItem">
+          <ion-row>
+            <ion-col size="9" class="tags-col">
+              <ion-row>
+                <ion-col size="3.5" *ngIf="product.featured">
+                  <div class="featured">
+                    Featured
+                  </div>
+                </ion-col>
+                <ion-col size="3.5" *ngIf="product.new">
+                  <div class="new">
+                    New
+                  </div>
+                </ion-col>
+                <ion-col size="3.5" *ngIf="product.sale">
+                  <div class="sale">
+                    On Sale
+                  </div>
+                </ion-col>
+                <ion-col>
+                  <div class="div-height-list"></div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12">
+                  <h3 class="text-list">{{product.textList}}</h3>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="2.5">
+                  <p class="para-price-del-list"><del>${{product.dPrice}}</del></p>
+                </ion-col>
+                <ion-col size="2.5">
+                  <p class="para-price-list">${{product.price}}</p>
+                </ion-col>
+                <ion-col size="5.5" class="col-heart">
+                  <ion-icon (click)="trashPopUp(product)" class="col-trash" name="trash">
+                  </ion-icon>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+            <div class="div-img-list">
+              <ion-img class="list-img animated fadeInRight" src="{{product.image}}">
+              </ion-img>
+            </div>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </div>
+    <!-- wishlist popup -->
+    <!-- div main which is transparent -->
+    <div class="main-popup" *ngIf="visiablePopup">
+      <div class="inner-div-sucess" *ngIf="!visProductSuccessful">
+        <ion-item class="header-item" lines="none">
+          <ion-icon slot="end" name="close" (click)="dismiss()"></ion-icon>
+        </ion-item>
+        <div class="sucess-div-icon">
+          <ion-icon src="assets/icon/wishlist-item-delete.svg"></ion-icon>
+          <p>Are you sure want to remove this item from the wishlist?</p>
+        </div>
+        <div class="cart-div">
+          <ion-button (click)="itemDelete()" class="cart-btn animated fadeInLeft">
+            Yes
+          </ion-button>
+          <ion-button (click)="itemNotDelete()" class="home-btn animated fadeInLeft">
+            No
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="visEmptyWishlist">
+    <ion-item class="item-searcbar" lines="none">
+      <ion-searchbar name="search" placeholder="search">
+      </ion-searchbar>
+      <ion-button shape="round" slot="end">
+        <ion-badge class="home-badge">
+          0
+        </ion-badge>
+        <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
+      </ion-button>
+    </ion-item>
+    <ion-item lines="none" class="item-back">
+      <ion-icon slot="start" routerLink="/product-detail" routerDirection="backward" src="assets/icon/back.svg">
+      </ion-icon>
+      <p>Wishlist</p>
+    </ion-item>
+    <ion-card class="card-header animated fadeIn">
+      <ion-thumbnail>
+        <ion-img src="assets/images/other/category-header.jpg">
+        </ion-img>
+      </ion-thumbnail>
+    </ion-card>
+    <div class="div-icon">
+      <ion-icon class="animated headShake" id="icon-animation" src="assets/icon/wishlist-empty.svg"></ion-icon>
+      <h2 class="header-text">Your Wishlist is Empty!</h2>
+      <ion-button fill="clear" routerLink="/category-detail" routerDirection="forward">
+        <u>Continue Shopping</u>
+      </ion-button>
+    </div>
+
+  </div>
+</ion-content>

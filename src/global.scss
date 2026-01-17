@@ -10,28 +10,68 @@
  */
 
 /* Core CSS required for Ionic components to work properly */
-@import "@ionic/angular/css/core.css";
+@import "~@ionic/angular/css/core.css";
 
 /* Basic CSS for apps built with Ionic */
-@import "@ionic/angular/css/normalize.css";
-@import "@ionic/angular/css/structure.css";
-@import "@ionic/angular/css/typography.css";
-@import "@ionic/angular/css/display.css";
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import "~@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
-@import "@ionic/angular/css/padding.css";
-@import "@ionic/angular/css/float-elements.css";
-@import "@ionic/angular/css/text-alignment.css";
-@import "@ionic/angular/css/text-transformation.css";
-@import "@ionic/angular/css/flex-utils.css";
-
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+/*font roboto online import*/
+//@import url('https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap');
+.home-modal {
+  top: 15%;
+  width: 343px;
+  height: 378px;
+  border-radius: 20px;
+  --border-radius: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.product-price-modal {
+  top: 36%;
+  width: 343px;
+  height: 213px;
+  border-radius: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 20px;
+  --border-radius: 20px;
+}
+.radio-checked {
+  background: #582f00 !important;
+}
+.range-pressed {
+  font-size: 14px;
+  font-family: "roboto-regular";
+}
+// .range-ios .range-knob-handle .range-pin {
+//   transform: translateY(21px) scale(2) !important;
+// }
+//product detail modal
+// .product-detail-modal {
+//   top: 19%;
+//   width: 343px;
+//   height: 412px;
+//   border-radius: 20px;
+//   margin-left: auto;
+//   margin-right: auto;
+//   border-radius: 20px;
+//   --border-radius: 20px;
+// }
+.menu-content-open {
+  margin: 60px;
+  margin-right: 0;
+  margin-left: 30px;
+  transition-duration: 0.1s;
+}
+.menu-content-push {
+  transition-duration: 0.1s;
+}

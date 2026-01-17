@@ -1,3 +1,49 @@
+<!-- for side menu -->
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-split-pane contentId="menu-content">
+    <ion-menu type="push" contentId="menu-content" (ionDidOpen)="openMenu()">
+      <ion-content class="side-content">
+        <ion-card class="card-username">
+          <ion-menu-toggle auto-hide="true">
+            <ion-item lines="none" *ngIf="visProfileItem">
+              <ion-avatar slot="start">
+                <ion-img src="assets/images/other/face-images/4.png"></ion-img>
+              </ion-avatar>
+              <ion-label>
+                <p>
+                  Your Name Here
+                </p>
+                <ion-button fill="clear">
+                  <ion-icon src="assets/icon/logout.svg"></ion-icon>
+                  Logout
+                </ion-button>
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="true">
+            <ion-item class="item-username" lines="none" *ngIf="!visProfileItem" (click)="goToLogin()">
+              <ion-avatar class="avatar-dummy" slot="start">
+              </ion-avatar>
+              <ion-label>
+                <p>
+                  Login / Sign Up
+                </p>
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-card>
+        <ion-list class="list" *ngIf="!visEditprofile">
+          <div *ngFor="let item of listItems; let i=index">
+            <ion-menu-toggle auto-hide="menuToggle">
+              <ion-item class="animated fadeInRight" lines="full" (click)="goToPage(i)" *ngIf="item.visItem">
+                <ion-icon slot="start" src={{item.icon}}></ion-icon>
+                <p>{{item.text}}</p>
+              </ion-item>
+            </ion-menu-toggle>
+          </div>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet mode="md" id="menu-content"></ion-router-outlet>
+  </ion-split-pane>
 </ion-app>

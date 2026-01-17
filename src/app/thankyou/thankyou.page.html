@@ -1,0 +1,173 @@
+<ion-content class="thankyou-content">
+  <ion-card class="header-card"></ion-card>
+  <div class="header-content">
+    <ion-icon src="assets/icon/thankyou.svg"></ion-icon>
+    <h2>Thank you! Your Order Has Been
+      Placed and Deliver You in 2-3
+      Working Days</h2>
+  </div>
+  <ion-card class="order-id-card">
+    <p>Order id: 123-456-789</p>
+    <p>2 Items</p>
+  </ion-card>
+  <ion-card class="card-legal-shipping">
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        <ion-col size="5">
+          <p class="heading-para ">Shipping Address:</p>
+        </ion-col>
+        <ion-col size="5">
+          <p class="normal-para">123-A, Street 2, New York, USA</p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+  <ion-card class="card-legal-shipping">
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        <ion-col size="5">
+          <p class="heading-para ">Shipping Method:</p>
+        </ion-col>
+        <ion-col size="5">
+          <p class="normal-para">UPS Shipping</p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+  <ion-card class="card-legal-shipping">
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        <ion-col size="2">
+          <p class="heading-para ">Card:</p>
+        </ion-col>
+        <ion-col size="5">
+          <p class="normal-para">**********123</p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+  <ion-card class="cart-items-card animated fadeInUp">
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        <!-- for image -->
+        <ion-col size="4">
+          <ion-img class="animated fadeInUp" src="assets/images/shoes/new/3.png"></ion-img>
+        </ion-col>
+        <ion-col size="8">
+          <ion-grid class="grid-inner-details">
+            <ion-row>
+              <ion-col size="12">
+                <p>Product Title Will Be Go Here! Product Title</p>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="2">
+                <p class="quantity-para">x1</p>
+              </ion-col>
+              <ion-col size="10" class="price-col">
+                <p>$90</p>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="1.5" class="color-col">
+                <div class="octagon-top" style="border-bottom:solid 8px black"></div>
+                <div class="octagon" style="background: black"></div>
+                <div class="octagon-bottom" style="border-top:solid 8px black"></div>
+              </ion-col>
+              <ion-col size="2" class="size-col">
+                <div class="div-size">
+                  S
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+  <ion-card class="cart-items-card animated fadeInUp">
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        <!-- for image -->
+        <ion-col size="4">
+          <ion-img class="animated fadeInUp" src="assets/images/shoes/sale/1.png"></ion-img>
+        </ion-col>
+        <ion-col size="8">
+          <ion-grid class="grid-inner-details">
+            <ion-row>
+              <ion-col size="12">
+                <p>Product Title Will Be Go Here! Product Title</p>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="2">
+                <p class="quantity-para">x1</p>
+              </ion-col>
+              <ion-col size="10" class="price-col">
+                <p>$90</p>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="1.5" class="color-col">
+                <div class="octagon-top" style="border-bottom:solid 8px #334457"></div>
+                <div class="octagon" style="background: #334457"></div>
+                <div class="octagon-bottom" style="border-top:solid 8px #334457"></div>
+              </ion-col>
+              <ion-col size="2" class="size-col">
+                <div class="div-size">
+                  S
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+  <ion-card class="card-total-price animated fadeInUp">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <p>Subtotal</p>
+        </ion-col>
+        <ion-col size="6">
+          <p>180</p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <p>Discount</p>
+        </ion-col>
+        <ion-col size="6">
+          <p>$0.00</p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <p>Delivery</p>
+        </ion-col>
+        <ion-col size="6">
+          <p>Free</p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <p><b>Total Price</b></p>
+        </ion-col>
+        <ion-col size="6">
+          <p><b>$180</b></p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+</ion-content>
+<ion-footer>
+  <div class="div-btns">
+    <ion-button class="btn-disable" disabled>
+      <p>Continue Shopping</p>
+    </ion-button>
+    <ion-button routerLink="/my-order" routerDirection="forward">
+      <p>My Orders</p>
+    </ion-button>
+  </div>
+</ion-footer>

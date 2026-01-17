@@ -1,0 +1,72 @@
+.content-sort {
+  .header-item {
+    --background: transparent;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+  --background: white !important;
+  h2 {
+    font-size: 20px;
+    font-family: "roboto-regular";
+    margin-top: 18px;
+    margin-left: 20px;
+  }
+  .div-outer, .div-select {
+    background: #f9f7f6;
+    border-radius: 10px;
+    height: 68px;
+    text-align: center;
+    .div-upper {
+      height: 11px;
+    }
+    .div-inner {
+      height: 23px;
+      width: 23px;
+      margin-left: auto;
+      margin-right: auto;
+      border: solid 0.5px #707070;
+      border-radius: 4px;
+      font-size: 9px;
+      font-family: "roboto-medium";
+      /* margin-top: 0px; */
+      padding-top: 6px;
+      background: white;
+    }
+   
+    p {
+      font-size: 9px;
+      font-family: "roboto-medium";
+      margin-top: 12.3px;
+      margin-bottom: 11px;
+    }
+    .icon-tick {
+      background: #582f00;
+      border-radius: 25px;
+      color: white;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+  }
+  .div-select{
+    background: #D4D4D4 !important;
+  }
+  .div-btns {
+    text-align: center;
+    margin-top: 112px;
+    ion-button {
+      --border-radius: 0;
+      width: 50%;
+      margin: 0;
+      height: 48px;
+      --background-activated: lightgray;
+    }
+    .apply-btn {
+      --background: #81624e;
+    }
+    .reset-btn {
+      --background: #919191;
+    }
+  }
+}

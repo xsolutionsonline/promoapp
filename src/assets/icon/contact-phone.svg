@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17">
+  <g id="phone-receiver" transform="translate(0)">
+    <path id="Path_2878" data-name="Path 2878" d="M197.855,4.284C197.855,1.918,195.44,0,192.46,0s-5.394,1.918-5.394,4.284c0,2.114,1.928,3.87,4.463,4.22h-.008a2.673,2.673,0,0,1-.737,2.315A2.645,2.645,0,0,0,193.4,8.5h-.008C195.926,8.155,197.855,6.4,197.855,4.284Z" transform="translate(-180.855)" fill="#ffd24d"/>
+    <g id="Group_629" data-name="Group 629" transform="translate(9.326 3.906)">
+      <circle id="Ellipse_193" data-name="Ellipse 193" cx="0.378" cy="0.378" r="0.378" fill="#f14742"/>
+      <circle id="Ellipse_194" data-name="Ellipse 194" cx="0.378" cy="0.378" r="0.378" transform="translate(3.803)" fill="#f14742"/>
+      <circle id="Ellipse_195" data-name="Ellipse 195" cx="0.378" cy="0.378" r="0.378" transform="translate(1.902)" fill="#f14742"/>
+    </g>
+    <path id="Path_2879" data-name="Path 2879" d="M11.621,126.509a21.605,21.605,0,0,0-1.691-1.5L8.656,126.28l-5.1-5.1,1.274-1.274a21.6,21.6,0,0,0-1.5-1.691,21.605,21.605,0,0,0-1.691-1.5s-1.527,1.4-1.629,2.518c-.137,1.491,1.441,4.2,3.919,6.68s5.189,4.056,6.679,3.919c1.114-.1,2.518-1.629,2.518-1.629A21.588,21.588,0,0,0,11.621,126.509Z" transform="translate(0 -112.838)" fill="#1b4145"/>
+  </g>
+</svg>

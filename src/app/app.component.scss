@@ -1,0 +1,68 @@
+@import "../theme/font";
+ion-app {
+  ion-menu {
+    background: white;
+    .side-content {
+      --background: white !important;
+      .card-username {
+        margin: 0;
+        border-bottom-left-radius: 40px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        box-shadow: none;
+        ion-item {
+          --background: linear-gradient(to bottom right, #d5cece, white);
+          box-shadow: none;
+          ion-avatar {
+            height: 84px;
+            width: 84px;
+          }
+          .avatar-dummy {
+            background: #b5b5b5;
+          }
+          ion-label {
+            p {
+              font-family: "roboto-regular";
+              font-size: 18px;
+              color: black;
+            }
+            ion-button {
+              --background: transparent;
+              --color: black;
+              font-family: "roboto-regular";
+              font-size: 16px;
+              text-transform: capitalize;
+              width: 34%;
+              --padding-start: 0;
+              --ripple-color: black;
+              ion-icon {
+                color: black;
+                margin-right: 10px;
+              }
+            }
+          }
+        }
+      }
+      .list {
+        background: transparent;
+        padding-top: 10px;
+        padding-bottom: 0;
+        ion-item {
+          --background: white;
+          margin-bottom: 10px;
+          ion-icon {
+            font-size: 17px;
+            color: black;
+          }
+          p {
+            font-size: 16px;
+            font-family: "roboto-regular";
+            margin-top: auto;
+            margin-bottom: auto;
+            color: black;
+          }
+        }
+      }
+    }
+  }
+}

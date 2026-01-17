@@ -1,0 +1,60 @@
+<ion-content class="contact-us-content">
+  <ion-item class="item-searcbar" lines="none">
+    <ion-menu-button class="menu-btn" slot="start">
+      <ion-icon src="assets/icon/menu.svg"></ion-icon>
+    </ion-menu-button>
+    <ion-searchbar name="search" placeholder="search">
+    </ion-searchbar>
+    <ion-button shape="round" slot="end" routerLink="/cart" routerDirection="forward">
+      <ion-badge class="home-badge">
+        0
+      </ion-badge>
+      <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
+    </ion-button>
+  </ion-item>
+  <ion-item lines="none" class="item-back">
+    <ion-icon slot="start" routerLink="/home" routerDirection="backward" src="assets/icon/back.svg">
+    </ion-icon>
+    <p>Contact Us</p>
+  </ion-item>
+  <ion-card class="card-header animated fadeIn">
+    <ion-thumbnail>
+      <ion-img src="assets/images/other/category-header.jpg">
+      </ion-img>
+    </ion-thumbnail>
+  </ion-card>
+  <ion-img class="map-img animated fadeIn" src="assets/images/other/map.jpg"></ion-img>
+  <div class="div-border"></div>
+  <ion-grid class="grid-pin ion-no-padding">
+    <ion-row>
+      <ion-col class="ion-no-padding">
+        <ion-icon src="assets/icon/contact-pin.svg"></ion-icon>
+        <p>Street 2, Abc Road, NY, USA</p>
+      </ion-col>
+      <ion-col class="ion-no-padding">
+        <ion-icon src="assets/icon/contact-email.svg"></ion-icon>
+        <p>abc@gmail.com</p>
+      </ion-col>
+      <ion-col class="ion-no-padding">
+        <ion-icon src="assets/icon/contact-phone.svg"></ion-icon>
+        <p>000-111-222-333</p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-card class="card-input">
+    <ion-item class="animated fadeInLeft" lines="none">
+      <ion-input placeholder="Name:" type="text" name="abc"></ion-input>
+    </ion-item>
+    <ion-item class="animated fadeInLeft" lines="none">
+      <ion-input placeholder="Email:" type="email" name="abc"></ion-input>
+    </ion-item>
+    <ion-item class="textarea-item animated fadeIn" lines="none">
+      <ion-textarea rows="4" name="something" placeholder="Your Message"></ion-textarea>
+    </ion-item>
+  </ion-card>
+  <div class="div-btn">
+    <ion-button shape="round" fill="clear">
+      <ion-icon src="assets/icon/send.svg"></ion-icon>
+    </ion-button>
+  </div>
+</ion-content>

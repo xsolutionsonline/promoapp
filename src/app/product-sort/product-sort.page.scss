@@ -1,0 +1,56 @@
+.content-sort {
+  .header-item {
+    --background: transparent;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+  --background: white !important;
+  h2 {
+    font-size: 20px;
+    font-family: "roboto-regular";
+    margin-top: 18px;
+    margin-left: 20px;
+  }
+  .radio-item {
+    &:first-child {
+      --padding-start: 30px;
+    }
+    --padding-start: 23px;
+    p {
+      font-family: "roboto-regular";
+      font-size: 16px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    ion-radio {
+      height: 15px;
+      width: 15px;
+      //background: #582f00;
+      border-radius: 25px;
+      --color: white;
+      --color-checked: white;
+      margin-bottom: 3px;
+    }
+  }
+  div {
+    text-align: center;
+    margin-top: 38px;
+    ion-button {
+      --border-radius: 0;
+      width: 50%;
+      margin: 0;
+      height: 48px;
+      --background-activated: lightgray;
+    }
+    .apply-btn {
+      --background: #81624e;
+    }
+    .reset-btn {
+      --background: #919191;
+    }
+  }
+  .radio-checked {
+    background: #582f00 !important;
+  }
+}

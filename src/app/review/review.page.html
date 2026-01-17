@@ -1,0 +1,123 @@
+<ion-content class="review-content">
+  <div style='filter:var(--my-var)'>
+    <ion-item class="item-searcbar" lines="none">
+      <ion-searchbar name="search" placeholder="search">
+      </ion-searchbar>
+      <ion-button shape="round" slot="end" routerLink="/cart" routerDirection="forward">
+        <ion-badge class="home-badge">
+          0
+        </ion-badge>
+        <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
+      </ion-button>
+    </ion-item>
+    <ion-item lines="none" class="item-back">
+      <ion-icon slot="start" routerLink="/product-detail" routerDirection="backward" src="assets/icon/back.svg">
+      </ion-icon>
+      <p>Ratings & Reviews</p>
+    </ion-item>
+    <ion-card class="card-header animated fadeIn">
+      <ion-thumbnail>
+        <ion-img src="assets/images/other/category-header.jpg">
+        </ion-img>
+      </ion-thumbnail>
+    </ion-card>
+    <ion-grid class="grid-main">
+      <ion-row>
+        <ion-col size="6" class="first-child ion-align-self-center">
+          <ion-item class="animated fadeIn">
+            <ion-label>
+              <h1>{{raingNum}}</h1>
+              <p>{{starNum}} Ratings</p>
+            </ion-label>
+            <ion-icon name="star" slot="end"></ion-icon>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6" class="last-child">
+          <ion-row *ngFor="let reviewRow of reviewRows">
+            <ion-col size="1" class="ion-no-padding">
+              <p>{{reviewRow.num}}</p>
+            </ion-col>
+            <ion-col size="2" class="ion-no-padding">
+              <ion-icon name="star"></ion-icon>
+            </ion-col>
+            <ion-col size="9" class="ion-align-self-center ion-no-padding" *ngIf="!visCard">
+              <div>
+              </div>
+            </ion-col>
+            <ion-col size="9" class="ion-align-self-center ion-no-padding" *ngIf="visCard">
+              <div>
+                <div [ngStyle]="{'width':reviewRow.width}" class="animated fadeInLeft">
+                  <div [ngStyle]="{'background':reviewRow.background}"></div>
+                </div>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <div *ngIf="visCard">
+      <ion-card class="review-card animated fadeInRight" *ngFor="let product of reviewCards">
+        <ion-item lines="none">
+          <ion-avatar slot="start">
+            <ion-img src="{{product.img}}">
+            </ion-img>
+          </ion-avatar>
+          <ion-label>
+            <p>{{product.name}}</p>
+            <ion-grid class="ion-no-padding">
+              <ion-row>
+                <ion-col class="ion-no-padding col-star" size="0.5" *ngFor="let itemStar of [1,2,3,4,5]">
+                  <ion-icon name="star"></ion-icon>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+            <p>{{product.date}}</p>
+            <p class="para-desc">
+              {{product.paraDesc}}
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-card>
+    </div>
+  </div>
+  <div class="main-popup" *ngIf="visiablePopup">
+    <!-- div with white color -->
+    <div class="inner-div">
+      <ion-item class="header-item" lines="none">
+        <ion-icon slot="end" name="close" (click)="dismiss()"></ion-icon>
+      </ion-item>
+      <ion-grid class="grid-star">
+        <ion-row>
+          <div>
+            <ion-col size="0.5" *ngFor="let item of [1,2,3,4,5]" class="animated fadeIn">
+              <ion-icon name="star"></ion-icon>
+            </ion-col>
+          </div>
+        </ion-row>
+      </ion-grid>
+      <form>
+        <ion-item class="item-input animated fadeIn" lines="none">
+          <ion-input [(ngModel)]="name" placeholder="Name:" type="text" name="abc"></ion-input>
+        </ion-item>
+        <ion-item class="item-input animated fadeIn" lines="none">
+          <ion-input [(ngModel)]="email" placeholder="Email:" type="email" name="abc"></ion-input>
+        </ion-item>
+        <ion-item class="item-textarea animated fadeIn" lines="none">
+          <ion-textarea [(ngModel)]="message" rows="4" name="something" placeholder="Your Message"></ion-textarea>
+        </ion-item>
+      </form>
+      <div class="cart-div">
+        <ion-button (click)="goBack()" class="cart-btn">
+          Rate Product
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>
+<ion-footer>
+  <div class="btn-div" style='filter:var(--my-var)'>
+    <ion-button class="animated fadeIn" shape="round" (click)="goToreviewMessage()">
+      <p>Rate & Write a Review </p>
+    </ion-button>
+  </div>
+</ion-footer>

@@ -1,0 +1,31 @@
+<ion-content class="content-sort">
+    <ion-item class="header-item" lines="none">
+        <ion-icon slot="end" name="close" (click)="dismiss()"></ion-icon>
+    </ion-item>
+    <h2>Select Size:</h2>
+    <ion-grid>
+        <ion-row>
+            <ion-col size="3" *ngFor="let item of sizeItems; let i=index" (click)="btnEnbDis(i)">
+                <div class="div-outer" *ngIf="!item.selectSize" (click)="isSizeCheck(item)">
+                    <div class="div-upper"></div>
+                    <div class="div-inner">
+                        {{item.name}}
+                    </div>
+                    <p>{{item.text}}</p>
+                </div>
+                <div class="div-select" *ngIf="item.selectSize">
+                    <div class="div-upper"></div>
+                    <div class="div-inner">
+                        {{item.name}}
+                    </div>
+                    <p>{{item.text}}</p>
+                    <ion-icon class="icon-tick" name="checkmark"></ion-icon>
+                </div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <div class="div-btns">
+        <ion-button mode="ios" disabled="{{isBtn}}" (click)="dismiss()" class="apply-btn">APPLY</ion-button>
+        <ion-button mode="ios" (click)="reset()" class="reset-btn">RESET</ion-button>
+    </div>
+</ion-content>

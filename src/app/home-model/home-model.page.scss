@@ -1,0 +1,20 @@
+ion-content {
+  --background: white !important;
+  text-align: center;
+  ion-item {
+    --background: transparent;
+  }
+  .icon {
+    font-size: 133px;
+  }
+  p {
+    font-size: 15px;
+    font-family: "roboto-regular";
+  }
+  .thank {
+    margin-bottom: 5px;
+  }
+  .sucess {
+    margin-top: 0;
+  }
+}

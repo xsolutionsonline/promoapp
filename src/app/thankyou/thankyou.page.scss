@@ -1,0 +1,279 @@
+.thankyou-content {
+  --background: #f3edea !important;
+  .header-card {
+    background: #987c52;
+    margin: 0;
+    height: 350px;
+    border-radius: 50% 50% 150% 150%/0% 0% 40% 40%;
+    box-shadow: 1px 1px 3px 1px grey;
+  }
+  .header-content {
+    width: 100%;
+    top: 10%;
+    position: absolute;
+    text-align: center;
+    ion-icon {
+      font-size: 64px;
+    }
+    h2 {
+      font-size: 20px;
+      font-family: "century-school-back-regular";
+      margin-right: 32px;
+      margin-left: 32px;
+      color: white;
+      margin-top: 35px;
+    }
+  }
+  .order-id-card {
+    border-radius: 12px;
+    background: #987c52;
+    margin-right: 16px;
+    margin-left: 16px;
+    display: flex;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    p {
+      color: white;
+      font-size: 12px;
+      font-family: "roboto-regular";
+      &:first-child {
+        text-align: left;
+        margin-left: 10px;
+      }
+      &:last-child {
+        margin-left: auto;
+        margin-right: 10px;
+      }
+    }
+  }
+  .card-legal-shipping {
+    margin-left: 16px;
+    margin-right: 16px;
+    border-radius: 10px;
+    background: white;
+    box-shadow: none;
+    ion-grid {
+      ion-row {
+        ion-col {
+          &:first-child {
+            padding-left: 16px;
+          }
+          &:last-child {
+            text-align: center;
+            padding-right: 16px;
+          }
+          .heading-para {
+            font-size: 16px;
+            font-family: "roboto-medium";
+            color: black;
+          }
+          .normal-para {
+            font-size: 16px;
+            font-family: "roboto-regular";
+            color: black;
+          }
+          ion-icon {
+            font-size: 13px;
+            --ripple-color: #81624e;
+          }
+        }
+      }
+    }
+  }
+  .cart-items-card {
+    margin-top: 10px;
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-bottom: 0;
+    border-radius: 20px;
+    background: white;
+    box-shadow: none;
+    .grid-inner-details {
+      padding-left: 0;
+      padding-bottom: 0;
+      ion-row {
+        ion-col {
+          padding-left: 0;
+          padding-bottom: 0;
+          p {
+            font-size: 14px;
+            font-family: "roboto-regular";
+            color: black;
+            margin-top: 5px;
+            padding-right: 1px;
+            margin-bottom: 0;
+          }
+          .quantity-para {
+            opacity: 0.7;
+            margin-top: 5px;
+          }
+        }
+        .price-col {
+          margin-right: 0;
+          padding-top: 0;
+          text-align: right;
+          padding-bottom: 10px;
+          p {
+            font-size: 14px;
+            font-family: "roboto-medium" !important;
+            color: black;
+            margin-top: 8px;
+          }
+        }
+        .color-col {
+          .octagon {
+            margin-right: auto;
+            width: 23px;
+            height: 8px;
+          }
+          .octagon-top {
+            margin-right: auto;
+            width: 23px;
+            height: 0;
+            border-left: 7px solid #f9f7f6;
+            border-right: 7px solid #f9f7f6;
+          }
+          .octagon-bottom {
+            margin-right: auto;
+            width: 23px;
+            height: 0;
+            border-left: 7px solid #f9f7f6;
+            border-right: 7px solid #f9f7f6;
+          }
+        }
+        .size-col {
+          .div-size {
+            text-align: center;
+            height: 23px;
+            width: 23px;
+            margin-left: auto;
+            margin-right: auto;
+            border: solid 0.5px #707070;
+            border-radius: 4px;
+            font-size: 9px;
+            font-family: "roboto-medium";
+            padding-top: 5px;
+            background: white;
+          }
+        }
+        .btn-col {
+          text-align: right;
+          padding-top: 0;
+          ion-button {
+            --background: #81624e;
+            --border-radius: 5px;
+            margin-right: 0;
+            text-transform: capitalize;
+            font-family: "roboto-regular";
+            width: 59px;
+            height: 28px;
+            margin-top: 0;
+            --box-shadow: none;
+            font-size: 10px;
+            ion-icon {
+              font-size: 10px;
+              margin-left: 3px;
+            }
+          }
+        }
+        .btn-col-cancel {
+          text-align: right;
+          padding-top: 0;
+          ion-button {
+            --background: #d4d4d4;
+            --color: black;
+            --border-radius: 5px;
+            margin-right: 0;
+            text-transform: capitalize;
+            font-family: "roboto-regular";
+            width: 59px;
+            height: 28px;
+            margin-top: 0;
+            --box-shadow: none;
+            font-size: 10px;
+            ion-icon {
+              font-size: 10px;
+              margin-left: 3px;
+            }
+          }
+          .del-icon {
+            font-size: 28px;
+          }
+        }
+      }
+    }
+  }
+  .card-total-price {
+    margin-top: 10px;
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    background: white;
+    box-shadow: none;
+    ion-grid {
+      padding-left: 11px;
+      padding-right: 11px;
+      padding-top: 0;
+      padding-bottom: 0;
+      ion-row {
+        &:first-child {
+          ion-col {
+            p {
+              margin-top: 18px;
+            }
+          }
+        }
+        &:last-child {
+          ion-col {
+            p {
+              margin-bottom: 20px;
+            }
+          }
+        }
+        ion-col {
+          padding-top: 0;
+          padding-bottom: 0;
+          color: black;
+          p {
+            font-family: "roboto-regular";
+            font-size: 14px;
+            margin-top: 0;
+            margin-bottom: 8px;
+          }
+          &:last-child {
+            text-align: right;
+          }
+        }
+      }
+    }
+  }
+}
+ion-footer {
+  .div-btns {
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    bottom: -12px;
+    ion-button {
+      margin: 0;
+      height: 60px;
+      --background: #582f00;
+      width: 50%;
+      --box-shadow: none;
+      --border-radius: 15px;
+      font-family: "roboto-regular";
+      font-size: 13px;
+      p {
+        margin-top: 3px;
+        text-transform: capitalize;
+      }
+    }
+  }
+  &::before {
+    top: 0 !important;
+  }
+  .btn-disable {
+    --background: #81624e;
+  }
+}

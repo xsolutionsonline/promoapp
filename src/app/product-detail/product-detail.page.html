@@ -1,0 +1,275 @@
+<ion-content class="content-product">
+  <div style='filter:var(--my-var)'>
+    <ion-item class="item-searcbar" lines="none">
+      <ion-menu-button class="menu-btn" slot="start">
+        <ion-icon src="assets/icon/menu.svg"></ion-icon>
+      </ion-menu-button>
+      <ion-searchbar name="search" placeholder="search">
+      </ion-searchbar>
+      <ion-button shape="round" slot="end" routerLink="/cart" routerDirection="forward">
+        <ion-badge class="home-badge">
+          0
+        </ion-badge>
+        <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
+      </ion-button>
+    </ion-item>
+    <ion-item lines="none" class="item-back">
+      <ion-icon slot="start" routerLink="/category-detail" routerDirection="backward" src="assets/icon/back.svg">
+      </ion-icon>
+      <p>{{categoryHeader}}</p>
+    </ion-item>
+    <ion-card class="card-header animated fadeIn">
+      <ion-thumbnail>
+        <ion-img src="assets/images/other/category-header.jpg">
+        </ion-img>
+      </ion-thumbnail>
+    </ion-card>
+    <!-- product slider images -->
+    <ion-slides pager="true" class="product-slides">
+      <ion-slide *ngFor="let slide of slides">
+        <ion-card>
+          <div>
+            <ion-thumbnail class="animated fadeInRight">
+              <ion-img src="{{slide}}"></ion-img>
+            </ion-thumbnail>
+          </div>
+        </ion-card>
+      </ion-slide>
+    </ion-slides>
+    <ion-grid class="grid-tags">
+      <ion-row class="row-tags">
+        <ion-col size="1.5" class="ion-align-self-end">
+          <div class="featured">
+            Featured
+          </div>
+        </ion-col>
+        <ion-col size="1.5" class="ion-align-self-end">
+          <div class="new">
+            New
+          </div>
+        </ion-col>
+        <ion-col size="1.5" class="ion-align-self-end">
+          <div class="sale">
+            On Sale
+          </div>
+        </ion-col>
+        <ion-col size="7.5" class="ion-align-self-center">
+          <ion-button (click)="share()" fill="clear">
+            <ion-icon src="assets/icon/share.svg">
+            </ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row class="row-product-name">
+        <ion-col size="7">
+          <h2>
+            Product Name Will Go Here
+          </h2>
+        </ion-col>
+        <ion-col size="5" class="ion-align-self-start col-heart-icon">
+          <ion-button fill="clear" *ngIf="visHeart" (click)="heart()">
+            <ion-icon name="heart" class="icon-empty">
+            </ion-icon>
+          </ion-button>
+          <ion-button fill="clear" *ngIf="!visHeart" (click)="heart()">
+            <ion-icon name="heart" class="icon-filled">
+            </ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row class="row-price">
+        <ion-col size="1.5">
+          <p class="para-price-del"><del>$100</del></p>
+        </ion-col>
+        <ion-col size="1.5">
+          <p class="para-price">$90</p>
+        </ion-col>
+        <ion-col size="9" class="col-stock">
+          <p>In Stock</p>
+        </ion-col>
+      </ion-row>
+      <ion-row class="row-star">
+        <ion-col size="0.4" class="ion-align-self-start" (click)="goToReview()">
+          <ion-icon name="star"></ion-icon>
+        </ion-col>
+        <ion-col size="0.4" class="ion-align-self-start" (click)="goToReview()">
+          <ion-icon name="star"></ion-icon>
+        </ion-col>
+        <ion-col size="0.4" class="ion-align-self-start" (click)="goToReview()">
+          <ion-icon name="star"></ion-icon>
+        </ion-col>
+        <ion-col size="0.4" class="ion-align-self-start" (click)="goToReview()">
+          <ion-icon name="star"></ion-icon>
+        </ion-col>
+        <ion-col size="1" class="ion-align-self-start" (click)="goToReview()">
+          <ion-icon name="star" class="empty-icon"></ion-icon>
+        </ion-col>
+        <ion-col>
+          <p class="review-para">
+            36 reviews
+          </p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <h2 class="product-desc-header">Description</h2>
+    <p class="product-desc-para">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      Nam eu velit tortor. Donec hendrerit enim eget varius volutpat.
+      Suspendisse lacus nulla, luctus et feugiat eu, convallis et purus.
+      Aenean dapibus luctus fermentum. Quisque ut lectus mattis, finibus purus vel, facilisis eros.
+      Sed id posuere quam. Vestibulum at magna sit amet nulla congue vulputate.
+      Mauris sed auctor nisl. Donec felis nunc, commodo ac placerat vitae, pulvinar sit amet risus.
+      Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+      Pellentesque sem arcu, fringilla sit amet dui a, cursus egestas justo. Vivamus ut mollis massa,
+      ac vehicula odio.
+    </p>
+
+    <h2 class="product-desc-header">Similar Products</h2>
+    <ion-slides [options]="sliderConfig" class="similar-product-slides">
+      <ion-slide *ngFor="let productSlide of productSlides">
+        <ion-card>
+          <div class="featured" *ngIf="productSlide.feature">
+            Featured
+          </div>
+          <div class="new" *ngIf="productSlide.new">
+            New
+          </div>
+          <div class="sale" *ngIf="productSlide.sale">
+            On Sale
+          </div>
+          <ion-thumbnail>
+            <ion-img class="animated fadeInUp" src="{{productSlide.img}}"></ion-img>
+          </ion-thumbnail>
+          <p class="text-para">{{productSlide.name}}</p>
+          <ion-grid class="ion-no-padding">
+            <ion-row>
+              <ion-col size="2.5">
+                <p class="price-del-para"><del>${{productSlide.dPrice}}</del></p>
+              </ion-col>
+              <ion-col size="2.5">
+                <p class="price-para">${{productSlide.price}}</p>
+              </ion-col>
+              <ion-col size="7" class="col-heart">
+                <ion-icon *ngIf="!productSlide.heartVis" (click)="heartProduct(productSlide)" class="col-heart-empty"
+                  name="heart"></ion-icon>
+                <ion-icon *ngIf="productSlide.heartVis" (click)="heartProduct(productSlide)" class="col-heart-filled"
+                  name="heart"></ion-icon>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </ion-slide>
+    </ion-slides>
+  </div>
+  <!-- div main which is transparent -->
+  <div class="main-popup" *ngIf="visiablePopup">
+    <!-- div with white color -->
+    <div class="inner-div" *ngIf="visProductSuccessful">
+      <ion-item class="header-item" lines="none">
+        <ion-icon slot="end" name="close" (click)="dismiss()"></ion-icon>
+      </ion-item>
+      <h2 class="color-header">Select Colors:</h2>
+      <!-- color grid  -->
+      <ion-grid class="grid-color">
+        <ion-row>
+          <ion-col size="3" *ngFor="let item of colorItems; let i=index">
+            <div class="div-outer animated fadeIn" *ngIf="!item.selectSize" (click)="isColorCheck(item)">
+              <div class="div-upper"></div>
+              <div class="octagon-outer">
+                <div class="octagon-top" [ngStyle]="{'border-bottom':item.bgRadius}"></div>
+                <div class="octagon" [ngStyle]="{'background': item.color}"></div>
+                <div class="octagon-bottom" [ngStyle]="{'border-top':item.bgRadius}"></div>
+              </div>
+              <p>{{item.text}}</p>
+            </div>
+            <div class="div-select  animated fadeIn" *ngIf="item.selectSize" (click)="isSelectedColorCheck(item)">
+              <div class="div-upper"></div>
+              <div class="octagon-outer">
+                <div class="octagon-select-top" [ngStyle]="{'border-bottom':item.bgRadius}"></div>
+                <div class="octagon-select" [ngStyle]="{'background': item.color}"></div>
+                <div class="octagon-select-bottom" [ngStyle]="{'border-top':item.bgRadius}"></div>
+              </div>
+              <p>{{item.text}}</p>
+              <ion-icon class="icon-tick" name="checkmark"></ion-icon>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <h2 class="header-size">Select Size:</h2>
+      <!-- size grid -->
+      <ion-grid class="grid-size">
+        <ion-row>
+          <ion-col size="3" *ngFor="let item of sizeItems; let i=index">
+            <div class="div-outer animated fadeIn" *ngIf="!item.selectSize" (click)="isSizeCheck(item)">
+              <div class="div-upper"></div>
+              <div class="div-inner">
+                {{item.name}}
+              </div>
+              <p>{{item.text}}</p>
+            </div>
+            <div class="div-select animated fadeIn" *ngIf="item.selectSize" (click)="isSelectSizeCheck(item)">
+              <div class="div-upper"></div>
+              <div class="div-inner">
+                {{item.name}}
+              </div>
+              <p>{{item.text}}</p>
+              <ion-icon class="icon-tick" name="checkmark"></ion-icon>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <h2 class="header-size">Select Quantity:</h2>
+      <ion-grid class="grid-quantity ion-no-padding">
+        <ion-row>
+          <ion-col class="ion-no-padding" size="2">
+            <ion-button fill="clear" (click)="addBtn()">
+              <p>+</p>
+            </ion-button>
+          </ion-col>
+          <ion-col class="ion-no-padding ion-align-self-center" size="2">
+            <div>{{productQuantity}}</div>
+          </ion-col>
+          <ion-col class="ion-no-padding" size="2">
+            <ion-button fill="clear" size="2" (click)="subBtn()">
+              <p>-</p>
+            </ion-button>
+          </ion-col>
+          <ion-col class="ion-no-padding">
+            <p class="para-price">Price: ${{productPrice}}</p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <div class="cart-div">
+        <ion-button (click)="goToproductSucessfull()" class="cart-btn">
+          Add To Cart
+        </ion-button>
+      </div>
+    </div>
+    <div class="inner-div-sucess" *ngIf="!visProductSuccessful">
+      <ion-item class="header-item" lines="none">
+        <ion-icon slot="end" name="close" (click)="dismiss()"></ion-icon>
+      </ion-item>
+      <div class="sucess-div-icon">
+        <ion-icon src="assets/icon/checked.svg"></ion-icon>
+        <p>Your Product Has Been Successfully Added To Your Cart</p>
+      </div>
+      <div class="cart-div">
+        <ion-button (click)="goToCart()" class="cart-btn animated fadeInLeft">
+          GO To Cart
+        </ion-button>
+        <ion-button (click)="goToHome()" class="home-btn animated fadeInLeft">
+          Go To Home
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>
+<ion-footer>
+  <div style='filter:var(--my-var)'>
+    <ion-fab vertical="bottom" horizontal="center" edge slot="fixed">
+      <ion-fab-button (click)="goToProductDetailModal()">
+        <ion-icon src="assets/icon/cart-product-detail.svg"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </div>
+</ion-footer>

@@ -1,0 +1,241 @@
+.wishlist-content {
+  --background: #f3edea !important;
+  .item-searcbar {
+    position: absolute;
+    top: 0;
+    z-index: 999;
+    width: 100%;
+    --background: transparent;
+    ion-searchbar {
+      margin-top: 20px;
+      height: 46px;
+      opacity: 0.6;
+      --placeholder-opacity: 1;
+      --placeholder-color: #582f00;
+    }
+    ion-button,
+    ion-menu-button {
+      height: 42px;
+      margin-top: auto;
+      --background: #81624e;
+      width: 55px;
+      margin-left: 0;
+      margin-bottom: 0;
+      --box-shadow: none;
+      ion-badge {
+        position: absolute;
+        top: 3px;
+        right: 13px;
+        border-radius: 20px;
+        width: 12px;
+        height: 12px;
+        font-size: 8px;
+        --background: white;
+        --color: #81624e;
+      }
+    }
+    .menu-btn {
+      margin-right: 0;
+    }
+  }
+  .card-header {
+    filter: contrast(0.5);
+    margin: 0;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    --background: white;
+    box-shadow: 1px 1px 4px 1px #81624e;
+    ion-thumbnail {
+      height: 130px;
+      width: 100%;
+    }
+  }
+  .item-back {
+    position: absolute;
+    top: 66px;
+    color: white;
+    font-family: "century-school-back-regular";
+    font-size: 20px;
+    z-index: 999;
+    width: 100%;
+    --background: transparent;
+    ion-icon {
+      font-size: 14px;
+      margin-right: 20px;
+      margin-left: 4px;
+      color: white;
+      margin-bottom: 10px;
+    }
+  }
+  .list-card {
+    .grid-list {
+      background: #f9f7f6;
+      border-radius: 10px;
+      margin-right: 23%;
+      margin-left: 16px;
+      padding-left: 0;
+      margin-bottom: 10px;
+      margin-top: 10px;
+      padding-bottom: 0;
+      .sale,
+      .featured,
+      .new,
+      .div-height-list {
+        font-size: 8px;
+        color: white;
+        font-family: "roboto-regular";
+        padding: 1vw 1vw 1vw 1vw;
+        border-radius: 5px;
+        height: 4.5vw;
+        text-align: center;
+      }
+    }
+    .featured {
+      background: #047800;
+    }
+    .sale {
+      background: #b90000;
+    }
+    .new {
+      background: #1473e6;
+    }
+    .div-img-list {
+      margin-top: -10%;
+      .list-img {
+        position: absolute;
+        right: 5px;
+        width: 50%;
+      }
+    }
+    .text-list {
+      font-family: "roboto-regular";
+      font-size: 14px;
+      margin-top: 10px;
+      margin-bottom: 27px;
+    }
+    .para-price-list {
+      font-family: "roboto-medium";
+      margin-top: 0;
+      text-align: left;
+      font-size: 14px;
+      width: 32px;
+    }
+    .para-price-del-list {
+      font-family: "roboto-regular";
+      margin-top: 0;
+      font-size: 14px;
+      width: 32px;
+    }
+    .col-heart {
+      text-align: right;
+      padding-right: 0;
+      padding-top: 0;
+      .col-trash {
+        color: #ff0000;
+      }
+    }
+    .tags-col {
+      padding-bottom: 0;
+    }
+  }
+  .main-popup {
+    z-index: 99;
+    top: 25%;
+    width: 100%;
+    height: 412px;
+    position: fixed;
+    background: transparent;
+    .inner-div-sucess {
+      background: white;
+      margin-left: auto;
+      margin-right: auto;
+      width: 343px;
+      height: 360px;
+      border-radius: 20px;
+      .header-item {
+        position: relative;
+        --background: transparent;
+        width: 100%;
+      }
+      .sucess-div-icon {
+        text-align: center;
+        width: 100%;
+        ion-icon {
+          margin-top: 50px;
+          font-size: 68px;
+          margin-top: 50px;
+        }
+        p {
+          font-size: 15px;
+          font-family: "roboto-regular";
+          margin-top: 30px;
+        }
+      }
+      .cart-div {
+        margin-top: 80px;
+        text-align: center;
+        .cart-btn,
+        .home-btn {
+          text-transform: capitalize;
+          --color: white;
+          font-family: "roboto-regular";
+          height: 63px;
+          font-size: 20px;
+          --border-radius: 10px;
+          font-weight: bold;
+          width: 42%;
+        }
+        .cart-btn {
+          --background: #81624e;
+        }
+        .home-btn {
+          --background: #828282;
+        }
+      }
+    }
+  }
+  .div-icon {
+    text-align: center;
+    margin-top: 33%;
+    ion-icon {
+      font-size: 158px;
+      animation-iteration-count: 20;
+      animation-duration: 1s;
+    }
+    .header-text {
+      font-size: 20px;
+      font-family: "roboto-medium";
+      text-align: center;
+      margin-bottom: 0;
+    }
+    ion-button {
+      font-size: 17px;
+      font-family: "roboto-medium";
+      --color: #5a3104;
+      text-transform: capitalize;
+    }
+  }
+  //for searchbar
+  .searchbar-input {
+    border-radius: 20px !important;
+    box-shadow: none !important;
+  }
+  .searchbar-search-icon.sc-ion-searchbar-md {
+    position: absolute !important;
+    background: url("../../assets/icon/search.svg") no-repeat !important;
+    display: inline-table;
+    color: transparent !important;
+    top: 10px;
+  }
+  .searchbar-input.sc-ion-searchbar-md {
+    padding-left: unset;
+    padding-right: unset;
+    -webkit-padding-start: 55px;
+    padding-inline-start: 55px;
+    -webkit-padding-end: 55px;
+    padding-inline-end: 55px;
+    text-transform: capitalize;
+  }
+}

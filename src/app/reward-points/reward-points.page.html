@@ -1,0 +1,58 @@
+<ion-content class="reward-content">
+  <ion-item class="item-searcbar" lines="none">
+    <ion-menu-button class="menu-btn" slot="start">
+      <ion-icon src="assets/icon/menu.svg"></ion-icon>
+    </ion-menu-button>
+    <ion-searchbar name="search" placeholder="search">
+    </ion-searchbar>
+    <ion-button shape="round" slot="end" routerLink="/cart" routerDirection="forward">
+      <ion-badge class="home-badge">
+        0
+      </ion-badge>
+      <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
+    </ion-button>
+  </ion-item>
+  <ion-item lines="none" class="item-back">
+    <ion-icon slot="start" routerLink="/my-account" routerDirection="backward" src="assets/icon/back.svg">
+    </ion-icon>
+    <p>Reward Points</p>
+    <p class="item-count-para">10 Points</p>
+  </ion-item>
+  <ion-card class="card-header animated fadeIn">
+    <ion-thumbnail>
+      <ion-img src="assets/images/other/category-header.jpg">
+      </ion-img>
+    </ion-thumbnail>
+  </ion-card>
+  <ion-card class="card-total-price animated fadeInUp" *ngFor="let card of rewardCards">
+    <ion-card-header>
+      {{card.title}}
+    </ion-card-header>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <p>Action</p>
+        </ion-col>
+        <ion-col size="6">
+          <p>{{card.action}}</p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <p>Points</p>
+        </ion-col>
+        <ion-col size="6">
+          <p>{{card.points}}</p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <p>Date</p>
+        </ion-col>
+        <ion-col size="6">
+          <p>{{card.date}}</p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+</ion-content>
