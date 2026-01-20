@@ -1,6 +1,6 @@
 .content-sort {
   .header-item {
-    --background: transparent;
+    --background: #1A2363;
     position: absolute;
     top: 0;
     width: 100%;
@@ -44,13 +44,13 @@
       --background-activated: lightgray;
     }
     .apply-btn {
-      --background: #81624e;
+      --background: #B446FF;
     }
     .reset-btn {
       --background: #919191;
     }
   }
   .radio-checked {
-    background: #582f00 !important;
+    background: #1A2363 !important;
   }
 }

@@ -14,7 +14,7 @@
       </ion-button>
     </ion-item>
     <ion-item lines="none" class="item-back">
-      <ion-icon slot="start" routerLink="/home" routerDirection="backward" src="assets/icon/back.svg"></ion-icon>
+      <ion-icon slot="start" routerLink="/home" routerDirection="back" src="assets/icon/back.svg"></ion-icon>
       <p>{{categoryHeader}}</p>
     </ion-item>
     <ion-card class="card-header animated fadeIn">
@@ -42,21 +42,21 @@
           </div>
         </ion-col>
         <ion-col size="9.4" class="col-spcs">
-          <ion-slides [options]="sliderConfig" class="animated fadeInRight">
-            <ion-slide>
+          <div class="horizontal-scroll-container animated fadeInRight">
+            <div class="scroll-item">
               <div (click)="sort(0)" *ngIf="!sortActive">
-                <p>Sort</p>
+                <p class="inactive-p">Sort</p>
               </div>
               <div class="active-spcs" (click)="sort(0)" *ngIf="sortActive">
                 <ion-item lines="none">
                   <ion-icon slot="start" (click)="sort(1)" name="close"></ion-icon>
-                  <p>Sort</p>
+                  <p >Sort</p>
                 </ion-item>
               </div>
-            </ion-slide>
-            <ion-slide>
+            </div>
+            <div class="scroll-item">
               <div (click)="price(0)" *ngIf="!priceActive">
-                <p>Price</p>
+                <p class="inactive-p">Price</p>
               </div>
               <div class="active-spcs" (click)="price(0)" *ngIf="priceActive">
                 <ion-item lines="none">
@@ -64,10 +64,10 @@
                   <p>Price</p>
                 </ion-item>
               </div>
-            </ion-slide>
-            <ion-slide>
+            </div>
+            <div class="scroll-item">
               <div (click)="color(0)" *ngIf="!colorActive">
-                <p>Color</p>
+                <p class="inactive-p">Color</p>
               </div>
               <div class="active-spcs" (click)="color(0)" *ngIf="colorActive">
                 <ion-item lines="none">
@@ -75,10 +75,10 @@
                   <p>Color</p>
                 </ion-item>
               </div>
-            </ion-slide>
-            <ion-slide>
+            </div>
+            <div class="scroll-item">
               <div (click)="size(0)" *ngIf="!sizeActive">
-                <p>Size</p>
+                <p class="inactive-p">Size</p>
               </div>
               <div class="active-spcs" (click)="size(0)" *ngIf="sizeActive">
                 <ion-item lines="none">
@@ -86,8 +86,8 @@
                   <p>Size</p>
                 </ion-item>
               </div>
-            </ion-slide>
-          </ion-slides>
+            </div>
+          </div>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -96,7 +96,7 @@
       <ion-grid class="grid-card ion-no-padding">
         <ion-row>
           <ion-col size="6" *ngFor="let product of categoryLoop" class="ion-no-padding">
-            <ion-card (click)="goToProductDetail()">
+            <ion-card (click)="goToProductDetail(product)">
               <ion-row class="card-row">
                 <ion-col *ngIf="product.featured" size="3.66" class="tag-col">
                   <div class="featured">
@@ -118,7 +118,7 @@
                   </div>
                 </ion-col>
               </ion-row>
-              <ion-img src="{{product.image}}" class="animated fadeInUp"></ion-img>
+              <ion-img src="{{product.img}}" class="animated fadeInUp"></ion-img>
               <p class="para-text">{{product.textGrid}}</p>
               <ion-grid class="grid-price">
                 <ion-row>
@@ -129,9 +129,9 @@
                     <p class="para-price">${{product.price}}</p>
                   </ion-col>
                   <ion-col size="5" class="col-heart">
-                    <ion-icon *ngIf="!product.heartVis" (click)="heart(product)" class="col-heart-empty" name="heart">
+                    <ion-icon *ngIf="!product.heartVis" (click)="heart(product); $event.stopPropagation()" class="col-heart-empty" name="heart">
                     </ion-icon>
-                    <ion-icon *ngIf="product.heartVis" (click)="heart(product)" class="col-heart-filled" name="heart">
+                    <ion-icon *ngIf="product.heartVis" (click)="heart(product); $event.stopPropagation()" class="col-heart-filled" name="heart">
                     </ion-icon>
                   </ion-col>
                 </ion-row>
@@ -144,7 +144,7 @@
     <!-- for list view -->
     <div *ngIf="!visiableGrid">
       <div class="list-card" *ngFor="let product of categoryLoop">
-        <ion-grid class="grid-list" (click)="goToProductDetail()">
+        <ion-grid class="grid-list" (click)="goToProductDetail(product)">
           <ion-row>
             <ion-col size="9">
               <ion-row>
@@ -180,15 +180,15 @@
                   <p class="para-price-list">${{product.price}}</p>
                 </ion-col>
                 <ion-col size="5.5" class="col-heart">
-                  <ion-icon *ngIf="!product.heartVis" (click)="heart(product)" class="col-heart-empty" name="heart">
+                  <ion-icon *ngIf="!product.heartVis" (click)="heart(product); $event.stopPropagation()" class="col-heart-empty" name="heart">
                   </ion-icon>
-                  <ion-icon *ngIf="product.heartVis" (click)="heart(product)" class="col-heart-filled" name="heart">
+                  <ion-icon *ngIf="product.heartVis" (click)="heart(product); $event.stopPropagation()" class="col-heart-filled" name="heart">
                   </ion-icon>
                 </ion-col>
               </ion-row>
             </ion-col>
             <div class="div-img-list">
-              <ion-img class="list-img animated fadeInRight" src="{{product.image}}">
+              <ion-img class="list-img animated fadeInRight" src="{{product.img}}">
               </ion-img>
             </div>
           </ion-row>
@@ -196,16 +196,4 @@
       </div>
     </div>
   </div>
-  <!-- for price range -->
-  <!-- <div class="price-range-div">
-    <h2>Price Range:</h2>
-    <ion-item mode="ios" lines="none">
-      <ion-range id="dual-range" min="0" max="300" [(ngModel)]="structure" dual-knobs pin>
-      </ion-range>
-    </ion-item>
-    <div>
-      <ion-button mode="ios" disabled="{{isBtn}}" (click)="dismiss()" class="apply-btn">APPLY</ion-button>
-      <ion-button mode="ios" (click)="reset()" class="reset-btn">RESET</ion-button>
-    </div>
-  </div> -->
 </ion-content>

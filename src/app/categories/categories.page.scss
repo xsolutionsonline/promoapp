@@ -1,8 +1,15 @@
 .categories-content {
   --background: #f3edea !important;
+
+  /* Safe area padding */
+  --padding-top: var(--ion-safe-area-top);
+  --padding-bottom: var(--ion-safe-area-bottom);
+  --padding-start: var(--ion-safe-area-left);
+  --padding-end: var(--ion-safe-area-right);
+
   .item-searcbar {
     position: absolute;
-    top: 0;
+    top: var(--ion-safe-area-top, 0);
     z-index: 999;
     width: 100%;
     --background: transparent;
@@ -17,7 +24,7 @@
     ion-menu-button {
       height: 42px;
       margin-top: auto;
-      --background: #81624e;
+      --background: #151514;
       width: 55px;
       margin-left: 0;
       margin-bottom: 0;
@@ -36,6 +43,7 @@
     }
     .menu-btn {
       margin-right: 0;
+      background: black;
     }
   }
 
@@ -55,7 +63,7 @@
   }
   .item-back {
     position: absolute;
-    top: 66px;
+    top: calc(66px + var(--ion-safe-area-top, 0px));
     color: white;
     font-family: "century-school-back-regular";
     font-size: 20px;

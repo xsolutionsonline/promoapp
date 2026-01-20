@@ -1,8 +1,15 @@
 .cart-content {
   --background: #f3edea !important;
+
+  /* Safe area padding */
+  --padding-top: var(--ion-safe-area-top);
+  --padding-bottom: calc(80px + var(--ion-safe-area-bottom)); /* Extra space for footer button */
+  --padding-start: var(--ion-safe-area-left);
+  --padding-end: var(--ion-safe-area-right);
+
   .item-searcbar {
     position: absolute;
-    top: 0;
+    top: var(--ion-safe-area-top, 0);
     z-index: 999;
     width: 100%;
     --background: transparent;
@@ -17,7 +24,7 @@
     ion-menu-button {
       height: 42px;
       margin-top: auto;
-      --background: #81624e;
+      --background: #151514;
       width: 55px;
       margin-left: 0;
       margin-bottom: 0;
@@ -31,7 +38,7 @@
         height: 12px;
         font-size: 8px;
         --background: white;
-        --color: #81624e;
+        --color: #1A2363;
       }
     }
     .menu-btn {
@@ -46,7 +53,7 @@
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     --background: white;
-    box-shadow: 1px 1px 4px 1px #81624e;
+    box-shadow: 1px 1px 4px 1px #1A2363;
     ion-thumbnail {
       height: 130px;
       width: 100%;
@@ -55,7 +62,7 @@
   .item-back {
     --inner-padding-end: 16px;
     position: absolute;
-    top: 66px;
+    top: calc(66px + var(--ion-safe-area-top, 0px));
     color: white;
     font-family: "century-school-back-regular";
     font-size: 20px;
@@ -153,7 +160,7 @@
           text-align: right;
           padding-top: 0;
           ion-button {
-            --background: #81624e;
+            --background: #1A2363;
             --border-radius: 5px;
             margin-right: 0;
             text-transform: capitalize;
@@ -243,7 +250,7 @@
           height: 48px;
           text-transform: capitalize;
           --box-shadow: none !important;
-          --background: #81624e;
+          --background: #1A2363;
         }
       }
     }
@@ -300,7 +307,7 @@
     z-index: 9;
     width: 100%;
     ion-button {
-      --background: #81624e;
+      --background: #1A2363;
       text-transform: capitalize;
       --border-radius: 10px;
       height: 45px;
@@ -357,7 +364,7 @@
             --background-activated: lightgray;
           }
           .apply-btn {
-            --background: #81624e;
+            --background: #1A2363;
           }
           .reset-btn {
             --background: #919191;
@@ -459,7 +466,7 @@
   .update-col {
     text-align: center;
     ion-button {
-      --background: #81624e;
+      --background: #1A2363;
       text-transform: capitalize;
       --border-radius: 8px;
       height: 32px;
@@ -556,15 +563,18 @@
 }
 }
 ion-footer {
+  padding-bottom: var(--ion-safe-area-bottom); /* Safe area for footer */
+  background: #f3edea; /* Match background if needed */
   .btn-div {
     text-align: center;
     width: 100%;
-    position: absolute;
-    bottom: -12px;
+    position: relative; /* Changed from absolute to relative */
+    bottom: 0; /* Reset bottom */
+    padding-bottom: 12px; /* Add some padding */
     ion-button {
       margin: 0;
       height: 60px;
-      --background: #81624e;
+      --background: #151514;
       width: 100%;
       --box-shadow: none;
       --border-radius: 15px;

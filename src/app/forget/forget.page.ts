@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, ViewEncapsulation } from '@angular/core';
-import { Events } from '@ionic/angular';
+import { Events } from '../services/events.service';
 
 @Component({
   encapsulation: ViewEncapsulation.None,

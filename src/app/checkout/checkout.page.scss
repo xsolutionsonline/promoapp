@@ -1,9 +1,16 @@
 .checkout-content {
   --background: #f3edea !important;
+
+  /* Safe area padding */
+  --padding-top: var(--ion-safe-area-top);
+  --padding-bottom: calc(80px + var(--ion-safe-area-bottom)); /* Extra space for footer button */
+  --padding-start: var(--ion-safe-area-left);
+  --padding-end: var(--ion-safe-area-right);
+
   .item-searcbar {
     --padding-start: 6px;
     position: absolute;
-    top: 0;
+    top: var(--ion-safe-area-top, 0);
     z-index: 999;
     width: 100%;
     --background: transparent;
@@ -18,7 +25,7 @@
     ion-menu-button {
       height: 42px;
       margin-top: auto;
-      --background: #81624e;
+      --background: #1A2363;
       width: 55px;
       margin-left: 0;
       margin-bottom: 0;
@@ -32,7 +39,7 @@
         height: 12px;
         font-size: 8px;
         --background: white;
-        --color: #81624e;
+        --color: #1A2363;
       }
     }
     .menu-btn {
@@ -47,7 +54,7 @@
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     --background: white;
-    box-shadow: 1px 1px 4px 1px #81624e;
+    box-shadow: 1px 1px 4px 1px #1A2363;
     ion-thumbnail {
       height: 130px;
       width: 100%;
@@ -55,7 +62,7 @@
   }
   .item-back {
     position: absolute;
-    top: 66px;
+    top: calc(66px + var(--ion-safe-area-top, 0px));
     color: white;
     font-family: "century-school-back-regular";
     font-size: 20px;
@@ -74,7 +81,7 @@
     }
   }
   .segment-card {
-    background: #987c52;
+    background: #B446FF;
     border-radius: 12px;
     ion-grid {
       padding: 16px;
@@ -138,7 +145,7 @@
       padding-top: 0;
       padding-right: 0;
       --background: #7f7f7f;
-      --background-checked: #81624e;
+      --background-checked: #B446FF;
     }
   }
   .div-next-btn {
@@ -147,7 +154,7 @@
     bottom: 0;
     width: 100%;
     .next-btn {
-      --background: #81624e;
+      --background: #1A2363;
       text-transform: capitalize;
       --border-radius: 12px;
       --box-shadow: none;
@@ -183,7 +190,7 @@
               font-family: "roboto-regular";
             }
             .checkmark-icon {
-              background: #582f00;
+              background: #1A2363;
               border-radius: 25px;
               color: white;
               font-size: 25px;
@@ -251,7 +258,7 @@
         font-family: "roboto-regular";
       }
       .checkmark-icon {
-        background: #582f00;
+        background: #1A2363;
         border-radius: 25px;
         color: white;
         font-size: 25px;
@@ -291,7 +298,7 @@
       width: 100%;
       text-align: center;
       ion-button {
-        --background: #81624e;
+        --background: #1A2363;
         text-transform: capitalize;
         --border-radius: 8px;
         --box-shadow: none;
@@ -331,7 +338,7 @@
           }
           ion-icon {
             font-size: 13px;
-            --ripple-color: #81624e;
+            --ripple-color: #1A2363;
           }
         }
       }
@@ -417,7 +424,7 @@
           text-align: right;
           padding-top: 0;
           ion-button {
-            --background: #81624e;
+            --background: #1A2363;
             --border-radius: 5px;
             margin-right: 0;
             text-transform: capitalize;
@@ -534,19 +541,22 @@
     text-transform: capitalize;
   }
   .radio-checked {
-    background: #582f00 !important;
+    background: #1A2363 !important;
   }
 }
 ion-footer {
+  padding-bottom: var(--ion-safe-area-bottom); /* Safe area for footer */
+  background: #f3edea; /* Match background if needed */
   .btn-div {
     text-align: center;
     width: 100%;
-    position: absolute;
-    bottom: -12px;
+    position: relative; /* Changed from absolute to relative */
+    bottom: 0; /* Reset bottom */
+    padding-bottom: 12px; /* Add some padding */
     ion-button {
       margin: 0;
       height: 60px;
-      --background: #81624e;
+      --background: #1A2363;
       width: 100%;
       --box-shadow: none;
       --border-radius: 15px;

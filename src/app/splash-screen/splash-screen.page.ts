@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, Events, ModalController } from '@ionic/angular';
+import { NavController, ModalController } from '@ionic/angular';
 import { DataServiceService } from '../services/data-service.service';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { SplashScreen } from '@capacitor/splash-screen';
+import { Events } from '../services/events.service';
 
 @Component({
   selector: 'app-splash-screen',
@@ -12,7 +13,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 export class SplashScreenPage implements OnInit {
 
   constructor(public navCtrl: NavController, private service: DataServiceService,
-    public events: Events, public splash: SplashScreen, public modalCtrl: ModalController) {
+    public events: Events, public modalCtrl: ModalController) {
     // this.splash.hide();
     // setTimeout(() => {
     //   console.log("dismiss called");
@@ -20,8 +21,8 @@ export class SplashScreenPage implements OnInit {
     // }, 4000);
     // this.events.publish('tabActive', false);
   }
-  ionViewDidEnter() {
-    this.splash.hide();
+  async ionViewDidEnter() {
+    await SplashScreen.hide();
     setTimeout(() => {
       console.log("dismiss called");
       this.modalCtrl.dismiss();

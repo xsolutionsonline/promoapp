@@ -13,11 +13,7 @@
         <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
       </ion-button>
     </ion-item>
-    <ion-item lines="none" class="item-back">
-      <ion-icon slot="start" routerLink="/category-detail" routerDirection="backward" src="assets/icon/back.svg">
-      </ion-icon>
-      <p>{{categoryHeader}}</p>
-    </ion-item>
+
     <ion-card class="card-header animated fadeIn">
       <ion-thumbnail>
         <ion-img src="assets/images/other/category-header.jpg">
@@ -25,35 +21,43 @@
       </ion-thumbnail>
     </ion-card>
     <!-- product slider images -->
-    <ion-slides pager="true" class="product-slides">
-      <ion-slide *ngFor="let slide of slides">
+    <div class="horizontal-scroll-container product-slides" #productSlider>
+      <div class="scroll-item" *ngFor="let slide of slides">
         <ion-card>
           <div>
             <ion-thumbnail class="animated fadeInRight">
-              <ion-img src="{{slide}}"></ion-img>
+              <ion-img [src]="slide"></ion-img>
             </ion-thumbnail>
           </div>
         </ion-card>
-      </ion-slide>
-    </ion-slides>
+      </div>
+    </div>
+
+    <!-- Cart Button below slides, aligned right -->
+    <div style="display: flex; justify-content: flex-end; padding-right: 16px; margin-top: -20px; position: relative; z-index: 10;">
+      <ion-fab-button size="small" (click)="goToProductDetailModal()" style="--background: #1A2363;">
+        <ion-icon src="assets/icon/cart-product-detail.svg"></ion-icon>
+      </ion-fab-button>
+    </div>
+
     <ion-grid class="grid-tags">
       <ion-row class="row-tags">
-        <ion-col size="1.5" class="ion-align-self-end">
-          <div class="featured">
+        <ion-col size="3" class="ion-align-self-end">
+          <div class="featured" *ngIf="currentProduct?.featured">
             Featured
           </div>
         </ion-col>
-        <ion-col size="1.5" class="ion-align-self-end">
-          <div class="new">
+        <ion-col size="3" class="ion-align-self-end">
+          <div class="new" *ngIf="currentProduct?.new">
             New
           </div>
         </ion-col>
-        <ion-col size="1.5" class="ion-align-self-end">
-          <div class="sale">
+        <ion-col size="3" class="ion-align-self-end">
+          <div class="sale" *ngIf="currentProduct?.sale">
             On Sale
           </div>
         </ion-col>
-        <ion-col size="7.5" class="ion-align-self-center">
+        <ion-col size="3" class="ion-align-self-center">
           <ion-button (click)="share()" fill="clear">
             <ion-icon src="assets/icon/share.svg">
             </ion-icon>
@@ -63,7 +67,7 @@
       <ion-row class="row-product-name">
         <ion-col size="7">
           <h2>
-            Product Name Will Go Here
+            {{categoryHeader}}
           </h2>
         </ion-col>
         <ion-col size="5" class="ion-align-self-start col-heart-icon">
@@ -79,10 +83,10 @@
       </ion-row>
       <ion-row class="row-price">
         <ion-col size="1.5">
-          <p class="para-price-del"><del>$100</del></p>
+          <p class="para-price-del"><del>${{productDPrice}}</del></p>
         </ion-col>
         <ion-col size="1.5">
-          <p class="para-price">$90</p>
+          <p class="para-price">${{productPrice}}</p>
         </ion-col>
         <ion-col size="9" class="col-stock">
           <p>In Stock</p>
@@ -111,22 +115,15 @@
         </ion-col>
       </ion-row>
     </ion-grid>
+
     <h2 class="product-desc-header">Description</h2>
     <p class="product-desc-para">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      Nam eu velit tortor. Donec hendrerit enim eget varius volutpat.
-      Suspendisse lacus nulla, luctus et feugiat eu, convallis et purus.
-      Aenean dapibus luctus fermentum. Quisque ut lectus mattis, finibus purus vel, facilisis eros.
-      Sed id posuere quam. Vestibulum at magna sit amet nulla congue vulputate.
-      Mauris sed auctor nisl. Donec felis nunc, commodo ac placerat vitae, pulvinar sit amet risus.
-      Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-      Pellentesque sem arcu, fringilla sit amet dui a, cursus egestas justo. Vivamus ut mollis massa,
-      ac vehicula odio.
+      {{currentProduct?.description || 'No description available.'}}
     </p>
 
     <h2 class="product-desc-header">Similar Products</h2>
-    <ion-slides [options]="sliderConfig" class="similar-product-slides">
-      <ion-slide *ngFor="let productSlide of productSlides">
+    <div class="horizontal-scroll-container similar-product-slides">
+      <div class="scroll-item" *ngFor="let productSlide of productSlides">
         <ion-card>
           <div class="featured" *ngIf="productSlide.feature">
             Featured
@@ -138,7 +135,7 @@
             On Sale
           </div>
           <ion-thumbnail>
-            <ion-img class="animated fadeInUp" src="{{productSlide.img}}"></ion-img>
+            <ion-img class="animated fadeInUp" [src]="productSlide.img"></ion-img>
           </ion-thumbnail>
           <p class="text-para">{{productSlide.name}}</p>
           <ion-grid class="ion-no-padding">
@@ -158,8 +155,8 @@
             </ion-row>
           </ion-grid>
         </ion-card>
-      </ion-slide>
-    </ion-slides>
+      </div>
+    </div>
   </div>
   <!-- div main which is transparent -->
   <div class="main-popup" *ngIf="visiablePopup">
@@ -264,12 +261,3 @@
     </div>
   </div>
 </ion-content>
-<ion-footer>
-  <div style='filter:var(--my-var)'>
-    <ion-fab vertical="bottom" horizontal="center" edge slot="fixed">
-      <ion-fab-button (click)="goToProductDetailModal()">
-        <ion-icon src="assets/icon/cart-product-detail.svg"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
-  </div>
-</ion-footer>

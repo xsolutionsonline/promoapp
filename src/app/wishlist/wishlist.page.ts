@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, ViewEncapsulation } from '@angular/core';
-import { ModalController, Events, ToastController, NavController } from '@ionic/angular';
+import { ModalController, ToastController, NavController } from '@ionic/angular';
+import { Events } from '../services/events.service';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -13,6 +14,7 @@ export class WishlistPage implements OnInit {
   public productCount = 3;
   public deleteProductId = -1;
   public visiablePopup = false;
+  public visProductSuccessful = false;
   public divBlur = "";
   public wishlistItems = [
     { image: "assets/images/shoes/sale/1.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "90", dPrice: "100", visItem: true, featured: true, new: false, sale: false, id: 0 },
@@ -43,28 +45,34 @@ export class WishlistPage implements OnInit {
     this.visiablePopup = false;//for disable blur effect
   }
   itemDelete() {
-    this.events.publish('blurValue', "blur(0px)");
-    this.visiablePopup = false;//for disable blur effect
-    if (this.deleteProductId == 0) {
-      this.wishlistItems[0].visItem = false;
-      this.productCount = this.productCount - 1;
-      console.log(this.productCount);
-      // const tabBar = document.getElementById('wishlist-product');
-      // tabBar.style.animationName = 'fadeOut';
-    }
-    else if (this.deleteProductId == 1) {
-      this.wishlistItems[1].visItem = false;
-      this.productCount = this.productCount - 1;
-      console.log(this.productCount);
-    }
-    else if (this.deleteProductId == 2) {
-      this.wishlistItems[2].visItem = false;
-      this.productCount = this.productCount - 1;
-      console.log(this.productCount);
-    }
-    if (this.productCount == 0) {
-      this.visEmptyWishlist = true;
-    }
+    // this.events.publish('blurValue', "blur(0px)");
+    // this.visiablePopup = false;//for disable blur effect
+    this.visProductSuccessful = true;
+    setTimeout(() => {
+      this.visProductSuccessful = false;
+      this.visiablePopup = false;
+      this.events.publish('blurValue', "blur(0px)");
+      if (this.deleteProductId == 0) {
+        this.wishlistItems[0].visItem = false;
+        this.productCount = this.productCount - 1;
+        console.log(this.productCount);
+        // const tabBar = document.getElementById('wishlist-product');
+        // tabBar.style.animationName = 'fadeOut';
+      }
+      else if (this.deleteProductId == 1) {
+        this.wishlistItems[1].visItem = false;
+        this.productCount = this.productCount - 1;
+        console.log(this.productCount);
+      }
+      else if (this.deleteProductId == 2) {
+        this.wishlistItems[2].visItem = false;
+        this.productCount = this.productCount - 1;
+        console.log(this.productCount);
+      }
+      if (this.productCount == 0) {
+        this.visEmptyWishlist = true;
+      }
+    }, 2000);
   }
   itemNotDelete() {
     this.events.publish('blurValue', "blur(0px)");

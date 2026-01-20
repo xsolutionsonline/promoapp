@@ -1,9 +1,15 @@
 .review-content {
   --background: #f3edea !important;
+
+  /* Safe area padding */
+  --padding-top: var(--ion-safe-area-top);
+  --padding-bottom: calc(80px + var(--ion-safe-area-bottom)); /* Extra space for footer button */
+  --padding-start: var(--ion-safe-area-left);
+  --padding-end: var(--ion-safe-area-right);
+
   .item-searcbar {
     --padding-start: 6px;
     position: absolute;
-    top: 0;
     z-index: 999;
     width: 100%;
     --background: transparent;
@@ -12,12 +18,12 @@
       height: 46px;
       opacity: 0.6;
       --placeholder-opacity: 1;
-      --placeholder-color: #582f00;
+      --placeholder-color: #1A2363;
     }
     ion-button {
       height: 42px;
       margin-top: auto;
-      --background: #81624e;
+      --background: #1A2363;
       width: 16%;
       margin-left: 0;
       margin-bottom: 0;
@@ -31,7 +37,7 @@
         height: 12px;
         font-size: 8px;
         --background: white;
-        --color: #81624e;
+        --color: #1A2363;
       }
     }
   }
@@ -43,7 +49,7 @@
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     --background: white;
-    box-shadow: 1px 1px 4px 1px #81624e;
+    box-shadow: 1px 1px 4px 1px #1A2363;
     ion-thumbnail {
       height: 130px;
       width: 100%;
@@ -51,7 +57,7 @@
   }
   .item-back {
     position: absolute;
-    top: 66px;
+    top: calc(28px + var(--ion-safe-area-top, 0px));
     color: white;
     font-family: "century-school-back-regular";
     font-size: 20px;
@@ -77,7 +83,7 @@
         border-right: solid 1px #707070;
         ion-item {
           position: relative;
-          --background: #81624e;
+          --background: #B446FF;
           --color: white;
           --border-radius: 10px;
           ion-label {
@@ -172,7 +178,7 @@
       font-weight: bold;
       font-family: "roboto-regular";
       height: 44px;
-      --background: #81624e;
+      --background: #1A2363;
       text-transform: capitalize;
       --border-radius: 10px;
       margin-top: 40px;
@@ -237,7 +243,7 @@
         text-align: center;
         .cart-btn {
           text-transform: capitalize;
-          --background: #81624e;
+          --background: #1A2363;
           --color: white;
           font-family: "roboto-regular";
           height: 63px;
@@ -271,15 +277,18 @@
   }
 }
 ion-footer {
+  padding-bottom: var(--ion-safe-area-bottom); /* Safe area for footer */
+  background: #f3edea; /* Match background if needed */
   .btn-div {
     text-align: center;
     width: 100%;
-    position: absolute;
-    bottom: -12px;
+    position: relative; /* Changed from absolute to relative */
+    bottom: 0; /* Reset bottom */
+    padding-bottom: 12px; /* Add some padding */
     ion-button {
       margin: 0;
       height: 60px;
-      --background: #81624e;
+      --background: #1A2363;
       width: 100%;
       --box-shadow: none;
       --border-radius: 15px;

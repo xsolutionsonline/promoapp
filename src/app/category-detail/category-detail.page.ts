@@ -1,10 +1,12 @@
 import { Component, OnInit, ElementRef, ViewEncapsulation } from '@angular/core';
-import { ModalController, Events, ToastController, NavController } from '@ionic/angular';
+import { ModalController, ToastController, NavController } from '@ionic/angular';
 import { ProductColorPage } from '../product-color/product-color.page';
 import { ProductPricePage } from '../product-price/product-price.page';
 import { ProductSizePage } from '../product-size/product-size.page';
 import { ProductSortPage } from '../product-sort/product-sort.page';
-import { from } from 'rxjs';
+import { Events } from '../services/events.service';
+import { NavigationExtras, Router } from "@angular/router";
+import { DataService } from '../services/data.service';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -32,32 +34,21 @@ export class CategoryDetailPage implements OnInit {
   // for category id get from home page
   public categoryId = "";
   //for category
-  public categoryHeader = "Formal Shoes";
-  public categoryLoop = [
-    { image: "assets/images/shoes/formal/1.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: false, sale: false },
-    { image: "assets/images/shoes/featured/3.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: false, new: false, sale: true },
-    { image: "assets/images/shoes/sale/1.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: false, new: true, sale: false },
-    { image: "assets/images/shoes/formal/2.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: true, sale: false },
-    { image: "assets/images/shoes/formal/3.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: false, sale: true },
-    { image: "assets/images/shoes/formal/4.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: false, new: true, sale: true },
-    { image: "assets/images/shoes/formal/5.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: true, sale: true },
-    { image: "assets/images/shoes/formal/6.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: false, new: false, sale: false },
-  ];
+  public categoryHeader = "Technology";
+  public categoryLoop = [];
   //for swiper slider
   sliderConfig = {
     slidesPerView: 3.5,
     spaceBetween: 0,
-    // pagination: {
-    // el:'.swiper-pagination',
-    // clickable: true,
-    // }
   };
   public sportProducts = [];
   constructor(private modalCtrl: ModalController,
     private elementRef: ElementRef,
     private events: Events,
     private toastController: ToastController,
-    private navCtrl: NavController) {
+    private navCtrl: NavController,
+    private router: Router,
+    private dataService: DataService) {
 
     //for making background blur
     this.events.subscribe('blurValue', (data) => {
@@ -161,7 +152,7 @@ export class CategoryDetailPage implements OnInit {
       // for home NgModel
       let modal = await this.modalCtrl.create({
         component: ProductColorPage,
-        cssClass: "home-modal",
+        cssClass: "product-color-modal",
         componentProps: {
           'hideGuestLogin': true
         }
@@ -179,7 +170,7 @@ export class CategoryDetailPage implements OnInit {
       this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
       // for home NgModel
       let modal = await this.modalCtrl.create({
-        component: ProductSizePage,
+        component: ProductColorPage,
         cssClass: "home-modal",
         componentProps: {
           'hideGuestLogin': true
@@ -198,52 +189,44 @@ export class CategoryDetailPage implements OnInit {
       this.categoryId = data;
       console.log("category value: " + this.categoryId);
     });
-    // console.log("outer view will enter" + this.categoryId);
+
+    // Default fallback if no category selected or just to show something
+    // In a real app, you'd filter by categoryId
+
     if (this.categoryId == "formal") {
       console.log("outer view will enter" + this.categoryId);
       this.categoryHeader = "Formal Shoes";
-      this.categoryLoop = [
-        { image: "assets/images/shoes/formal/1.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: false, sale: false },
-        { image: "assets/images/shoes/featured/3.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: false, new: false, sale: true },
-        { image: "assets/images/shoes/sale/1.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: false, new: true, sale: false },
-        { image: "assets/images/shoes/formal/2.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: true, sale: false },
-        { image: "assets/images/shoes/formal/3.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: false, sale: true },
-        { image: "assets/images/shoes/formal/4.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: false, new: true, sale: true },
-        { image: "assets/images/shoes/formal/5.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: true, sale: true },
-        { image: "assets/images/shoes/formal/6.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: false, new: false, sale: false },
-      ];
+      // Using service data for now as example, you can filter it
+      this.categoryLoop = this.dataService.getCategoryProducts();
     }
     else if (this.categoryId == "causal") {
       console.log("outer view will enter" + this.categoryId);
       this.categoryHeader = "Casual Shoes";
-      this.categoryLoop = [
-        { image: "assets/images/shoes/new/1.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: false, sale: false },
-        { image: "assets/images/shoes/new/2.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: false, new: false, sale: true },
-        { image: "assets/images/shoes/casual/1.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: false, new: true, sale: false },
-        { image: "assets/images/shoes/casual/2.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: true, sale: false },
-        { image: "assets/images/shoes/casual/3.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: false, sale: true },
-        { image: "assets/images/shoes/casual/4.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: false, new: true, sale: true },
-        { image: "assets/images/shoes/casual/5.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: true, sale: true },
-        { image: "assets/images/shoes/sale/3.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: false, new: false, sale: false },
-      ];
+      this.categoryLoop = this.dataService.getCategoryProducts();
     }
     else if (this.categoryId == "sport") {
       console.log("outer view will enter" + this.categoryId);
       this.categoryHeader = "Sport Shoes";
-      this.categoryLoop = [
-        { image: "assets/images/shoes/featured/2.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: false, sale: false },
-        { image: "assets/images/shoes/featured/1.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: false, new: false, sale: true },
-        { image: "assets/images/shoes/sale/2.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: false, new: true, sale: false },
-        { image: "assets/images/shoes/sport/4.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: true, sale: false },
-        { image: "assets/images/shoes/sport/1.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: false, sale: true },
-        { image: "assets/images/shoes/sport/2.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: false, new: true, sale: true },
-        { image: "assets/images/shoes/sport/3.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: true, new: true, sale: true },
-        { image: "assets/images/shoes/new/3.png", textGrid: "Product Name Will Go Here!", textList: "Product Name Will Go Here! Product Title", price: "100", dPrice: "150", heartVis: false, featured: false, new: false, sale: false },
-      ];
+      this.categoryLoop = this.dataService.getCategoryProducts();
+    } else {
+      // Default load if accessed directly
+      this.categoryLoop = this.dataService.getCategoryProducts();
     }
     // }, 100);
   }
-  goToProductDetail() {
-    this.navCtrl.navigateForward("product-detail");
+  goToProductDetail(item) {
+    // If item is passed from the template click event
+    if (item) {
+        const navigationExtras: NavigationExtras = {
+        state: {
+            product: item
+        }
+        };
+        this.router.navigate(['product-detail'], navigationExtras);
+    } else {
+        // Fallback if called without item (e.g. from existing HTML that might not pass it yet)
+        // Ideally, update HTML to pass 'product'
+        console.warn("No item passed to goToProductDetail");
+    }
   }
 }

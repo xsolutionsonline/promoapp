@@ -13,20 +13,22 @@
         <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
       </ion-button>
     </ion-item>
+
     <!-- for banner -->
-    <ion-slides #slideIntro pager="true" class="animated fadeIn">
-      <ion-slide (click)="goToShop()" *ngFor="let slide of slides">
+    <div class="horizontal-scroll-container animated fadeIn">
+      <div class="scroll-item" *ngFor="let slide of slides" (click)="goToShop(slide)">
         <ion-card>
           <ion-thumbnail>
-            <img src="{{slide}}"/>
+            <img [src]="slide"/>
           </ion-thumbnail>
         </ion-card>
-      </ion-slide>
-    </ion-slides>
-    <h2>Featured Collection</h2>
+      </div>
+    </div>
+
+    <h2>🐦‍🔥 Featured Products</h2>
     <!-- for products slider -->
-    <ion-slides [options]="sliderConfig" #slideFeatured class="slides-featured" (ionSlideDidChange)="slideChanged()">
-      <ion-slide *ngFor="let item of featuredItems" routerLink="/product-detail" routerDirection="forward">
+    <div class="horizontal-scroll-container slides-featured">
+      <div class="scroll-item" *ngFor="let item of featuredItems" (click)="goToProductDetail(item)">
         <ion-grid class="grid-featured">
           <ion-row>
             <ion-col size="9">
@@ -62,46 +64,30 @@
               <p class="para-price">${{item.price}}</p>
             </ion-col>
             <ion-col size="3" class="col-heart">
-              <ion-icon *ngIf="!item.heartVis" (click)="heart(item)" class="col-heart-empty" name="heart"></ion-icon>
-              <ion-icon *ngIf="item.heartVis" (click)="heart(item)" class="col-heart-filled" name="heart"></ion-icon>
+              <ion-icon *ngIf="!item.heartVis" (click)="heart(item); $event.stopPropagation()" class="col-heart-empty" name="heart"></ion-icon>
+              <ion-icon *ngIf="item.heartVis" (click)="heart(item); $event.stopPropagation()" class="col-heart-filled" name="heart"></ion-icon>
             </ion-col>
           </ion-row>
         </ion-grid>
-        <ion-img class="swipe-slider-img animated fadeInRight" src="{{item.img}}">
+        <ion-img class="swipe-slider-img animated fadeInRight" [src]="item.img">
         </ion-img>
-      </ion-slide>
-      <ion-slide></ion-slide>
-      <!-- <ion-slide class="slide-btn">
-        <ion-button (click)="goToShop()" class="shop-btn" fill="clear">
-          Show More
-          <ion-icon name="arrow-dropright"></ion-icon>
-        </ion-button>
-      </ion-slide> -->
-    </ion-slides>
+      </div>
+    </div>
+
     <!-- new collection -->
-    <h2>New Collection</h2>
+    <h2>🚨 New Products</h2>
     <!-- for products slider -->
-    <ion-slides [options]="sliderConfig" #slideCollection class="slides-featured" (ionSlideDidChange)="slideChanged()">
-      <ion-slide *ngFor="let item of newItems" routerLink="/product-detail" routerDirection="forward">
+    <div class="horizontal-scroll-container slides-featured">
+      <div class="scroll-item" *ngFor="let item of newItems" routerLink="/product-detail" routerDirection="forward">
         <ion-grid class="grid-featured">
           <ion-row>
             <ion-col size="9">
               <ion-row>
-                <!-- <ion-col size="4">
-                <div *ngIf="item.featured" class="featured">
-                Featured
-                </div>
-                </ion-col> -->
                 <ion-col size="4">
                   <div *ngIf="item.new" class="new-collection">
                     New
                   </div>
                 </ion-col>
-                <!-- <ion-col size="4">
-                <div *ngIf="item.sale" class="sale">
-                On Sale
-                </div>
-                </ion-col> -->
               </ion-row>
               <ion-row>
                 <ion-col size="12">
@@ -118,35 +104,25 @@
               <p class="para-price">${{item.price}}</p>
             </ion-col>
             <ion-col size="3" class="col-heart">
-              <ion-icon *ngIf="!item.heartVis" (click)="heart(item)" class="col-heart-empty" name="heart"></ion-icon>
-              <ion-icon *ngIf="item.heartVis" (click)="heart(item)" class="col-heart-filled" name="heart"></ion-icon>
+              <ion-icon *ngIf="!item.heartVis" (click)="heart(item); $event.stopPropagation()" class="col-heart-empty" name="heart"></ion-icon>
+              <ion-icon *ngIf="item.heartVis" (click)="heart(item); $event.stopPropagation()" class="col-heart-filled" name="heart"></ion-icon>
             </ion-col>
           </ion-row>
         </ion-grid>
-        <ion-img class="swipe-slider-img animated fadeInRight" src="{{item.img}}">
+        <ion-img class="swipe-slider-img animated fadeInRight" [src]="item.img">
         </ion-img>
-      </ion-slide>
-      <ion-slide></ion-slide>
-    </ion-slides>
+      </div>
+    </div>
+
     <!-- On Sale items -->
-    <h2>On Sale</h2>
+    <h2>🎁 On Sale</h2>
     <!-- for products slider -->
-    <ion-slides [options]="sliderConfig" #slideSale class="slides-featured" (ionSlideDidChange)="slideChanged()">
-      <ion-slide *ngFor="let item of saleItems" routerLink="/product-detail" routerDirection="forward">
+    <div class="horizontal-scroll-container slides-featured">
+      <div class="scroll-item" *ngFor="let item of saleItems" routerLink="/product-detail" routerDirection="forward">
         <ion-grid class="grid-featured">
           <ion-row>
             <ion-col size="9">
               <ion-row>
-                <!-- <ion-col size="4">
-                <div *ngIf="item.featured" class="featured">
-                Featured
-                </div>
-                </ion-col> -->
-                <!-- <ion-col size="4">
-                <div *ngIf="item.new" class="new">
-                New
-                </div>
-                </ion-col> -->
                 <ion-col size="4">
                   <div *ngIf="item.sale" class="sale-collection">
                     On Sale
@@ -168,16 +144,16 @@
               <p class="para-price">${{item.price}}</p>
             </ion-col>
             <ion-col size="3" class="col-heart">
-              <ion-icon *ngIf="!item.heartVis" (click)="heart(item)" class="col-heart-empty" name="heart"></ion-icon>
-              <ion-icon *ngIf="item.heartVis" (click)="heart(item)" class="col-heart-filled" name="heart"></ion-icon>
+              <ion-icon *ngIf="!item.heartVis" (click)="heart(item); $event.stopPropagation()" class="col-heart-empty" name="heart"></ion-icon>
+              <ion-icon *ngIf="item.heartVis" (click)="heart(item); $event.stopPropagation()" class="col-heart-filled" name="heart"></ion-icon>
             </ion-col>
           </ion-row>
         </ion-grid>
-        <ion-img class="swipe-slider-img animated fadeInRight" src="{{item.img}}">
+        <ion-img class="swipe-slider-img animated fadeInRight" [src]="item.img">
         </ion-img>
-      </ion-slide>
-      <ion-slide></ion-slide>
-    </ion-slides>
+      </div>
+    </div>
+
     <div class="div-category">
       <h1>Popular Categories</h1>
       <div class="div-line"></div>
@@ -187,7 +163,7 @@
       <ion-row *ngFor="let item of categoryItems; let i = index">
         <ion-col class="category-col">
           <ion-thumbnail class="animated fadeIn">
-            <ion-img class="category-img" (click)="goToShop(i)" src="{{item.img}}">
+            <ion-img class="category-img" (click)="goToShop(i)" [src]="item.img">
             </ion-img>
           </ion-thumbnail>
           <h2 class="category-text">{{item.text}}</h2>
@@ -235,12 +211,4 @@
       </ion-row>
     </ion-grid>
   </div>
-  <!-- <ion-button routerLink="/list" routerDirection="forward">test</ion-button> -->
-  <!-- <div class="main-popup" *ngIf="visiablePopup">
-  <div class="inner-div">
-  <ion-item lines="none">
-  <ion-icon slot="end" name="close"></ion-icon>
-  </ion-item>
-  </div>
-  </div> -->
 </ion-content>

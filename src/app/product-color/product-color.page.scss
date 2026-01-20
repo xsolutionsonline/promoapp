@@ -1,6 +1,6 @@
 .content-color {
   .header-item {
-    --background: transparent;
+    --background: #1A2363;
     position: absolute;
     top: 0;
     width: 100%;
@@ -29,7 +29,7 @@
       margin-bottom: 11px;
     }
     .icon-tick {
-      background: #582f00;
+      background: #1A2363;
       border-radius: 25px;
       color: white;
       position: absolute;
@@ -51,7 +51,7 @@
       --background-activated: lightgray;
     }
     .apply-btn {
-      --background: #81624e;
+      --background: #B446FF;
     }
     .reset-btn {
       --background: #919191;

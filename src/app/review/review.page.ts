@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, ViewEncapsulation } from '@angular/core';
-import { ModalController, Events, ToastController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
+import { Events } from '../services/events.service';
 
 @Component({
   encapsulation: ViewEncapsulation.None,

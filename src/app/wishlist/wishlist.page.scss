@@ -11,13 +11,13 @@
       height: 46px;
       opacity: 0.6;
       --placeholder-opacity: 1;
-      --placeholder-color: #582f00;
+      --placeholder-color: #1A2363;
     }
     ion-button,
     ion-menu-button {
       height: 42px;
       margin-top: auto;
-      --background: #81624e;
+      --background: #1A2363;
       width: 55px;
       margin-left: 0;
       margin-bottom: 0;
@@ -31,7 +31,7 @@
         height: 12px;
         font-size: 8px;
         --background: white;
-        --color: #81624e;
+        --color: #1A2363;
       }
     }
     .menu-btn {
@@ -46,7 +46,7 @@
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     --background: white;
-    box-shadow: 1px 1px 4px 1px #81624e;
+    box-shadow: 1px 1px 4px 1px #1A2363;
     ion-thumbnail {
       height: 130px;
       width: 100%;
@@ -188,7 +188,7 @@
           width: 42%;
         }
         .cart-btn {
-          --background: #81624e;
+          --background: #1A2363;
         }
         .home-btn {
           --background: #828282;
@@ -213,7 +213,7 @@
     ion-button {
       font-size: 17px;
       font-family: "roboto-medium";
-      --color: #5a3104;
+      --color: #1A2363;
       text-transform: capitalize;
     }
   }

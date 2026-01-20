@@ -13,7 +13,7 @@
     </ion-button>
   </ion-item>
   <ion-item lines="none" class="item-back">
-    <ion-icon slot="start" routerLink="/my-account" routerDirection="backward" src="assets/icon/back.svg">
+    <ion-icon slot="start" routerLink="/my-account" routerDirection="back" src="assets/icon/back.svg">
     </ion-icon>
     <p>My Addresses</p>
   </ion-item>
@@ -26,7 +26,7 @@
   <ion-grid class="ion-no-padding segment">
     <ion-row>
       <ion-col class="ion-align-self-center" (click)="segmentSelected('shipping')" *ngIf="shipping">
-        <p>Shipping</p>
+        <p style="color: white">Shipping</p>
       </ion-col>
       <ion-col class="ion-align-self-center animated fadeInRight" (click)="segmentSelected('shippingActive')" *ngIf="shippingActive">
         <div class="highlighed-segment">
@@ -37,7 +37,7 @@
         <div class="vertical-line"></div>
       </ion-col>
       <ion-col class="ion-align-self-center" (click)="segmentSelected('billing')" *ngIf="billing">
-        <p>Billing</p>
+        <p style="color: white">Billing</p>
       </ion-col>
       <ion-col class="ion-align-self-center animated fadeInLeft" (click)="segmentSelected('billingActive')" *ngIf="billingActive">
         <div class="highlighed-segment">

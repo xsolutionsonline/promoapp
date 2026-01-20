@@ -1,15 +1,25 @@
 .thankyou-content {
   --background: #f3edea !important;
+
+  /* Safe area padding */
+  --padding-top: var(--ion-safe-area-top);
+  --padding-bottom: calc(80px + var(--ion-safe-area-bottom)); /* Extra space for footer buttons */
+  --padding-start: var(--ion-safe-area-left);
+  --padding-end: var(--ion-safe-area-right);
+
   .header-card {
-    background: #987c52;
+    background: #1A2363;
     margin: 0;
-    height: 350px;
+    height: 300px;
     border-radius: 50% 50% 150% 150%/0% 0% 40% 40%;
     box-shadow: 1px 1px 3px 1px grey;
+    /* Adjust for safe area if needed, though margin: 0 usually handles it with ion-content padding */
+    margin-top: -20px; /* Pull up slightly to cover safe area gap if any */
+    padding-top: 20px;
   }
   .header-content {
     width: 100%;
-    top: 10%;
+    top: calc(10% + var(--ion-safe-area-top, 0px)); /* Adjust top position */
     position: absolute;
     text-align: center;
     ion-icon {
@@ -26,7 +36,7 @@
   }
   .order-id-card {
     border-radius: 12px;
-    background: #987c52;
+    background: #B446FF;
     margin-right: 16px;
     margin-left: 16px;
     display: flex;
@@ -74,7 +84,7 @@
           }
           ion-icon {
             font-size: 13px;
-            --ripple-color: #81624e;
+            --ripple-color: #1A2363;
           }
         }
       }
@@ -160,7 +170,7 @@
           text-align: right;
           padding-top: 0;
           ion-button {
-            --background: #81624e;
+            --background: #1A2363;
             --border-radius: 5px;
             margin-right: 0;
             text-transform: capitalize;
@@ -250,15 +260,18 @@
   }
 }
 ion-footer {
+  padding-bottom: var(--ion-safe-area-bottom); /* Safe area for footer */
+  background: #f3edea; /* Match background if needed */
   .div-btns {
     text-align: center;
     width: 100%;
-    position: absolute;
-    bottom: -12px;
+    position: relative; /* Changed from absolute to relative */
+    bottom: 0; /* Reset bottom */
+    padding-bottom: 12px; /* Add some padding */
     ion-button {
       margin: 0;
       height: 60px;
-      --background: #582f00;
+      --background: #1A2363;
       width: 50%;
       --box-shadow: none;
       --border-radius: 15px;

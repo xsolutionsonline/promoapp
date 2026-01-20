@@ -1,5 +1,6 @@
 .forget-content {
   --background: #f3edea !important;
+  filter: var(--my-var);
   .header-card {
     background: #B19477;
     margin: 0;

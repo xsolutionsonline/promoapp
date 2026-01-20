@@ -24,6 +24,18 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+:root {
+  --my-var: blur(0px);
+}
+
+ion-content {
+  --padding-top: var(--ion-safe-area-top, 0);
+  --padding-bottom: var(--ion-safe-area-bottom, 0);
+  --padding-start: var(--ion-safe-area-left, 0);
+  --padding-end: var(--ion-safe-area-right, 0);
+}
+
 /*font roboto online import*/
 //@import url('https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap');
 .home-modal {
@@ -38,15 +50,25 @@
 .product-price-modal {
   top: 36%;
   width: 343px;
-  height: 213px;
+  height: 267px;
   border-radius: 20px;
   margin-left: auto;
   margin-right: auto;
   border-radius: 20px;
   --border-radius: 20px;
 }
+
+.product-color-modal {
+  top: 15%;
+  width: 343px;
+  height: 367px;
+  border-radius: 20px;
+  --border-radius: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
 .radio-checked {
-  background: #582f00 !important;
+  background: #0e0e0e !important;
 }
 .range-pressed {
   font-size: 14px;

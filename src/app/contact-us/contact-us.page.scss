@@ -1,9 +1,16 @@
 .contact-us-content {
   --background: #f3edea !important;
+
+  /* Safe area padding */
+  --padding-top: var(--ion-safe-area-top);
+  --padding-bottom: var(--ion-safe-area-bottom);
+  --padding-start: var(--ion-safe-area-left);
+  --padding-end: var(--ion-safe-area-right);
+
   .item-searcbar {
     --padding-start: 6px;
     position: absolute;
-    top: 0;
+    top: var(--ion-safe-area-top, 0);
     z-index: 999;
     width: 100%;
     --background: transparent;
@@ -12,13 +19,13 @@
       height: 46px;
       opacity: 0.6;
       --placeholder-opacity: 1;
-      --placeholder-color: #582f00;
+      --placeholder-color: #1A2363;
     }
     ion-button,
     ion-menu-button {
       height: 42px;
       margin-top: auto;
-      --background: #81624e;
+      --background: #1A2363;
       width: 55px;
       margin-left: 0;
       margin-bottom: 0;
@@ -48,7 +55,7 @@
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     --background: white;
-    box-shadow: 1px 1px 4px 1px #81624e;
+    box-shadow: 1px 1px 4px 1px #1A2363;
     ion-thumbnail {
       height: 130px;
       width: 100%;
@@ -57,7 +64,7 @@
   .item-back {
     --inner-padding-end: 16px;
     position: absolute;
-    top: 66px;
+    top: calc(66px + var(--ion-safe-area-top, 0px));
     color: white;
     font-family: "century-school-back-regular";
     font-size: 20px;
@@ -81,7 +88,7 @@
     margin-top: 59%;
     height: 15px;
     width: 100%;
-    background: #582f00;
+    background: #1A2363;
   }
   .grid-pin {
     border-bottom: solid 1px black;
@@ -114,7 +121,7 @@
   .card-input {
     margin: 10px 18px 30px 18px;
     border-radius: 25px;
-    background: #81624e;
+    background: #1A2363;
     ion-item {
       margin: 20px 20px 10px 20px;
       border-radius: 12px;
@@ -134,7 +141,7 @@
       height: 85px;
       margin-top: -75px;
       --padding-end: 0;
-      --ripple-color: #81624e;
+      --ripple-color: #1A2363;
       ion-icon {
         font-size: 85px;
       }

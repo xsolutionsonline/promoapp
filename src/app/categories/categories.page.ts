@@ -12,34 +12,32 @@ export class CategoriesPage implements OnInit {
   constructor() {
     this.expandCard = [
       {
-        expandedHelp: false, name: "Men Shoes", img: "assets/images/category/4.jpg", id: 0,
+        expandedHelp: false, name: "Technology", img: "assets/images/category/category_ppal.jpg", id: 0,
         visIconZero: true,
         visIconOne: false,
         visIconTwo: false,
         subcategories: [
-          { name: "Dress Shoes", img: "assets/images/category/1.jpg" },
-          { name: "Casual Shoes", img: "assets/images/category/2.jpg" },
-          { name: "Sports Shoes", img: "assets/images/category/3.jpg" }
+          { name: "Headphones", img: "assets/images/category/headphones.jpg" },
+          { name: "Smart Home", img: "assets/images/category/Smart Home.jpg" },
+          { name: "Wearables", img: "assets/images/category/Wearables.jpg" }
         ]
       },
       {
-        expandedHelp: false, name: "Women Shoes", img: "assets/images/category/5.jpg", id: 1,
+        expandedHelp: false, name: "Pets", img: "assets/images/category/pets_ppal.jpg", id: 1,
         visIconZero: false,
         visIconOne: true,
         visIconTwo: false,
         subcategories: [
-          { name: "Flat Shoes", img: "assets/images/category/7.jpg" },
-          { name: "Sandal Shoes", img: "assets/images/category/8.jpg" },
+
         ]
       },
       {
-        expandedHelp: false, name: "Kids Shoes", img: "assets/images/category/6.jpg", id: 2,
+        expandedHelp: false, name: "Info Products", img: "assets/images/category/infoproduct_ppal.jpg", id: 2,
         visIconZero: false,
         visIconOne: false,
         visIconTwo: true,
         subcategories: [
-          { name: "Laceup Shoes", img: "assets/images/category/9.jpg" },
-          { name: "Fancy Shoes", img: "assets/images/category/10.jpg" },
+
         ]
       }
     ];

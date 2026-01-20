@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ModalController, Events } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
+import { Events } from '../services/events.service';
 
 @Component({
   selector: 'app-product-sort',

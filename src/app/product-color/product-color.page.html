@@ -1,8 +1,9 @@
 <ion-content class="content-color">
     <ion-item class="header-item" lines="none">
-        <ion-icon slot="end" name="close" (click)="dismiss()"></ion-icon>
+      <h2 style="color: white">Select Colors:</h2>
+        <ion-icon slot="end" name="close" (click)="dismiss()"  color="light"></ion-icon>
     </ion-item>
-    <h2>Select Colors:</h2>
+
     <ion-grid>
         <ion-row>
             <ion-col size="3" *ngFor="let item of sizeItems; let i=index" (click)="btnEnbDis(i)">

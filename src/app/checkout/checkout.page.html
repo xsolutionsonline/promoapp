@@ -13,7 +13,7 @@
     </ion-button>
   </ion-item>
   <ion-item lines="none" class="item-back">
-    <ion-icon slot="start" class="animated fadeIn" routerLink="/product-detail" routerDirection="backward"
+    <ion-icon slot="start" class="animated fadeIn" routerLink="/product-detail" routerDirection="back"
       src="assets/icon/back.svg">
     </ion-icon>
     <p class="animated fadeIn">{{headerText}}</p>
@@ -137,7 +137,7 @@
     </ion-card>
     <ion-item class="toggle-item" lines="none">
       <p>Billing Address Same as Shipping Address</p>
-      <ion-toggle (ionChange)=BillingToggleFun($event) mode="ios" slot="end" checked="{{billingToggle}}"></ion-toggle>
+      <ion-toggle (ionChange)=BillingToggleFun($event) mode="ios" slot="end" [checked]="billingToggle"></ion-toggle>
     </ion-item>
     <div *ngIf="visBilling">
       <ion-card class="billing-input-card animated fadeInLeft" *ngFor="let item of billingInput">
@@ -175,7 +175,7 @@
                       *ngFor="let subItem of item.upsShippingSubItems; let i=index" mode="ios" lines="none"
                       (click)="btnEnbDis(i)">
                       <p>{{subItem.name}}</p>
-                      <ion-radio mode="ios" slot="end" checked="{{subItem.selectItem}}"></ion-radio>
+                      <ion-radio mode="ios" slot="end" [value]="subItem"></ion-radio>
                     </ion-item>
                   </ion-radio-group>
                 </ion-card>
@@ -437,7 +437,7 @@
     </ion-button>
   </div>
   <div class="btn-div" *ngIf="visPaymentActive">
-    <ion-button class="animated fadeIn" shape="round" (click)="goNext('visLegalActive')" disabled="{{paymentBtn}}">
+    <ion-button class="animated fadeIn" shape="round" (click)="goNext('visLegalActive')" [disabled]="paymentBtn">
       <p>Next</p>
     </ion-button>
   </div>

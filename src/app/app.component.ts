@@ -1,10 +1,10 @@
 import { Component, ElementRef } from '@angular/core';
 
-import { Platform, Events, NavController, ModalController, ToastController } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { Platform, NavController, ModalController, ToastController } from '@ionic/angular';
+import { StatusBar, Style } from '@capacitor/status-bar';
 import { DataServiceService } from './services/data-service.service';
 import { SplashScreenPage } from './splash-screen/splash-screen.page';
+import { Events } from './services/events.service';
 
 @Component({
   selector: 'app-root',
@@ -46,7 +46,6 @@ export class AppComponent {
   ];
   constructor(
     private platform: Platform,
-    private statusBar: StatusBar,
     private events: Events,
     private elementRef: ElementRef,
     public service: DataServiceService,
@@ -71,7 +70,9 @@ export class AppComponent {
   }
   initializeApp() {
     this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
+      if (this.platform.is('capacitor')) {
+        StatusBar.setStyle({ style: Style.Default });
+      }
       //this.splashScreen.hide();
       this.SplashModal();
     });
@@ -175,7 +176,7 @@ export class AppComponent {
         message: 'About Us Clicked',
         duration: 2000
       });
-      toast.present();
+      await toast.present();
     }
     else if (val == 'privacy-policy') {
       //toast controller
@@ -183,7 +184,7 @@ export class AppComponent {
         message: 'Privacy Policy Clicked',
         duration: 2000
       });
-      toast.present();
+      await toast.present();
     }
     else if (val == 'refund-policy') {
       //toast controller
@@ -191,7 +192,7 @@ export class AppComponent {
         message: 'Refund Policy Clicked',
         duration: 2000
       });
-      toast.present();
+      await toast.present();
     }
     else if (val == 'term-services') {
       //toast controller
@@ -199,7 +200,7 @@ export class AppComponent {
         message: 'Term & Services Clicked',
         duration: 2000
       });
-      toast.present();
+      await toast.present();
     }
     else if (val == 'share') {
       //toast controller
@@ -207,7 +208,7 @@ export class AppComponent {
         message: 'Share Clicked',
         duration: 2000
       });
-      toast.present();
+      await toast.present();
     }
     else if (val == 'settings') {
       //toast controller
@@ -215,7 +216,7 @@ export class AppComponent {
         message: 'Settings Clicked',
         duration: 2000
       });
-      toast.present();
+      await toast.present();
     }
   }
   updateProfile() {
