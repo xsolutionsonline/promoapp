@@ -1,214 +1,71 @@
 <ion-content class="home-content">
-  <div style='filter:var(--my-var)'>
-    <ion-item lines="none">
+  <div [style.filter]="divBlur">
+    <ion-item lines="none" class="header-toolbar">
       <ion-menu-button class="menu-btn" slot="start">
         <ion-icon src="assets/icon/menu.svg"></ion-icon>
       </ion-menu-button>
-      <ion-searchbar name="search" placeholder="search">
-      </ion-searchbar>
-      <ion-button shape="round" slot="end" routerLink="/cart" routerDirection="forward">
-        <ion-badge class="home-badge">
-          0
-        </ion-badge>
+      <ion-searchbar name="search" placeholder="search"></ion-searchbar>
+      <ion-button shape="round" slot="end" (click)="toggleView()">
+        <ion-icon [name]="isGrid ? 'list' : 'grid'"></ion-icon>
+      </ion-button>
+      <ion-button shape="round" slot="end" routerLink="/cart">
+        <ion-badge class="home-badge">0</ion-badge>
         <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
       </ion-button>
     </ion-item>
 
-    <!-- for banner -->
-    <div class="horizontal-scroll-container animated fadeIn">
-      <div class="scroll-item" *ngFor="let slide of slides" (click)="goToShop(slide)">
-        <ion-card>
-          <ion-thumbnail>
-            <img [src]="slide"/>
-          </ion-thumbnail>
-        </ion-card>
-      </div>
-    </div>
+    <ng-container *ngTemplateOutlet="productSection; context: { title: 'Featured Products', items: featuredItems, icon: '🌟' }"></ng-container>
+    <ng-container *ngTemplateOutlet="productSection; context: { title: 'New Products', items: newItems, icon: '🔔' }"></ng-container>
+    <ng-container *ngTemplateOutlet="productSection; context: { title: 'On Sale', items: saleItems, icon: '🎁' }"></ng-container>
 
-    <h2>🐦‍🔥 Featured Products</h2>
-    <!-- for products slider -->
-    <div class="horizontal-scroll-container slides-featured">
-      <div class="scroll-item" *ngFor="let item of featuredItems" (click)="goToProductDetail(item)">
-        <ion-grid class="grid-featured">
-          <ion-row>
-            <ion-col size="9">
+    <ng-template #productSection let-title="title" let-items="items" let-icon="icon">
+      <h2>{{icon}} {{title}}</h2>
+      <div class="horizontal-scroll-container" [class.grid-view]="isGrid">
+        <div class="scroll-item" *ngFor="let item of items" (click)="goToProductDetail(item)">
+          <div class="product-card-inner">
+            <ion-grid class="grid-featured">
               <ion-row>
-                <ion-col size="4">
-                  <div *ngIf="item.featured" class="featured">
-                    Featured
+                <ion-col size="12" class="ion-no-padding">
+                  <div class="badge-container">
+                    <span *ngIf="item.featured" class="badge featured-tag">Featured</span>
+                    <span *ngIf="item.new" class="badge new-tag">New</span>
+                    <span *ngIf="item.sale" class="badge sale-tag">On Sale</span>
                   </div>
-                </ion-col>
-                <ion-col size="4">
-                  <div *ngIf="item.new" class="new">
-                    New
-                  </div>
-                </ion-col>
-                <ion-col size="4">
-                  <div *ngIf="item.sale" class="sale">
-                    On Sale
-                  </div>
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col size="12">
                   <h3>{{item.text}}</h3>
                 </ion-col>
               </ion-row>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col size="2.5">
-              <p class="para-price-del"><del>${{item.dPrice}}</del></p>
-            </ion-col>
-            <ion-col size="2.5">
-              <p class="para-price">${{item.price}}</p>
-            </ion-col>
-            <ion-col size="3" class="col-heart">
-              <ion-icon *ngIf="!item.heartVis" (click)="heart(item); $event.stopPropagation()" class="col-heart-empty" name="heart"></ion-icon>
-              <ion-icon *ngIf="item.heartVis" (click)="heart(item); $event.stopPropagation()" class="col-heart-filled" name="heart"></ion-icon>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-        <ion-img class="swipe-slider-img animated fadeInRight" [src]="item.img">
-        </ion-img>
+              <ion-row class="ion-align-items-center">
+                <ion-col size="8" class="price-col">
+                  <span class="para-price-del"><del>${{item.dPrice}}</del></span>
+                  <span class="para-price">${{item.price}}</span>
+                </ion-col>
+                <ion-col size="4" class="col-heart">
+                  <ion-icon [name]="item.heartVis ? 'heart' : 'heart-outline'"
+                            [class.heart-filled]="item.heartVis"
+                            (click)="heart(item); $event.stopPropagation()">
+                  </ion-icon>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+            <ion-img class="swipe-slider-img" [src]="item.img"></ion-img>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <!-- new collection -->
-    <h2>🚨 New Products</h2>
-    <!-- for products slider -->
-    <div class="horizontal-scroll-container slides-featured">
-      <div class="scroll-item" *ngFor="let item of newItems" routerLink="/product-detail" routerDirection="forward">
-        <ion-grid class="grid-featured">
-          <ion-row>
-            <ion-col size="9">
-              <ion-row>
-                <ion-col size="4">
-                  <div *ngIf="item.new" class="new-collection">
-                    New
-                  </div>
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col size="12">
-                  <h3>{{item.text}}</h3>
-                </ion-col>
-              </ion-row>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col size="2.5">
-              <p class="para-price-del"><del>${{item.dPrice}}</del></p>
-            </ion-col>
-            <ion-col size="2.5">
-              <p class="para-price">${{item.price}}</p>
-            </ion-col>
-            <ion-col size="3" class="col-heart">
-              <ion-icon *ngIf="!item.heartVis" (click)="heart(item); $event.stopPropagation()" class="col-heart-empty" name="heart"></ion-icon>
-              <ion-icon *ngIf="item.heartVis" (click)="heart(item); $event.stopPropagation()" class="col-heart-filled" name="heart"></ion-icon>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-        <ion-img class="swipe-slider-img animated fadeInRight" [src]="item.img">
-        </ion-img>
-      </div>
-    </div>
-
-    <!-- On Sale items -->
-    <h2>🎁 On Sale</h2>
-    <!-- for products slider -->
-    <div class="horizontal-scroll-container slides-featured">
-      <div class="scroll-item" *ngFor="let item of saleItems" routerLink="/product-detail" routerDirection="forward">
-        <ion-grid class="grid-featured">
-          <ion-row>
-            <ion-col size="9">
-              <ion-row>
-                <ion-col size="4">
-                  <div *ngIf="item.sale" class="sale-collection">
-                    On Sale
-                  </div>
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col size="12">
-                  <h3>{{item.text}}</h3>
-                </ion-col>
-              </ion-row>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col size="2.5" class="col-price">
-              <p class="para-price-del"><del>${{item.dPrice}}</del></p>
-            </ion-col>
-            <ion-col size="2.5">
-              <p class="para-price">${{item.price}}</p>
-            </ion-col>
-            <ion-col size="3" class="col-heart">
-              <ion-icon *ngIf="!item.heartVis" (click)="heart(item); $event.stopPropagation()" class="col-heart-empty" name="heart"></ion-icon>
-              <ion-icon *ngIf="item.heartVis" (click)="heart(item); $event.stopPropagation()" class="col-heart-filled" name="heart"></ion-icon>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-        <ion-img class="swipe-slider-img animated fadeInRight" [src]="item.img">
-        </ion-img>
-      </div>
-    </div>
+    </ng-template>
 
     <div class="div-category">
       <h1>Popular Categories</h1>
       <div class="div-line"></div>
+      <ion-grid>
+        <ion-row *ngFor="let item of categoryItems; let i = index">
+          <ion-col class="category-col">
+            <div class="category-wrapper" (click)="goToShop(i)">
+              <ion-img [src]="item.img" class="category-img"></ion-img>
+              <h2 class="category-text">{{item.text}}</h2>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </div>
-    <!-- category items -->
-    <ion-grid>
-      <ion-row *ngFor="let item of categoryItems; let i = index">
-        <ion-col class="category-col">
-          <ion-thumbnail class="animated fadeIn">
-            <ion-img class="category-img" (click)="goToShop(i)" [src]="item.img">
-            </ion-img>
-          </ion-thumbnail>
-          <h2 class="category-text">{{item.text}}</h2>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-    <!-- subscribe content -->
-    <ion-grid class="ion-no-padding">
-      <ion-row>
-        <div class="div-category">
-          <h1 class="subcribe-text">Subcribe to Our Newsletters</h1>
-          <div class="div-line"></div>
-          <div class="div-item">
-            <ion-item lines="none" class="item-input">
-              <ion-input shape="round" placeholder="Your Email Address"></ion-input>
-              <ion-button shape="round" (click)="subscribeAlert()">Subscribe</ion-button>
-            </ion-item>
-          </div>
-          <p class="email-para">By Entering Your Email You Agree Our Terms and Service & Privacy Policy.</p>
-          <ion-grid class="ion-no-padding">
-            <ion-row>
-              <ion-col size="4.7" class="col-follow">
-                <h2 class="follow-text">Follow us On</h2>
-              </ion-col>
-              <ion-col size="1" class="ion-align-self-center col-fb">
-                <ion-img (click)="goToFb()" src="assets/images/other/fb.png">
-                </ion-img>
-              </ion-col>
-              <ion-col size="1" class="ion-align-self-center">
-                <ion-img (click)="goToInsta()" src="assets/images/other/insta.png">
-                </ion-img>
-              </ion-col>
-              <ion-col size="1" class="ion-align-self-center">
-                <ion-img (click)="goToLin()" src="assets/images/other/lin.png">
-                </ion-img>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-                <p class="company-para">© 2019 Company Name All Rights Reserved</p>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </div>
-      </ion-row>
-    </ion-grid>
   </div>
 </ion-content>

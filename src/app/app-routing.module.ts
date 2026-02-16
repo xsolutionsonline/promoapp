@@ -126,6 +126,14 @@ const routes: Routes = [
   {
     path: 'test',
     loadChildren: () => import('./test/test.module').then(m => m.TestPageModule)
+  },
+  {
+    path: 'settings',
+    loadChildren: () => import('./settings/settings.module').then(m => m.SettingsPageModule)
+  },
+  {
+    path: 'create-product',
+    loadChildren: () => import('./settings/create-product/create-product.module').then(m => m.CreateProductPageModule)
   }
 ];
 

@@ -81,6 +81,7 @@ export class AppComponent {
     console.log("splash modal fun");
     let modal = await this.modalCtrl.create({
       component: SplashScreenPage,
+      cssClass: 'transparent-modal', // Add this class
       componentProps: {
         'hideGuestLogin': true
       }
@@ -148,8 +149,8 @@ export class AppComponent {
       this.menuToggle = true;
     }
     else if (i == 10) {
-      // this.navCtrl.navigateForward("settings");
-      this.toastFun('settings');
+      this.navCtrl.navigateForward("settings");
+      //this.toastFun('settings');
       this.menuToggle = false;
     }
     else if (i == 11) {

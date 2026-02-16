@@ -5,6 +5,7 @@ import { Browser } from '@capacitor/browser';
 import { Events } from '../services/events.service';
 import { DataService } from '../services/data.service';
 import { Router, NavigationExtras } from '@angular/router';
+import { Firestore, collection, query, where, collectionData } from '@angular/fire/firestore';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -21,6 +22,7 @@ export class HomePage {
   public featuredItems = [];
   public newItems = [];
   public saleItems = [];
+  public isGrid = false; // Default to list view (1 column)
 
   constructor(private elementRef: ElementRef,
     private modalCtrl: ModalController,
@@ -28,7 +30,8 @@ export class HomePage {
     private navCtrl: NavController,
     private toastController: ToastController,
     private dataService: DataService,
-    private router: Router
+    private router: Router,
+    private firestore: Firestore
   ) {
     this.events.publish('tabActive', true);
 
@@ -44,9 +47,27 @@ export class HomePage {
   loadData() {
     this.slides = this.dataService.getSlides();
     this.categoryItems = this.dataService.getCategoryItems();
-    this.featuredItems = this.dataService.getFeaturedItems();
-    this.newItems = this.dataService.getNewItems();
-    this.saleItems = this.dataService.getSaleItems();
+
+    const productsRef = collection(this.firestore, 'products');
+
+    const featuredQuery = query(productsRef, where('featured', '==', true));
+    collectionData(featuredQuery, { idField: 'id' }).subscribe((data: any[]) => {
+      this.featuredItems = data;
+    });
+
+    const newItemsQuery = query(productsRef, where('new', '==', true));
+    collectionData(newItemsQuery, { idField: 'id' }).subscribe((data: any[]) => {
+      this.newItems = data;
+    });
+
+    const saleItemsQuery = query(productsRef, where('sale', '==', true));
+    collectionData(saleItemsQuery, { idField: 'id' }).subscribe((data: any[]) => {
+      this.saleItems = data;
+    });
+  }
+
+  toggleView() {
+    this.isGrid = !this.isGrid;
   }
 
   async heart(item) {

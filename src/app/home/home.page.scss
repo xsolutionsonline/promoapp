@@ -1,349 +1,133 @@
 .home-content {
   --background: #f3edea !important;
-  filter: var(--my-var);
-  ion-item {
-    position: absolute;
-    top: 0;
-    z-index: 999;
-    width: 100%;
-    --background: transparent;
-    ion-searchbar {
-      margin-top: 20px;
-      height: 46px;
-      opacity: 0.5;
-      --placeholder-opacity: 1;
-      --placeholder-color: #B446FF;
-    }
-    ion-button,
-    ion-menu-button {
-      height: 42px;
-      margin-top: auto;
-      --background: #1A2363;
-      width: 55px;
-      margin-left: 0;
-      margin-bottom: 0;
-      --box-shadow: none;
-      ion-badge {
-        position: absolute;
-        top: 3px;
-        right: 13px;
-        border-radius: 20px;
-        width: 12px;
-        height: 12px;
-        font-size: 8px;
-        --background: white;
-        --color: #81624e;
-      }
-    }
-    .menu-btn {
-      margin-right: 0;
-    }
+
+  .header-toolbar {
+    --background: #1A2363;
+    --color: white;
+    padding: 5px;
+    ion-searchbar { --background: white; border-radius: 20px; }
   }
 
-  /* Horizontal Scroll Container Styles */
+  /* Contenedor Base */
   .horizontal-scroll-container {
     display: flex;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-    padding-bottom: 10px; /* Space for scrollbar if visible */
+    padding: 0 16px 20px 16px;
+    gap: 12px;
+    &::-webkit-scrollbar { display: none; }
 
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    &::-webkit-scrollbar {
-      display: none;
-    }
-    /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-
-    &.slides-featured {
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-      padding-left: 16px; /* Initial padding */
-    }
-  }
-
-  .scroll-item {
-    flex: 0 0 auto;
-    width: 90%; /* Adjust width as needed, similar to slidesPerView */
-    scroll-snap-align: start;
-    margin-right: 10px;
-    position: relative;
-
-    ion-card {
-      margin: 0;
-      border-radius: 0;
-      ion-thumbnail {
-        width: 100%;
-        height: 70vw;
-        img {
-          object-fit: cover;
-          width: 100%;
-          height: 100%;
+    /* --- VISTA LISTA (Scroll Horizontal) --- */
+    &:not(.grid-view) {
+      .scroll-item {
+        flex: 0 0 85%;
+        .grid-featured { margin-right: 60px; min-height: 130px; }
+        .swipe-slider-img {
+          position: absolute;
+          right: -10px;
+          top: 10px;
+          width: 140px;
+          z-index: 10;
         }
       }
     }
 
-    /* Styles specific to featured items inside scroll-item */
-    ion-grid.grid-featured {
+    /* --- VISTA GRID (Dos Columnas) --- */
+    &.grid-view {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      overflow-x: hidden;
+
+      .scroll-item {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+
+        .grid-featured {
+          margin-right: 0;
+          min-height: 160px;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          padding-bottom: 40px; // Espacio para que la imagen suba
+        }
+
+        .swipe-slider-img {
+          position: relative; // Deja de ser absoluto
+          width: 80%;
+          margin: -50px auto 0 auto; // Sube la imagen sobre el fondo gris
+          order: 2;
+          z-index: 11;
+        }
+
+        h3 { font-size: 12px; height: 3em; }
+        .badge-container { flex-direction: column; align-items: flex-start; }
+      }
+    }
+  }
+
+  /* Estilos de la Tarjeta */
+  .scroll-item {
+    position: relative;
+    .grid-featured {
       background: #f9f7f6;
-      padding-top: 0;
-      padding-left: 0;
-      border-radius: 10px;
-      margin-right: 50px; /* Space for the image sticking out */
-      min-height: 130px; /* Ensure consistent height */
+      border-radius: 12px;
+      padding: 12px;
 
-      .sale,
-      .featured,
-      .new {
-        font-size: 8px;
-        color: white;
+      h3 {
         font-family: "roboto-regular";
-        padding: 4px;
-        width: 90%;
-        border-radius: 5px;
-        text-align: center;
-        margin-top: 5px;
+        margin: 8px 0;
+        color: #333;
       }
-      .featured {
-        background: #1A2363;
-      }
-      .sale {
-        background: #b90000;
-        margin-left: -10px;
-      }
-      .new {
-        background: #B446FF;
-        margin-left: -5px;
-      }
-      .new-collection,
-      .sale-collection {
-        font-size: 8px;
-        color: white;
-        font-family: "roboto-regular";
-        padding: 4px;
-        width: 119%;
-        border-radius: 5px;
-        text-align: center;
-        margin-top: 5px;
-      }
-      .new-collection {
-        background: #B446FF;
-        margin-left: 0 !important;
-      }
-      .sale-collection {
-        background: #b90000;
-        margin-left: 0 !important;
-      }
-    }
-
-    .swipe-slider-img {
-      position: absolute;
-      right: -7px;
-      width: 150px;
-      top: 10px; /* Adjusted top position */
-      z-index: 10;
     }
   }
 
+  /* Badges */
+  .badge {
+    font-size: 9px;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-right: 4px;
+    display: inline-block;
+  }
+  .featured-tag { background: #1A2363; }
+  .new-tag { background: #B446FF; }
+  .sale-tag { background: #b90000; }
 
-  h2 {
-    font-size: 18px;
-    font-family: "roboto-medium";
-    padding-left: 16px;
-    margin-top: 20px !important;
-    margin-bottom: 10px;
-  }
-  .follow-text {
-    font-size: 20px;
-    border-right: solid 2px #707070;
-    padding-left: 11px;
-  }
-  h3 {
-    font-size: 14px;
-    font-family: "roboto-regular";
-    text-align: left;
-    margin-top: 10px;
-    margin-bottom: 16px;
-    height: 3em;
-    overflow: hidden;
+  /* Precios y Corazón */
+  .price-col {
+    display: flex;
+    flex-direction: column;
+    .para-price { font-weight: bold; font-size: 14px; }
+    .para-price-del { font-size: 11px; color: #888; }
   }
 
-  p {
-    font-size: 14px;
-  }
-  .para-price {
-    font-family: "roboto-medium";
-    margin-top: 0;
-    text-align: left;
-  }
-  .para-price-del {
-    font-family: "roboto-regular";
-    margin-top: 0;
-  }
-  .col-price {
-    text-align: left;
-  }
   .col-heart {
     text-align: right;
-    padding-right: 0;
-    .col-heart-empty {
-      color: #c5c2c2;
-    }
-    .col-heart-filled {
-      color: #B446FF;
-    }
+    ion-icon { font-size: 22px; color: #c5c2c2; }
+    .heart-filled { color: #B446FF; }
   }
-  .div-line {
-    width: 43%;
-    border-top: solid 1px #707070;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .div-category {
-    background: #eee3df;
-    padding-bottom: calc(19px + var(--ion-safe-area-bottom, 0px));
-    width: 100%;
-    h1,
-    .subcribe-text {
-      font-family: "century-school-back-bold";
-      font-size: 24px;
-      text-align: center;
-      margin-top: 15px;
-      padding-top: 10px;
-      margin-bottom: 16px;
-    }
-    .subcribe-text {
-      font-family: "roboto-regular";
-      font-size: 20px;
-    }
-    .div-line {
-      width: 43%;
-      border-top: solid 1px #707070;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    //for subcribe content
-    .div-item {
-      margin-left: 16px;
-      margin-right: 16px;
-      background: white;
-      border-radius: 40px !important;
-      .item-input {
-        position: relative;
-        margin-left: 16px;
-        margin-right: 16px;
-        margin-top: 20px;
-        ion-input {
-          --background: white;
-          margin-right: 16px;
-          --padding-start: 0;
-        }
-        ion-button {
-          width: 32%;
-          position: absolute;
-          bottom: 0;
-          right: 16px;
-          z-index: 99;
-          margin: 0;
-          height: 48px;
-          text-transform: capitalize;
-          --box-shadow: none !important;
-        }
-      }
-    }
-    .email-para {
-      font-family: "roboto-regular";
-      font-size: 12px;
-      padding-left: 16px;
-      padding-right: 11px;
-    }
-  }
-  .category-col {
-    &:last-child {
-      padding-bottom: 10px !important;
-    }
-    padding: 10px 16px 20px 16px;
-    ion-thumbnail {
-      height: 152px;
-      width: 100%;
-      --border-radius: 30px;
-      .category-img {
-        margin: 0;
-        filter: contrast(0.7);
-        object-fit: cover;
-        width: 100%;
-        height: 100%;
-        border-radius: 30px;
-      }
-    }
-    h2 {
-      position: absolute;
-      bottom: 30px;
-      padding-left: 20px;
-      font-family: "century-school-back-regular" !important;
-      font-size: 20px !important;
-      color: white;
-      background: #1A2363;
-      padding-right: 20px;
-      border-radius: 0 10px 10px 0;
-    }
-  }
-  .company-para {
-    font-family: "roboto-regular";
-    font-size: 12px;
-    padding-left: 11px;
-    margin-top: 0;
-  }
-  .main-popup {
-    position: absolute;
-    z-index: 999;
 
-    .inner-div {
-      position: fixed;
-      top: 25%;
-      bottom: 50%;
-      left: 7%;
-      background: white;
-      width: 343px;
-      height: 378px;
-      border-radius: 25px;
+  /* Categorías */
+  .category-col {
+    padding: 10px 16px;
+    .category-wrapper {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      height: 150px;
+      .category-img { object-fit: cover; width: 100%; height: 100%; filter: contrast(0.8); }
+      .category-text {
+        position: absolute;
+        bottom: 15px;
+        left: 0;
+        background: #1A2363;
+        color: white;
+        padding: 5px 20px;
+        border-radius: 0 10px 10px 0;
+        margin: 0;
+        font-size: 18px;
+      }
     }
-  }
-  .slide-btn {
-    width: 353.571px;
-    height: auto;
-    .shop-btn {
-      margin-top: auto;
-      margin-bottom: auto;
-      margin-left: 15%;
-      --color: #81624e;
-      --color-focused: #81624e;
-      --color-activated: #81624e;
-    }
-  }
-  .col-fb {
-    margin-left: 4vw;
-  }
-  //for searchbar
-  .searchbar-input {
-    border-radius: 20px !important;
-    box-shadow: none !important;
-  }
-  .searchbar-search-icon.sc-ion-searchbar-md {
-    position: absolute !important;
-    background: url("../../assets/icon/search.svg") no-repeat !important;
-    display: inline-table;
-    color: transparent !important;
-    top: 10px;
-  }
-  .searchbar-input.sc-ion-searchbar-md {
-    padding-left: unset;
-    padding-right: unset;
-    -webkit-padding-start: 55px;
-    padding-inline-start: 55px;
-    -webkit-padding-end: 55px;
-    padding-inline-end: 55px;
-    text-transform: capitalize;
   }
 }

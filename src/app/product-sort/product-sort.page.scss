@@ -1,17 +1,31 @@
 .content-sort {
+  --background: white !important;
+
+  /* Safe area padding */
+  --padding-top: var(--ion-safe-area-top);
+  --padding-bottom: var(--ion-safe-area-bottom);
+  --padding-start: var(--ion-safe-area-left);
+  --padding-end: var(--ion-safe-area-right);
+
   .header-item {
     --background: #1A2363;
     position: absolute;
-    top: 0;
+    top: var(--ion-safe-area-top, 0);
     width: 100%;
+    z-index: 10;
   }
-  --background: white !important;
+
   h2 {
     font-size: 20px;
     font-family: "roboto-regular";
     margin-top: 18px;
     margin-left: 20px;
   }
+
+  ion-list {
+    margin-top: 60px; /* Space for header */
+  }
+
   .radio-item {
     &:first-child {
       --padding-start: 30px;

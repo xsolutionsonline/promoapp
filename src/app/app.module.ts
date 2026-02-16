@@ -17,6 +17,14 @@ import { BlankModalPageModule } from './blank-modal/blank-modal.module';
 // for product detail modal
 import { ProductDetailModalPageModule } from './product-detail-modal/product-detail-modal.module';
 import { SplashScreenPageModule } from './splash-screen/splash-screen.module';
+
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import {environment} from "../environments/environment";
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
+import { AngularFireModule } from '@angular/fire/compat';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -30,10 +38,15 @@ import { SplashScreenPageModule } from './splash-screen/splash-screen.module';
     SplashScreenPageModule,
     BrowserModule,
     IonicModule.forRoot(),
-    AppRoutingModule
+    AppRoutingModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireStorageModule
   ],
   providers: [
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, },
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideFirestore(() => getFirestore()),
+    provideAuth(() => getAuth()),
   ],
   bootstrap: [AppComponent]
 })

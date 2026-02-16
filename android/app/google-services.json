@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "744885479294",
+    "project_id": "bigoff-e8e4d",
+    "storage_bucket": "bigoff-e8e4d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:744885479294:android:d06ccf8659e4ea2c0f752f",
+        "android_client_info": {
+          "package_name": "es.com.bigoffapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3lkhbAgDo-5KzYyo5V-R1uliCTc3bFdE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

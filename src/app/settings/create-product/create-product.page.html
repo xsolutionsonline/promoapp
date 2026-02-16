@@ -1,0 +1,152 @@
+<ion-content class="create-product-content">
+  <ion-item class="header-item" lines="none">
+    <ion-menu-button class="menu-btn" slot="start">
+      <ion-icon src="assets/icon/menu.svg"></ion-icon>
+    </ion-menu-button>
+    <h2>Create Product</h2>
+  </ion-item>
+
+  <ion-card class="card-header animated fadeIn">
+    <ion-thumbnail>
+      <ion-img src="assets/images/other/category-header.jpg">
+      </ion-img>
+    </ion-thumbnail>
+  </ion-card>
+
+  <form [formGroup]="productForm" (ngSubmit)="validateAndSave()">
+    <ion-list class="create-product-list">
+
+      <app-image-upload (imageUploaded)="onImageUploaded($event)"></app-image-upload>
+
+      <div class="uploaded-images-list">
+        <div class="image-item" *ngFor="let slide of product.imgSlides; let i = index">
+          <ion-thumbnail>
+            <img [src]="slide" />
+          </ion-thumbnail>
+          <ion-button fill="clear" color="danger" class="delete-btn" (click)="removeImgSlide(i)">
+            <ion-icon name="trash" slot="icon-only"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+
+      <ion-item lines="none">
+        <ion-label position="floating">Name <span class="required-asterisk">*</span></ion-label>
+        <ion-input formControlName="title"></ion-input>
+      </ion-item>
+      <div *ngIf="f['title'].invalid && (f['title'].dirty || f['title'].touched)" class="error-message">
+        Name is required.
+      </div>
+
+      <ion-item lines="none">
+        <ion-label position="floating">Short Description <span class="required-asterisk">*</span></ion-label>
+        <ion-input formControlName="text"></ion-input>
+      </ion-item>
+      <div *ngIf="f['text'].invalid && (f['text'].dirty || f['text'].touched)" class="error-message">
+        Short description is required.
+      </div>
+
+      <ion-item lines="none">
+        <ion-label position="floating">Description <span class="required-asterisk">*</span></ion-label>
+        <ion-textarea formControlName="description"></ion-textarea>
+      </ion-item>
+      <div *ngIf="f['description'].invalid && (f['description'].dirty || f['description'].touched)" class="error-message">
+        Description is required.
+      </div>
+
+      <ion-item lines="none">
+        <ion-label position="floating">Price <span class="required-asterisk">*</span></ion-label>
+        <ion-input type="number" formControlName="price"></ion-input>
+      </ion-item>
+      <div *ngIf="f['price'].invalid && (f['price'].dirty || f['price'].touched)" class="error-message">
+        Price is required.
+      </div>
+
+      <ion-item lines="none">
+        <ion-label position="floating">Discount Price (Optional)</ion-label>
+        <ion-input type="number" formControlName="dPrice"></ion-input>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-label>Tags</ion-label>
+        <ion-select [multiple]="true" formControlName="tags">
+          <ion-select-option value="featured">Featured</ion-select-option>
+          <ion-select-option value="new">New</ion-select-option>
+          <ion-select-option value="sale">Sale</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-label position="floating">Category Name <span class="required-asterisk">*</span></ion-label>
+        <ion-input formControlName="categoryName"></ion-input>
+      </ion-item>
+      <div *ngIf="f['categoryName'].invalid && (f['categoryName'].dirty || f['categoryName'].touched)" class="error-message">
+        Category name is required.
+      </div>
+
+      <ion-item-divider>
+        <ion-label>Variants (Color - Size - Stock)</ion-label>
+        <ion-button slot="end" size="small" (click)="openVariantModal()">Add Variant</ion-button>
+      </ion-item-divider>
+
+      <div formArrayName="variants">
+        <ion-item *ngFor="let variant of variants.controls; let i = index" [formGroupName]="i">
+          <div slot="start" *ngIf="variant.get('colorCode').value" [style.background]="variant.get('colorCode').value" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ccc;"></div>
+          <ion-label>
+            <h2>Color: {{ variant.get('color').value || 'N/A' }}</h2>
+            <p>Size: {{ variant.get('size').value || 'N/A' }}</p>
+            <p>Stock: {{ variant.get('stock').value }}</p>
+          </ion-label>
+          <ion-button fill="clear" color="danger" slot="end" (click)="removeVariant(i)">
+            <ion-icon name="trash" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </div>
+      <div *ngIf="variants.length === 0" class="error-message ion-padding-start">
+        At least one variant is required.
+      </div>
+
+      <ion-button expand="block" class="ion-margin-top" type="submit">Create Product</ion-button>
+    </ion-list>
+  </form>
+
+  <ion-modal [isOpen]="isVariantModalOpen" (didDismiss)="closeVariantModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Add Variant</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeVariantModal()">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <form [formGroup]="variantForm">
+          <ion-item lines="none">
+            <ion-label position="floating">Color (Optional)</ion-label>
+            <ion-select formControlName="color" interface="popover">
+              <ion-select-option *ngFor="let color of availableColors" [value]="color.name">
+                {{ color.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item lines="none">
+            <ion-label position="floating">Size (Optional)</ion-label>
+            <ion-select formControlName="size">
+              <ion-select-option *ngFor="let size of availableSizes" [value]="size">
+                {{ size }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item lines="none">
+            <ion-label position="floating">Stock <span class="required-asterisk">*</span></ion-label>
+            <ion-input type="number" formControlName="stock"></ion-input>
+          </ion-item>
+
+          <ion-button expand="block" class="ion-margin-top" (click)="addVariantFromModal()" [disabled]="variantForm.invalid">Add</ion-button>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

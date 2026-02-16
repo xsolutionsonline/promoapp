@@ -4,5 +4,11 @@
     "capacitor": {}
   },
   "type": "angular",
-  "id": "7adc3db9"
+  "id": "7adc3db9",
+  "proxies": [
+    {
+      "path": "/v0/b/bigoff-d5e37.firebasestorage.app/o",
+      "proxyUrl": "https://firebasestorage.googleapis.com/v0/b/bigoff-d5e37.firebasestorage.app/o"
+    }
+  ]
 }

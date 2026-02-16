@@ -1,0 +1,26 @@
+<ion-content class="settings-content">
+  <ion-item class="header-item" lines="none">
+    <ion-menu-button class="menu-btn" slot="start">
+      <ion-icon src="assets/icon/menu.svg"></ion-icon>
+    </ion-menu-button>
+    <h2>Settings</h2>
+   </ion-item>
+
+
+  <ion-card class="card-header animated fadeIn">
+    <ion-thumbnail>
+      <ion-img src="assets/images/other/category-header.jpg">
+      </ion-img>
+    </ion-thumbnail>
+  </ion-card>
+
+  <ion-list class="settings-list">
+    <ion-item *ngFor="let config of configurations$ | async" (click)="onItemClick(config)" button lines="none">
+      <ion-label>
+        <h2>{{ config.name }}</h2>
+        <p>Position: {{ config.position }}</p>
+      </ion-label>
+      <ion-toggle [checked]="config.status" (ionChange)="onStatusChange($event, config)" (click)="$event.stopPropagation()" color="primary"></ion-toggle>
+    </ion-item>
+  </ion-list>
+</ion-content>
