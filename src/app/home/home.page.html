@@ -31,13 +31,13 @@
                     <span *ngIf="item.new" class="badge new-tag">New</span>
                     <span *ngIf="item.sale" class="badge sale-tag">On Sale</span>
                   </div>
-                  <h3>{{item.text}}</h3>
+                  <p>{{item.text}}</p>
                 </ion-col>
               </ion-row>
               <ion-row class="ion-align-items-center">
                 <ion-col size="8" class="price-col">
-                  <span class="para-price-del"><del>${{item.dPrice}}</del></span>
-                  <span class="para-price">${{item.price}}</span>
+                  <span class="para-price-del"><del>${{item.price}}</del></span>
+                  <span class="para-price">${{item.dPrice}}</span>
                 </ion-col>
                 <ion-col size="4" class="col-heart">
                   <ion-icon [name]="item.heartVis ? 'heart' : 'heart-outline'"
@@ -61,7 +61,7 @@
           <ion-col class="category-col">
             <div class="category-wrapper" (click)="goToShop(i)">
               <ion-img [src]="item.img" class="category-img"></ion-img>
-              <h2 class="category-text">{{item.text}}</h2>
+              <p class="category-text">{{item.text}}</p>
             </div>
           </ion-col>
         </ion-row>
