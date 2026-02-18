@@ -1,12 +1,18 @@
 .content-product {
   --background: #f3edea !important;
-  filter: var(--my-var);
+  /* filter: var(--my-var);  <-- REMOVED: This was applying blur to the entire content including the modal */
 
   /* Ensure content respects safe areas */
   --padding-top: var(--ion-safe-area-top);
   --padding-bottom: calc(20px + var(--ion-safe-area-bottom));
   --padding-start: var(--ion-safe-area-left);
   --padding-end: var(--ion-safe-area-right);
+
+  /* Apply blur only to the background content, not the modal */
+  .blur-content {
+     filter: var(--my-var);
+     transition: filter 0.3s ease;
+  }
 
   ion-item {
     position: absolute;
@@ -182,6 +188,20 @@
     }
   }
 
+  /* Botón de Comprar */
+  .buy-btn {
+    --background: transparent; /* Fondo transparente */
+    --color: #1A2363; /* Color del icono */
+    --box-shadow: none; /* Quitamos la sombra por defecto del botón */
+    font-size: 24px; /* Icono más grande */
+    height: 40px;
+    width: 40px;
+    margin: 0; /* Centrado */
+
+    /* Sombra personalizada en la parte inferior */
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+  }
+
   .grid-tags {
     margin-left: 16px;
     margin-right: 16px;
@@ -314,6 +334,9 @@
     padding-top: var(--ion-safe-area-top); /* Respect top safe area */
     padding-bottom: var(--ion-safe-area-bottom); /* Respect bottom safe area */
 
+    /* Ensure modal itself is NOT blurred */
+    filter: none !important;
+
     .inner-div {
       background: white;
       width: 90%; /* Responsive width */
@@ -341,84 +364,83 @@
         margin-top: 0;
         margin-bottom: 10px;
       }
+
+      /* --- NEW MODERN COLOR SELECTOR STYLES --- */
       .grid-color {
         margin-left: 16px;
         margin-right: 16px;
-        .div-outer,
-        .div-select {
+
+        .color-wrapper {
           text-align: center;
-          .div-upper {
-            height: 30px;
+          cursor: pointer;
+          position: relative; /* For absolute positioning of tick */
+
+          .color-circle-container {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            border: 2px solid transparent; /* Default border */
+            transition: all 0.3s ease;
           }
-          .octagon-outer {
+
+          .color-circle {
             width: 40px;
             height: 40px;
-            margin-left: auto;
-            margin-right: auto;
-            .octagon-top {
-              border-bottom: solid 12px #1c197a;
-              border-left: solid 12px transparent;
-              border-right: solid 12px transparent;
-              height: 0;
-              width: 40px;
-            }
-            .octagon {
-              width: 40px;
-              height: 16px;
-              background: #1c197a;
-            }
-            .octagon-bottom {
-              border-top: solid 12px #1c197a;
-              border-left: solid 12px transparent;
-              border-right: solid 12px transparent;
-              height: 0;
-              width: 40px;
-            }
-            //for select
-            .octagon-select-top {
-              border-bottom: solid 12px #1c197a;
-              border-left: solid 12px transparent;
-              border-right: solid 12px transparent;
-              height: 0;
-              width: 40px;
-              opacity: 0.5;
-            }
-            .octagon-select {
-              width: 40px;
-              height: 16px;
-              background: #1c197a;
-              opacity: 0.5;
-            }
-            .octagon-select-bottom {
-              border-top: solid 12px #1c197a;
-              border-left: solid 12px transparent;
-              border-right: solid 12px transparent;
-              height: 0;
-              width: 40px;
-              opacity: 0.5;
-            }
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
+
           p {
             font-family: "roboto-regular";
-            font-size: 12px;
-            margin-top: 5px;
+            font-size: 11px;
+            margin-top: 8px;
             margin-bottom: 0;
+            color: #999;
+            letter-spacing: 0.5px;
           }
-        }
-        .div-select {
-          position: relative;
+
+          /* Selected State */
+          &.selected {
+            .color-circle-container {
+              border-color: #1A2363; /* Outer ring color when selected */
+              transform: scale(1.1);
+            }
+
+            p {
+              color: #1A2363;
+              font-weight: 600;
+            }
+          }
+
+          /* Checkmark Icon Style (Similar to Size) */
           .icon-tick {
             position: absolute;
-            top: 38px;
-            left: 0;
-            right: 0;
-            margin-left: auto;
-            margin-right: auto;
+            top: 5px;
+            left: 50%;
+            margin-left: 15px; /* Push to the right edge */
+
+            background: #B446FF;
             color: white;
-            font-size: 25px;
+            border-radius: 50%;
+            font-size: 12px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 10;
           }
         }
       }
+
       .header-size {
         font-family: "century-school-back-bold";
         font-size: 18px;
@@ -426,53 +448,86 @@
         margin-top: 10px;
         margin-bottom: 10px;
       }
+
+      /* --- NEW MODERN SIZE SELECTOR STYLES --- */
       .grid-size {
         margin-left: 16px;
         margin-right: 16px;
+
         .div-outer,
         .div-select {
           text-align: center;
-          .div-upper {
-            height: 30px;
-          }
+          position: relative;
+
           .div-inner {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: solid 1px #707070;
-            margin-left: auto;
-            margin-right: auto;
-            padding-top: 10px;
-            font-family: "roboto-regular";
-            font-size: 14px;
+            width: 50px;
+            height: 50px;
+            border-radius: 14px; /* Modern rounded corners */
+            background: #ffffff;
+            border: 1px solid #eaeaea;
+            margin: 0 auto;
+            padding-top: 0; /* Reset padding */
+            display: flex; /* Flexbox for centering text */
+            align-items: center;
+            justify-content: center;
+
+            font-family: "roboto-medium";
+            font-size: 16px;
+            color: #555;
+
+            /* Soft shadow for depth */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
           }
+
           p {
             font-family: "roboto-regular";
-            font-size: 12px;
-            margin-top: 5px;
+            font-size: 11px;
+            margin-top: 8px;
             margin-bottom: 0;
+            color: #999;
+            letter-spacing: 0.5px;
           }
         }
+
         .div-select {
-          position: relative;
           .div-inner {
-            background: #81624e;
+            /* Active state style */
+            background: #1A2363;
             color: white;
-            border: solid 1px #81624e;
-            opacity: 0.5;
+            border: none;
+            box-shadow: 0 8px 20px rgba(26, 35, 99, 0.35); /* Colored glow */
+            transform: translateY(-3px); /* Lift up */
+            opacity: 1;
           }
+
+          p {
+            color: #1A2363;
+            font-weight: 600;
+          }
+
           .icon-tick {
             position: absolute;
-            top: 38px;
-            left: 0;
-            right: 0;
-            margin-left: auto;
-            margin-right: auto;
+            /* Position relative to the column center */
+            top: -5px; /* Adjusted to be slightly above the top edge */
+            left: 50%;
+            margin-left: 15px; /* Push to the right edge of the 50px box */
+
+            background: #B446FF;
             color: white;
-            font-size: 25px;
+            border-radius: 50%;
+            font-size: 12px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 10;
           }
         }
       }
+
       .grid-quantity {
         margin-left: 16px;
         margin-right: 16px;

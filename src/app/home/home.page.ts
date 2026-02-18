@@ -1,11 +1,11 @@
-import { Component, ViewEncapsulation, ElementRef } from '@angular/core';
+import { Component, ViewEncapsulation, ElementRef, ViewChildren, QueryList, AfterViewInit, OnDestroy } from '@angular/core';
 import { HomeModelPage } from '../home-model/home-model.page';
 import { ModalController, NavController, ToastController } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
 import { Events } from '../services/events.service';
 import { DataService } from '../services/data.service';
 import { Router, NavigationExtras } from '@angular/router';
-import { Firestore, collection, query, where, collectionData } from '@angular/fire/firestore';
+import { Firestore, collection, query, where, collectionData, doc, updateDoc, orderBy } from '@angular/fire/firestore';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -14,7 +14,7 @@ import { Firestore, collection, query, where, collectionData } from '@angular/fi
   styleUrls: ['home.page.scss'],
   standalone: false,
 })
-export class HomePage {
+export class HomePage implements AfterViewInit, OnDestroy {
   public visiablePopup = false;
   public divBlur = ""
   public slides = [];
@@ -23,6 +23,9 @@ export class HomePage {
   public newItems = [];
   public saleItems = [];
   public isGrid = false; // Default to list view (1 column)
+
+  @ViewChildren('scrollContainer') scrollContainers: QueryList<ElementRef>;
+  private autoScrollInterval: any;
 
   constructor(private elementRef: ElementRef,
     private modalCtrl: ModalController,
@@ -46,7 +49,13 @@ export class HomePage {
 
   loadData() {
     this.slides = this.dataService.getSlides();
-    this.categoryItems = this.dataService.getCategoryItems();
+
+    // Load categories from Firestore
+    const categoriesRef = collection(this.firestore, 'category');
+    const categoriesQuery = query(categoriesRef, where('active', '==', true));
+    collectionData(categoriesQuery, { idField: 'id' }).subscribe((data: any[]) => {
+      this.categoryItems = data.sort((a, b) => (a.order || 0) - (b.order || 0));
+    });
 
     const productsRef = collection(this.firestore, 'products');
 
@@ -66,13 +75,78 @@ export class HomePage {
     });
   }
 
+  ngAfterViewInit() {
+    this.startAutoScroll();
+  }
+
+  ngOnDestroy() {
+    this.stopAutoScroll();
+  }
+
+  startAutoScroll() {
+    this.stopAutoScroll(); // Ensure no duplicate intervals
+    this.autoScrollInterval = setInterval(() => {
+      if (this.isGrid) return; // Don't scroll in grid view
+
+      if (this.scrollContainers) {
+        this.scrollContainers.forEach((containerRef) => {
+          const container = containerRef.nativeElement;
+          const scrollAmount = container.offsetWidth * 0.85; // Scroll by roughly one item width
+          const maxScrollLeft = container.scrollWidth - container.clientWidth;
+
+          // Check if we are close to the end (within a small tolerance)
+          if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
+             // If at the end, scroll back to start smoothly
+             container.scrollTo({ left: 0, behavior: 'smooth' });
+          } else {
+             // Otherwise scroll forward
+             container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+          }
+        });
+      }
+    }, 10000); // 10 seconds
+  }
+
+  stopAutoScroll() {
+    if (this.autoScrollInterval) {
+      clearInterval(this.autoScrollInterval);
+    }
+  }
+
   toggleView() {
     this.isGrid = !this.isGrid;
   }
 
   async heart(item) {
-    if (item.heartVis == true) {
-      item.heartVis = false;
+    const newHeartVis = !item.heartVis;
+    item.heartVis = newHeartVis;
+
+    // Update Firestore
+    if (item.id) {
+      const productDocRef = doc(this.firestore, `products/${item.id}`);
+      try {
+        await updateDoc(productDocRef, { heartVis: newHeartVis });
+      } catch (e) {
+        console.error('Error updating heartVis in Firestore', e);
+        // Revert local change if update fails
+        item.heartVis = !newHeartVis;
+        const toast = await this.toastController.create({
+          message: 'Failed to update wishlist status',
+          duration: 2000
+        });
+        toast.present();
+        return;
+      }
+    }
+
+    if (newHeartVis) {
+      //toast controller
+      const toast = await this.toastController.create({
+        message: 'Product Added To Wishlist',
+        duration: 1000
+      });
+      toast.present();
+    } else {
       //toast controller
       const toast = await this.toastController.create({
         message: 'Product Remove To Wishlist',
@@ -80,15 +154,14 @@ export class HomePage {
       });
       toast.present();
     }
-    else {
-      item.heartVis = true;
-      //toast controller
-      const toast = await this.toastController.create({
-        message: 'Product Added To Wishlist',
-        duration: 1000
-      });
-      toast.present();
-    }
+  }
+
+  async buyItem(item) {
+    const toast = await this.toastController.create({
+      message: 'Product added to cart',
+      duration: 1000
+    });
+    toast.present();
   }
 
   async subscribeAlert() {
@@ -113,7 +186,13 @@ export class HomePage {
     });
     this.visiablePopup = false;//for blur effect
     this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
+    this.startAutoScroll();
   }
+
+  ionViewWillLeave() {
+    this.stopAutoScroll();
+  }
+
   ngOnIt() {
     //value of blue from home modal
     this.events.subscribe('blurValue', (data) => {
@@ -130,20 +209,14 @@ export class HomePage {
   async goToLin() {
     await Browser.open({ url: 'https://www.linkedin.com/' });
   }
-  goToShop(i) {
-    if (i == 0) {
-      this.events.publish('CatId', "formal");
-      console.log(i);
-    }
-    else if (i == 1) {
-      this.events.publish('CatId', "causal");
-      console.log(i);
-    }
-    else if (i == 2) {
-      this.events.publish('CatId', "sport");
-      console.log(i);
-    }
-    this.navCtrl.navigateForward("category-detail");
+  goToShop(item) {
+    debugger;
+    const navigationExtras: NavigationExtras = {
+      state: {
+        category: item
+      }
+    };
+    this.router.navigate(['category-detail'], navigationExtras);
   }
 
   goToProductDetail(item) {

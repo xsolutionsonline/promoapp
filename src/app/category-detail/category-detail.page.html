@@ -19,7 +19,7 @@
     </ion-item>
     <ion-card class="card-header animated fadeIn">
       <ion-thumbnail>
-        <ion-img src="assets/images/other/category-header.jpg">
+        <ion-img src="assets/images/other/category-header-uno.png">
         </ion-img>
       </ion-thumbnail>
     </ion-card>
@@ -91,109 +91,41 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-    <!-- for product detail grid -->
-    <div *ngIf="visiableGrid">
-      <ion-grid class="grid-card ion-no-padding">
-        <ion-row>
-          <ion-col size="6" *ngFor="let product of categoryLoop" class="ion-no-padding">
-            <ion-card (click)="goToProductDetail(product)">
-              <ion-row class="card-row">
-                <ion-col *ngIf="product.featured" size="3.66" class="tag-col">
-                  <div class="featured">
-                    Featured
-                  </div>
-                </ion-col>
-                <ion-col *ngIf="product.new" size="3.66" class="tag-col">
-                  <div class="new">
-                    New
-                  </div>
-                </ion-col>
-                <ion-col *ngIf="product.sale" size="3.66" class="tag-col">
-                  <div class="sale">
-                    On Sale
-                  </div>
-                </ion-col>
-                <ion-col size="1">
-                  <div class="div-height">
-                  </div>
-                </ion-col>
-              </ion-row>
-              <ion-img src="{{product.img}}" class="animated fadeInUp"></ion-img>
-              <p class="para-text">{{product.textGrid}}</p>
-              <ion-grid class="grid-price">
-                <ion-row>
-                  <ion-col size="3.5">
-                    <p class="para-price-del"><del>${{product.dPrice}}</del></p>
-                  </ion-col>
-                  <ion-col size="3.5">
-                    <p class="para-price">${{product.price}}</p>
-                  </ion-col>
-                  <ion-col size="5" class="col-heart">
-                    <ion-icon *ngIf="!product.heartVis" (click)="heart(product); $event.stopPropagation()" class="col-heart-empty" name="heart">
-                    </ion-icon>
-                    <ion-icon *ngIf="product.heartVis" (click)="heart(product); $event.stopPropagation()" class="col-heart-filled" name="heart">
-                    </ion-icon>
-                  </ion-col>
-                </ion-row>
-              </ion-grid>
-            </ion-card>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </div>
-    <!-- for list view -->
-    <div *ngIf="!visiableGrid">
-      <div class="list-card" *ngFor="let product of categoryLoop">
-        <ion-grid class="grid-list" (click)="goToProductDetail(product)">
-          <ion-row>
-            <ion-col size="9">
-              <ion-row>
-                <ion-col size="3.5" *ngIf="product.featured">
-                  <div class="featured">
-                    Featured
-                  </div>
-                </ion-col>
-                <ion-col size="3.5" *ngIf="product.new">
-                  <div class="new">
-                    New
-                  </div>
-                </ion-col>
-                <ion-col size="3.5" *ngIf="product.sale">
-                  <div class="sale">
-                    On Sale
-                  </div>
-                </ion-col>
-                <ion-col>
-                  <div class="div-height-list"></div>
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col size="12">
-                  <h3 class="text-list">{{product.textList}}</h3>
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col size="2.5">
-                  <p class="para-price-del-list"><del>${{product.dPrice}}</del></p>
-                </ion-col>
-                <ion-col size="2.5">
-                  <p class="para-price-list">${{product.price}}</p>
-                </ion-col>
-                <ion-col size="5.5" class="col-heart">
-                  <ion-icon *ngIf="!product.heartVis" (click)="heart(product); $event.stopPropagation()" class="col-heart-empty" name="heart">
-                  </ion-icon>
-                  <ion-icon *ngIf="product.heartVis" (click)="heart(product); $event.stopPropagation()" class="col-heart-filled" name="heart">
-                  </ion-icon>
-                </ion-col>
-              </ion-row>
-            </ion-col>
-            <div class="div-img-list">
-              <ion-img class="list-img animated fadeInRight" src="{{product.img}}">
-              </ion-img>
-            </div>
-          </ion-row>
-        </ion-grid>
+
+    <!-- Products Container (Replicated from Home) -->
+    <div class="products-container" [class.list-card]="!visiableGrid" [class.grid-card]="visiableGrid">
+      <div class="scroll-item" *ngFor="let item of categoryLoop" (click)="goToProductDetail(item)">
+        <div class="product-card-inner">
+          <ion-grid class="grid-featured">
+            <ion-row>
+              <ion-col size="12" class="ion-no-padding">
+                <div class="badge-container">
+                  <span *ngIf="item.featured" class="badge featured-tag">Featured</span>
+                  <span *ngIf="item.new" class="badge new-tag">New</span>
+                  <span *ngIf="item.sale" class="badge sale-tag">On Sale</span>
+                </div>
+                <strong>{{item.title}}</strong>
+                <p>{{item.text}}</p>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-align-items-center">
+              <ion-col size="8" class="price-col">
+                <span class="para-price-del"><del>${{item.dPrice}}</del></span>
+                <span class="para-price">${{item.price}}</span>
+              </ion-col>
+              <ion-col size="4" class="col-heart">
+                <ion-icon [name]="item.heartVis ? 'heart' : 'heart-outline'"
+                          [class.heart-filled]="item.heartVis"
+                          (click)="heart(item); $event.stopPropagation()">
+                </ion-icon>
+              </ion-col>
+            </ion-row>
+
+          </ion-grid>
+          <ion-img class="swipe-slider-img" [src]="item.img"></ion-img>
+        </div>
       </div>
     </div>
+
   </div>
 </ion-content>

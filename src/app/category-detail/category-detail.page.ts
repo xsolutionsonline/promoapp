@@ -5,8 +5,9 @@ import { ProductPricePage } from '../product-price/product-price.page';
 import { ProductSizePage } from '../product-size/product-size.page';
 import { ProductSortPage } from '../product-sort/product-sort.page';
 import { Events } from '../services/events.service';
-import { NavigationExtras, Router } from "@angular/router";
+import { NavigationExtras, Router, ActivatedRoute } from "@angular/router";
 import { DataService } from '../services/data.service';
+import { Firestore, collection, query, where, collectionData, doc, getDoc } from '@angular/fire/firestore';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -34,7 +35,7 @@ export class CategoryDetailPage implements OnInit {
   // for category id get from home page
   public categoryId = "";
   //for category
-  public categoryHeader = "Technology";
+  public categoryHeader = "Category";
   public categoryLoop = [];
   //for swiper slider
   sliderConfig = {
@@ -48,12 +49,26 @@ export class CategoryDetailPage implements OnInit {
     private toastController: ToastController,
     private navCtrl: NavController,
     private router: Router,
-    private dataService: DataService) {
-
+    private route: ActivatedRoute,
+    private dataService: DataService,
+    private firestore: Firestore) {
+    debugger;
     //for making background blur
     this.events.subscribe('blurValue', (data) => {
       this.divBlur = data;
       this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
+    });
+
+    this.route.queryParams.subscribe(params => {
+      debugger;
+      if (this.router.getCurrentNavigation().extras.state) {
+        const category = this.router.getCurrentNavigation().extras.state["category"];
+        if (category) {
+          this.categoryId = category.id;
+          this.categoryHeader = category.text;
+          this.loadProducts();
+        }
+      }
     });
   }
 
@@ -182,37 +197,43 @@ export class CategoryDetailPage implements OnInit {
       this.sizeActive = false;
     }
   }
+
+  loadProducts() {
+    debugger;
+    if (this.categoryHeader) {
+      const productsRef = collection(this.firestore, 'products');
+      const q = query(productsRef, where('category.name', '==', this.categoryHeader));
+
+      collectionData(q, { idField: 'id' }).subscribe((products: any[]) => {
+          this.categoryLoop = products;
+      });
+    }
+  }
+
   ionViewWillEnter() {
-    // value of category
-    // setTimeout(() => {
-    this.events.subscribe('CatId', (data) => {
+    debugger;
+    // Keep existing event subscription as fallback or for other navigation methods
+    this.events.subscribe('CatId', async (data) => {
       this.categoryId = data;
       console.log("category value: " + this.categoryId);
+
+      if (this.categoryId) {
+        // 1. Get Category Name from Firestore
+        const categoryDocRef = doc(this.firestore, `category/${this.categoryId}`);
+        const categorySnapshot = await getDoc(categoryDocRef);
+
+        if (categorySnapshot.exists()) {
+          const categoryData = categorySnapshot.data();
+          this.categoryHeader = categoryData['text']; // Assuming 'text' is the field name for category name
+          this.loadProducts();
+
+        } else {
+          console.log("No such category!");
+          this.categoryHeader = "Category Not Found";
+          this.categoryLoop = [];
+        }
+      }
     });
-
-    // Default fallback if no category selected or just to show something
-    // In a real app, you'd filter by categoryId
-
-    if (this.categoryId == "formal") {
-      console.log("outer view will enter" + this.categoryId);
-      this.categoryHeader = "Formal Shoes";
-      // Using service data for now as example, you can filter it
-      this.categoryLoop = this.dataService.getCategoryProducts();
-    }
-    else if (this.categoryId == "causal") {
-      console.log("outer view will enter" + this.categoryId);
-      this.categoryHeader = "Casual Shoes";
-      this.categoryLoop = this.dataService.getCategoryProducts();
-    }
-    else if (this.categoryId == "sport") {
-      console.log("outer view will enter" + this.categoryId);
-      this.categoryHeader = "Sport Shoes";
-      this.categoryLoop = this.dataService.getCategoryProducts();
-    } else {
-      // Default load if accessed directly
-      this.categoryLoop = this.dataService.getCategoryProducts();
-    }
-    // }, 100);
   }
   goToProductDetail(item) {
     // If item is passed from the template click event

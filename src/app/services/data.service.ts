@@ -301,9 +301,10 @@ export class DataService {
   ];
 
   private categoryItems = [
-    { img: "assets/images/category/1.jpg", text: "Technology" },
-    { img: "assets/images/category/2.jpg", text: "Pets" },
-    { img: "assets/images/category/3.jpg", text: "Info-products" },
+    { img: "assets/images/category/technology.png", text: "Technology" },
+    { img: "assets/images/category/pets-dos.png", text: "Pets" },
+    { img: "assets/images/category/health.png", text: "Health" },
+    { img: "assets/images/category/info-prod.png", text: "Info-products" },
   ];
 
   constructor() { }

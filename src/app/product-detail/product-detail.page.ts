@@ -36,18 +36,8 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     { img: "assets/images/shoes/sport/2.png", name: "Product Name Will Go Here!", price: "100", dPrice: "150", feature: false, new: true, sale: false, heartVis: false },
     { img: "assets/images/shoes/sale/2.png", name: "Product Name Will Go Here!", price: "100", dPrice: "150", feature: false, new: false, sale: true, heartVis: false }
   ];
-  public colorItems = [
-    { color: "#1C197A", bgRadius: "8px solid #1C197A", text: "Blue", selectSize: false },
-    { color: "#5A197A", bgRadius: "8px solid #5A197A", text: "Purple", selectSize: false },
-    { color: "#913523", bgRadius: "8px solid #913523", text: "Brown", selectSize: false },
-    { color: "#7A6719", bgRadius: "8px solid #7A6719", text: "Camel", selectSize: false },
-  ];
-  public sizeItems = [
-    { name: "S", text: "Small", selectSize: false },
-    { name: "M", text: "Medium", selectSize: false },
-    { name: "L", text: "Large", selectSize: false },
-    { name: "XL", text: "Xtra Large", selectSize: false },
-  ];
+  public colorItems = [];
+  public sizeItems = [];
   sliderConfig = {
     slidesPerView: 2.1,
     spaceBetween: 5,
@@ -109,6 +99,16 @@ export class ProductDetailPage implements OnInit, OnDestroy {
         this.productSlides = data.similarItems;
       }
 
+      // Initialize variants (colors and sizes) from product data
+      if (data.variants) {
+        this.colorItems = data.variants[0].colors || [];
+        this.sizeItems = data.variants[0].sizes || [];
+      } else {
+        // Fallback or empty if no variants
+        this.colorItems = [];
+        this.sizeItems = [];
+      }
+
       // Reset quantity
       this.productQuantity = 1;
     }
@@ -128,6 +128,8 @@ export class ProductDetailPage implements OnInit, OnDestroy {
       "assets/images/product-detail/2.png",
       "assets/images/product-detail/3.png",
     ];
+    this.colorItems = [];
+    this.sizeItems = [];
     // Reset similar products to default if needed, or keep the last ones until new ones load
     // this.productSlides = ...
   }
@@ -211,55 +213,33 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     });
   }
   goToProductDetailModal() {
-    this.divBlur = "blur(0px)"
+    this.divBlur = "blur(6px)"
     this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
     this.visiablePopup = true;//for blur effect
   }
   dismiss() {
     this.events.publish('blurValue', "blur(0px)");
     this.visiablePopup = false;//for disable blur effect
+    this.divBlur = "blur(0px)"
+    this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
   }
   //for color
   isColorCheck(item) {
-    if (item.selectSize == true) {
-      item.selectSize = true;
-      console.log("yes");
-    }
-    else {
-      item.selectSize = true;
-      console.log("no");
-    }
+    // Deselect all other colors
+    this.colorItems.forEach(c => c.selectSize = false);
+    item.selectSize = true;
   }
   isSelectedColorCheck(item) {
-    if (item.selectSize == true) {
-      item.selectSize = false;
-      console.log("yes");
-    }
-    else {
-      item.selectSize = true;
-      console.log("no");
-    }
+    item.selectSize = false;
   }
   //for size
   isSizeCheck(item) {
-    if (item.selectSize == true) {
-      item.selectSize = true;
-      console.log("yes");
-    }
-    else {
-      item.selectSize = true;
-      console.log("no");
-    }
+    // Deselect all other sizes
+    this.sizeItems.forEach(s => s.selectSize = false);
+    item.selectSize = true;
   }
   isSelectSizeCheck(item) {
-    if (item.selectSize == true) {
-      item.selectSize = false;
-      console.log("yes");
-    }
-    else {
-      item.selectSize = true;
-      console.log("no");
-    }
+    item.selectSize = false;
   }
   addBtn() {
     this.productQuantity = this.productQuantity + 1;
