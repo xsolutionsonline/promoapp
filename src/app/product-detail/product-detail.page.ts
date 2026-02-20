@@ -254,15 +254,64 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     });
     toast.present();
   }
-  heart() {
+  async heart() {
+    // Toggle local state for immediate UI feedback
     this.visHeart = !this.visHeart;
-  }
-  heartProduct(item) {
-    if (item.heartVis == true) {
-      item.heartVis = false;
+    const newHeartVis = !this.visHeart; // The actual value to save in Firestore
+
+    if (this.currentProduct && this.currentProduct.id) {
+      const productDocRef = doc(this.firestore, `products/${this.currentProduct.id}`);
+      try {
+        await updateDoc(productDocRef, { heartVis: newHeartVis });
+
+        // Update the local currentProduct to stay in sync
+        this.currentProduct.heartVis = newHeartVis;
+
+        const message = newHeartVis ? 'Product Added To Wishlist' : 'Product Removed From Wishlist';
+        const toast = await this.toastController.create({
+          message: message,
+          duration: 2000
+        });
+        toast.present();
+      } catch (e) {
+        console.error('Error updating heartVis in Firestore', e);
+        // Revert UI change on failure
+        this.visHeart = !this.visHeart;
+        const toast = await this.toastController.create({
+          message: 'Failed to update wishlist status',
+          duration: 2000,
+          color: 'danger'
+        });
+        toast.present();
+      }
     }
-    else {
-      item.heartVis = true;
+  }
+  async heartProduct(item) {
+    // Toggle for immediate UI feedback
+    item.heartVis = !item.heartVis;
+
+    if (item && item.id) {
+      const productDocRef = doc(this.firestore, `products/${item.id}`);
+      try {
+        await updateDoc(productDocRef, { heartVis: item.heartVis });
+
+        const message = item.heartVis ? 'Product Added To Wishlist' : 'Product Removed From Wishlist';
+        const toast = await this.toastController.create({
+          message: message,
+          duration: 2000
+        });
+        toast.present();
+      } catch (e) {
+        console.error('Error updating heartVis in Firestore', e);
+        // Revert on failure
+        item.heartVis = !item.heartVis;
+        const toast = await this.toastController.create({
+          message: 'Failed to update wishlist status',
+          duration: 2000,
+          color: 'danger'
+        });
+        toast.present();
+      }
     }
   }
   ionViewWillEnter() {

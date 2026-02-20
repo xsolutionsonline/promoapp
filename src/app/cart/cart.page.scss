@@ -24,7 +24,7 @@
     ion-menu-button {
       height: 42px;
       margin-top: auto;
-      --background: #151514;
+      --background: #1A2363; // Blue color for menu and cart buttons
       width: 55px;
       margin-left: 0;
       margin-bottom: 0;
@@ -118,11 +118,18 @@
           padding-top: 0;
           text-align: right;
           padding-bottom: 10px;
-          p {
+          .price-original {
+            font-size: 12px;
+            text-decoration: line-through;
+            opacity: 0.7;
+            margin-top: 8px;
+            margin-bottom: 0;
+          }
+          .price-discounted {
             font-size: 14px;
             font-family: "roboto-medium" !important;
             color: black;
-            margin-top: 8px;
+            margin-top: 0;
           }
         }
         &.variant-row {
@@ -176,20 +183,12 @@
           text-align: right;
           padding-top: 0;
           ion-button {
-            --background: #1A2363;
-            --border-radius: 5px;
-            margin-right: 0;
-            text-transform: capitalize;
-            font-family: "roboto-regular";
-            width: 59px;
-            height: 23px;
-            margin-top: 0;
+            --background: transparent;
             --box-shadow: none;
-            font-size: 10px;
             margin: 0;
             ion-icon {
-              font-size: 10px;
-              margin-left: 3px;
+              font-size: 24px;
+              color: red;
             }
           }
         }
@@ -266,7 +265,7 @@
           height: 48px;
           text-transform: capitalize;
           --box-shadow: none !important;
-          --background: #1A2363;
+          --background: #1A2363; // Purple color for apply button
         }
       }
     }
@@ -323,7 +322,7 @@
     z-index: 9;
     width: 100%;
     ion-button {
-      --background: #1A2363;
+      --background: #69247c; // Purple color for proceed button
       text-transform: capitalize;
       --border-radius: 10px;
       height: 45px;
@@ -590,7 +589,7 @@ ion-footer {
     ion-button {
       margin: 0;
       height: 60px;
-      --background: #151514;
+      --background: #69247c; // Purple color for proceed button
       width: 100%;
       --box-shadow: none;
       --border-radius: 15px;

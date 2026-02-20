@@ -52,7 +52,7 @@ export class CategoryDetailPage implements OnInit {
     private route: ActivatedRoute,
     private dataService: DataService,
     private firestore: Firestore) {
-    debugger;
+
     //for making background blur
     this.events.subscribe('blurValue', (data) => {
       this.divBlur = data;
@@ -60,7 +60,7 @@ export class CategoryDetailPage implements OnInit {
     });
 
     this.route.queryParams.subscribe(params => {
-      debugger;
+
       if (this.router.getCurrentNavigation().extras.state) {
         const category = this.router.getCurrentNavigation().extras.state["category"];
         if (category) {
@@ -199,7 +199,7 @@ export class CategoryDetailPage implements OnInit {
   }
 
   loadProducts() {
-    debugger;
+
     if (this.categoryHeader) {
       const productsRef = collection(this.firestore, 'products');
       const q = query(productsRef, where('category.name', '==', this.categoryHeader));
@@ -211,7 +211,7 @@ export class CategoryDetailPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    debugger;
+
     // Keep existing event subscription as fallback or for other navigation methods
     this.events.subscribe('CatId', async (data) => {
       this.categoryId = data;

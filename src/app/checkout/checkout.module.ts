@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -15,8 +15,9 @@ import { ItemExpandComponentComponent } from '../components/item-expand-componen
     CommonModule,
     FormsModule,
     IonicModule,
-    CheckoutPageRoutingModule
+    CheckoutPageRoutingModule,
+    ReactiveFormsModule
   ],
-  declarations: [CheckoutPage, ItemExpandComponentComponent]
+  declarations: []
 })
 export class CheckoutPageModule { }

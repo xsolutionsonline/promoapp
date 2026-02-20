@@ -543,6 +543,9 @@
   .radio-checked {
     background: #1A2363 !important;
   }
+  .error {
+    color: red;
+  }
 }
 ion-footer {
   padding-bottom: var(--ion-safe-area-bottom); /* Safe area for footer */

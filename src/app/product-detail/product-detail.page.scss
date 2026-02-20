@@ -18,13 +18,14 @@
     position: absolute;
     z-index: 999;
     width: 100%;
-    --background: transparent;
+    --background: #1A2363;
     padding-top: 20px;
 
     .header-title {
       font-family: "century-school-back-bold";
       font-size: 20px;
-      color: #1A2363;
+      color: whitesmoke;
+      --background: transparent;
       text-align: center;
     }
 

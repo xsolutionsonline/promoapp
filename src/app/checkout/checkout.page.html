@@ -13,7 +13,7 @@
     </ion-button>
   </ion-item>
   <ion-item lines="none" class="item-back">
-    <ion-icon slot="start" class="animated fadeIn" routerLink="/product-detail" routerDirection="back"
+    <ion-icon slot="start" class="animated fadeIn" routerLink="/home" routerDirection="back"
       src="assets/icon/back.svg">
     </ion-icon>
     <p class="animated fadeIn">{{headerText}}</p>
@@ -129,12 +129,67 @@
   </ion-card>
   <!-- invite segment -->
   <div *ngIf="visInviteActive">
-    <ion-card class="shipping-input-card animated fadeInLeft" *ngFor="let item of shippingInput">
-      <ion-item lines="none">
-        <ion-input placeholder="{{item.placeholder}}" value="{{item.value}}" inputmode="{{item.value}}">
-        </ion-input>
-      </ion-item>
-    </ion-card>
+    <form [formGroup]="shippingForm">
+      <ion-card class="shipping-input-card animated fadeInLeft">
+        <ion-item lines="none">
+          <ion-input placeholder="First Name:" formControlName="firstName" type="text"></ion-input>
+        </ion-item>
+        <span class="error ion-padding" *ngIf="isSubmitted && errorControl['firstName'].errors?.['required']">
+          First name is required.
+        </span>
+      </ion-card>
+      <ion-card class="shipping-input-card animated fadeInLeft">
+        <ion-item lines="none">
+          <ion-input placeholder="Last Name:" formControlName="lastName" type="text"></ion-input>
+        </ion-item>
+        <span class="error ion-padding" *ngIf="isSubmitted && errorControl['lastName'].errors?.['required']">
+          Last name is required.
+        </span>
+      </ion-card>
+      <ion-card class="shipping-input-card animated fadeInLeft">
+        <ion-item lines="none">
+          <ion-input placeholder="Address:" formControlName="address" type="text"></ion-input>
+        </ion-item>
+        <span class="error ion-padding" *ngIf="isSubmitted && errorControl['address'].errors?.['required']">
+          Address is required.
+        </span>
+      </ion-card>
+      <ion-card class="shipping-input-card animated fadeInLeft">
+        <ion-item lines="none">
+          <ion-input placeholder="Email:" formControlName="email" type="email"></ion-input>
+        </ion-item>
+        <span class="error ion-padding" *ngIf="isSubmitted && errorControl['email'].errors?.['required']">
+          Email is required.
+        </span>
+        <span class="error ion-padding" *ngIf="isSubmitted && errorControl['email'].errors?.['pattern']">
+          Please provide valid email id.
+        </span>
+      </ion-card>
+      <ion-card class="shipping-input-card animated fadeInLeft">
+        <ion-item lines="none">
+          <ion-input placeholder="Phone:" formControlName="phone" type="tel"></ion-input>
+        </ion-item>
+        <span class="error ion-padding" *ngIf="isSubmitted && errorControl['phone'].errors?.['required']">
+          Phone is required.
+        </span>
+      </ion-card>
+      <ion-card class="shipping-input-card animated fadeInLeft">
+        <ion-item lines="none">
+          <ion-input placeholder="City:" formControlName="city" type="text"></ion-input>
+        </ion-item>
+        <span class="error ion-padding" *ngIf="isSubmitted && errorControl['city'].errors?.['required']">
+          City is required.
+        </span>
+      </ion-card>
+      <ion-card class="shipping-input-card animated fadeInLeft">
+        <ion-item lines="none">
+          <ion-input placeholder="Postal Code:" formControlName="postalCode" type="text"></ion-input>
+        </ion-item>
+        <span class="error ion-padding" *ngIf="isSubmitted && errorControl['postalCode'].errors?.['required']">
+          Postal code is required.
+        </span>
+      </ion-card>
+    </form>
     <ion-item class="toggle-item" lines="none">
       <p>Billing Address Same as Shipping Address</p>
       <ion-toggle (ionChange)=BillingToggleFun($event) mode="ios" slot="end" [checked]="billingToggle"></ion-toggle>
@@ -150,22 +205,22 @@
   </div>
   <!-- delivery segment -->
   <div *ngIf="visTruckActive">
-    <ion-list class="expand-list ion-no-padding">
-      <ion-item lines="none" *ngFor="let item of upsShippingItems" class="ion-no-padding item-outer">
-        <ion-grid (click)="expandCardFun(item)" class="ion-no-padding">
-          <ion-card class="item-card animated fadeInUp">
-            <ion-item lines="none">
-              <ion-icon slot="start" src="assets/icon/ups.svg">
-              </ion-icon>
-              <p>UPS Shipping</p>
-              <ion-icon slot="end" class="checkmark-icon" name="checkmark" *ngIf="visSelectedUps">
-              </ion-icon>
-              <ion-icon slot="end" src="assets/icon/arrow-circle-right.svg" id="right-icon-arrow">
-              </ion-icon>
-            </ion-item>
-          </ion-card>
+    <!-- <ion-list class="expand-list ion-no-padding">
+       <ion-item lines="none" *ngFor="let item of upsShippingItems" class="ion-no-padding item-outer">
+         <ion-grid (click)="expandCardFun(item)" class="ion-no-padding">
+           <ion-card class="item-card animated fadeInUp">
+             <ion-item lines="none">
+               <ion-icon slot="start" src="assets/icon/ups.svg">
+               </ion-icon>
+               <p>UPS Shipping</p>
+               <ion-icon slot="end" class="checkmark-icon" name="checkmark" *ngIf="visSelectedUps">
+               </ion-icon>
+               <ion-icon slot="end" src="assets/icon/arrow-circle-right.svg" id="right-icon-arrow">
+               </ion-icon>
+             </ion-item>
+           </ion-card>
           <ion-row (click)="expandCardFun(item)">
-            <!-- expandable component "list component". You should  its referebce in "list-expandable" mobile file -->
+
             <app-item-expand-component expandHeight="450px" [expanded]="item.expanded"
               class="ion-no-padding expand-comp">
               <ion-item lines="none" class="ion-no-padding item-inner">
@@ -184,7 +239,7 @@
           </ion-row>
         </ion-grid>
       </ion-item>
-    </ion-list>
+    </ion-list>-->
     <ion-card class="item-card animated fadeInUp" (click)="btnEnbDis(-1)">
       <ion-item lines="none">
         <ion-icon slot="start" src="assets/icon/free-shipping.svg">
@@ -194,7 +249,7 @@
         </ion-icon>
       </ion-item>
     </ion-card>
-    <ion-card class="item-card animated fadeInUp" (click)="btnEnbDis(-2)">
+   <!-- <ion-card class="item-card animated fadeInUp" (click)="btnEnbDis(-2)">
       <ion-item lines="none">
         <ion-icon slot="start" src="assets/icon/local-pickup.svg">
         </ion-icon>
@@ -202,7 +257,7 @@
         <ion-icon slot="end" class="checkmark-icon" name="checkmark" *ngIf="visLocalPickUp">
         </ion-icon>
       </ion-item>
-    </ion-card>
+    </ion-card>-->
   </div>
   <!-- segment payment -->
   <div *ngIf="visPaymentActive">

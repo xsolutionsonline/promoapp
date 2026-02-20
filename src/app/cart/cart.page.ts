@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { Firestore, collection, query, where, getDocs } from '@angular/fire/firestore';
+import { Firestore, collection, query, where, getDocs, doc, getDoc, updateDoc } from '@angular/fire/firestore';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -20,9 +21,17 @@ export class CartPage implements OnInit {
   private orderId: string = null;
   private userUid: string = null;
 
+  public subtotal = 0;
+  public discount = 0;
+  public discountPercentage = 0;
+  public delivery = 0; // Assuming free delivery
+  public totalPrice = 0;
+  public couponCode: string = '';
+
   constructor(
     private router: Router,
     private firestore: Firestore,
+    private toastController: ToastController,
   ) { }
 
   ngOnInit() {
@@ -37,7 +46,7 @@ export class CartPage implements OnInit {
       // No user, so cart is empty
       this.visCartEmpty = true;
       this.cartItems = [];
-      this.updateCartCount();
+      this.updateCartSummary();
     }
   }
 
@@ -74,6 +83,7 @@ export class CartPage implements OnInit {
             img: product.productImg,
             quantity: variant.quantity,
             price: variant.totalPrice,
+            dprice: variant.totalPrice - (variant.totalPrice * 0.1), // Example discount
             color: getVariantDetail('color', 'color'),
             size: getVariantDetail('size', 'name'),
             group: getVariantDetail('group', 'text'),
@@ -96,17 +106,66 @@ export class CartPage implements OnInit {
       this.cartItems = [];
       localStorage.removeItem('user_cart_order_id');
     }
-    this.updateCartCount();
+    this.updateCartSummary();
   }
 
-  updateCartCount() {
-    this.count = this.cartItems.length;
-    this.cartItemsCount = this.count;
-    if (this.count === 1) {
+  updateCartSummary() {
+    this.cartItemsCount = this.cartItems.length;
+    if (this.cartItemsCount === 1) {
       this.displayItems = "Item";
     } else {
       this.displayItems = "Items";
     }
+
+    this.subtotal = this.cartItems.reduce((acc, item) => acc + item.dprice, 0);
+    this.totalPrice = this.subtotal + this.delivery - this.discount;
+  }
+
+  async applyCoupon() {
+    if (!this.couponCode.trim()) {
+      this.presentToast("Please enter a coupon code.");
+      return;
+    }
+
+    const couponsRef = collection(this.firestore, 'coupons');
+    const q = query(couponsRef, where('code', '==', this.couponCode.trim()));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      this.presentToast("Coupon not found.");
+      return;
+    }
+
+    const couponDoc = querySnapshot.docs[0];
+    const couponData = couponDoc.data();
+
+    if (!couponData['active']) {
+      this.presentToast("This coupon is no longer active.");
+      return;
+    }
+
+    this.discountPercentage = couponData['discount'];
+    this.discount = this.subtotal * (this.discountPercentage / 100);
+    this.updateCartSummary();
+
+    // Update the order in Firestore
+    if (this.orderId) {
+      const orderRef = doc(this.firestore, 'orders', this.orderId);
+      await updateDoc(orderRef, {
+        discount: this.discount,
+        couponCode: this.couponCode.trim()
+      });
+    }
+
+    this.presentToast("Coupon applied successfully!");
+  }
+
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000
+    });
+    toast.present();
   }
 
   public editProduct(item) {
@@ -164,20 +223,60 @@ export class CartPage implements OnInit {
   update(item) {
     item.visCard = true;
   }
-  deleteItem(item) {
-    // This needs to be updated to modify Firestore and then reload
-    /* item.visDeleteItem = false;
-    this.count = this.count - 1;
-    this.cartItemsCount = this.cartItemsCount - 1;
-
-    if (this.count == 1) {
-      this.displayItems = "Item"
+  async deleteItem(itemToDelete) {
+    if (!this.orderId) {
+      console.error("No order ID found, cannot delete item.");
+      return;
     }
-    if (this.count == 0) {
-      this.visCartEmpty = true;
-      this.displayItems = "Item"
 
+    const orderRef = doc(this.firestore, 'orders', this.orderId);
+    const orderSnap = await getDoc(orderRef);
+
+    if (orderSnap.exists()) {
+      const orderData = orderSnap.data();
+      let products = orderData['products'] || [];
+
+      // Find the product index
+      const productIndex = products.findIndex(p => p.productId === itemToDelete.productId);
+      if (productIndex > -1) {
+        const product = products[productIndex];
+
+        // Find the variant index to delete
+        const variantIndex = product.variants.findIndex(variant => {
+          const getVariantDetail = (type, field) => {
+            const v = variant.selectedVariants.find(sv => sv.type === type);
+            return v ? v[field] : null;
+          };
+
+          const color = getVariantDetail('color', 'color');
+          const size = getVariantDetail('size', 'name');
+          const group = getVariantDetail('group', 'text');
+
+          return itemToDelete.color === color && itemToDelete.size === size && itemToDelete.group === group;
+        });
+
+        if (variantIndex > -1) {
+          // Remove the variant
+          product.variants.splice(variantIndex, 1);
+
+          // If no variants are left for this product, remove the product itself
+          if (product.variants.length === 0) {
+            products.splice(productIndex, 1);
+          }
+
+          await updateDoc(orderRef, { products: products });
+
+          // Refresh the cart view
+          this.loadCartItems();
+
+        } else {
+          console.error("Variant not found for deletion.");
+        }
+      } else {
+        console.error("Product not found for deletion.");
+      }
+    } else {
+      console.error("Order document not found.");
     }
-    */
   }
 }

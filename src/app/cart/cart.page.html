@@ -13,7 +13,7 @@
     </ion-button>
   </ion-item>
   <ion-item lines="none" class="item-back">
-    <ion-icon slot="start" routerLink="/product-detail" routerDirection="back" src="assets/icon/back.svg">
+    <ion-icon slot="start" routerLink="/home" routerDirection="back" src="assets/icon/back.svg">
     </ion-icon>
     <p>Cart</p>
     <p class="item-count-para">{{cartItemsCount}} {{displayItems}}</p>
@@ -45,7 +45,8 @@
                   </ion-row>
                   <ion-row>
                     <ion-col class="price-col">
-                      <p>${{item.price}}</p>
+                      <p class="price-original">${{item.price}}</p>
+                      <p class="price-discounted">${{item.dprice | number:'1.2-2'}}</p>
                     </ion-col>
                   </ion-row>
                   <ion-row class="variant-row">
@@ -58,9 +59,8 @@
                       <div class="div-size">{{item.size}}</div>
                     </ion-col>
                     <ion-col class="btn-col ion-align-self-center">
-                      <ion-button (click)="editProduct(item)">
-                        Edit
-                        <ion-icon src="assets/icon/edit.svg"></ion-icon>
+                      <ion-button fill="clear" (click)="deleteItem(item)">
+                        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
                       </ion-button>
                     </ion-col>
                   </ion-row>
@@ -191,8 +191,8 @@
       <p>Apply Coupon Code</p>
       <div class="div-item">
         <ion-item lines="none" class="item-input">
-          <ion-input shape="round" placeholder="Enter Your Coupon Code"></ion-input>
-          <ion-button shape="round">Apply</ion-button>
+          <ion-input shape="round" placeholder="Enter Your Coupon Code" [(ngModel)]="couponCode"></ion-input>
+          <ion-button shape="round" (click)="applyCoupon()">Apply</ion-button>
         </ion-item>
       </div>
     </ion-card>
@@ -203,15 +203,15 @@
             <p>Subtotal</p>
           </ion-col>
           <ion-col size="6">
-            <p>$180</p>
+            <p>${{subtotal | number:'1.2-2'}}</p>
           </ion-col>
         </ion-row>
         <ion-row>
           <ion-col size="6">
-            <p>Discount</p>
+            <p>Discount <span *ngIf="discountPercentage > 0">({{discountPercentage}}%)</span></p>
           </ion-col>
           <ion-col size="6">
-            <p>$0.00</p>
+            <p>${{discount | number:'1.2-2'}}</p>
           </ion-col>
         </ion-row>
         <ion-row>
@@ -219,7 +219,7 @@
             <p>Delivery</p>
           </ion-col>
           <ion-col size="6">
-            <p>Free</p>
+            <p>{{delivery === 0 ? 'Free' : (delivery | currency:'USD':'symbol':'1.2-2')}}</p>
           </ion-col>
         </ion-row>
         <ion-row>
@@ -227,7 +227,7 @@
             <p><b>Total Price</b></p>
           </ion-col>
           <ion-col size="6">
-            <p><b>$180</b></p>
+            <p><b>${{totalPrice | number:'1.2-2'}}</b></p>
           </ion-col>
         </ion-row>
       </ion-grid>

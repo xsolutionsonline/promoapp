@@ -84,7 +84,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     }
 
     const ordersRef = collection(this.firestore, 'orders');
-    const q = query(ordersRef, where('userUid | |', '==', useruid));
+    const q = query(ordersRef, where('userUid', '==', useruid));
 
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
@@ -245,7 +245,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     await Browser.open({ url: 'https://www.linkedin.com/' });
   }
   goToShop(item) {
-    debugger;
+
     const navigationExtras: NavigationExtras = {
       state: {
         category: item

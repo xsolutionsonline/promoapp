@@ -1,14 +1,28 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
+import { ItemExpandComponentComponent } from '../components/item-expand-component/item-expand-component.component';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
   selector: 'app-checkout',
   templateUrl: './checkout.page.html',
   styleUrls: ['./checkout.page.scss'],
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    ReactiveFormsModule,
+    ItemExpandComponentComponent
+  ]
 })
 export class CheckoutPage implements OnInit {
+  shippingForm: FormGroup;
+  isSubmitted = false;
   paymentBtn = true;
   billingToggle = true;
   visBilling = false;
@@ -17,7 +31,7 @@ export class CheckoutPage implements OnInit {
   visLocalPickUp = false;
   visCashOnDelivery = false;
   visMasterCard = false;
-  public headerText = "Shipping Method";
+  public headerText = "Shipping Address";
   public visInvite = false;
   public visTruck = true;
   public visPayment = true;
@@ -28,14 +42,6 @@ export class CheckoutPage implements OnInit {
   public visLegalActive = false;
   public visPin = true;
   public visTruckActiveForLines = true;
-  public shippingInput = [
-    { placeholder: "First Name:", value: "", type: "text" },
-    { placeholder: "Last Name:", value: "", type: "text" },
-    { placeholder: "Address:", value: "", type: "text" },
-    { placeholder: "Email:", value: "", type: "email" },
-    { placeholder: "Phone:", value: "", type: "tel" },
-    { placeholder: "City:", value: "", type: "text" },
-  ];
   public billingInput = [
     { placeholder: "Billing First Name:", value: "", type: "text" },
     { placeholder: "Billing Last Name:", value: "", type: "text" },
@@ -45,7 +51,7 @@ export class CheckoutPage implements OnInit {
     { placeholder: "Billing City:", value: "", type: "text" },
   ];
   public upsShippingItems = [];
-  constructor(private loadingController: LoadingController) {
+  constructor(private loadingController: LoadingController, public formBuilder: FormBuilder, private toastController: ToastController) {
     this.upsShippingItems = [
       {
         upsShippingSubItems: [
@@ -63,7 +69,29 @@ export class CheckoutPage implements OnInit {
   }
 
   ngOnInit() {
+    this.shippingForm = this.formBuilder.group({
+      firstName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
+      address: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', [Validators.required]],
+      city: ['', [Validators.required]],
+      postalCode: ['', [Validators.required]]
+    });
   }
+
+  get errorControl() {
+    return this.shippingForm.controls;
+  }
+
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000
+    });
+    toast.present();
+  }
+
   segmentSelect(val) {
     if (val == 'invite') {
       this.visInvite = false;
@@ -220,41 +248,49 @@ export class CheckoutPage implements OnInit {
     }
   }
   goNext(val) {
-    if(val=='visInviteActive'){
-      this.visTruckActiveForLines = true;
-    }
-    else if (val == 'activeTruckDelivery') {
-      this.visInvite = true;
-      this.visTruck = false;
-      this.visPayment = true;
-      this.visLegal = true;
-      this.visInviteActive = false;
-      this.visTruckActive = true;
-      this.visPaymentActive = false;
-      this.visLegalActive = false;
-      this.headerText = "Shipping Method";
-    }
-    else if (val == "activePayment") {
-      this.visInvite = true;
-      this.visTruck = true;
-      this.visPayment = false;
-      this.visLegal = true;
-      this.visInviteActive = false;
-      this.visTruckActive = false;
-      this.visPaymentActive = true;
-      this.visLegalActive = false;
-      this.headerText = "Payment Method";
-    }
-    else if (val == "visLegalActive") {
-      this.visInvite = true;
-      this.visTruck = true;
-      this.visPayment = true;
-      this.visLegal = false;
-      this.visInviteActive = false;
-      this.visTruckActive = false;
-      this.visPaymentActive = false;
-      this.visLegalActive = true;
-      this.headerText = "Order Summary";
+    this.isSubmitted = true;
+    if (!this.shippingForm.valid) {
+      this.presentToast('Please provide all the required values!');
+      return false;
+    } else {
+      console.log(this.shippingForm.value)
+      if (val == 'visInviteActive') {
+        this.visTruckActiveForLines = true;
+      }
+      else if (val == 'activeTruckDelivery') {
+        this.visInvite = true;
+        this.visTruck = false;
+        this.visPayment = true;
+        this.visLegal = true;
+        this.visInviteActive = false;
+        this.visTruckActive = true;
+        this.visPaymentActive = false;
+        this.visLegalActive = false;
+        this.headerText = "Shipping Method";
+      }
+      else if (val == "activePayment") {
+        this.visInvite = true;
+        this.visTruck = true;
+        this.visPayment = false;
+        this.visLegal = true;
+        this.visInviteActive = false;
+        this.visTruckActive = false;
+        this.visPaymentActive = true;
+        this.visLegalActive = false;
+        this.headerText = "Payment Method";
+      }
+      else if (val == "visLegalActive") {
+        this.visInvite = true;
+        this.visTruck = true;
+        this.visPayment = true;
+        this.visLegal = false;
+        this.visInviteActive = false;
+        this.visTruckActive = false;
+        this.visPaymentActive = false;
+        this.visLegalActive = true;
+        this.headerText = "Order Summary";
+      }
+      return true;
     }
   }
   btnEnbDis(i) {

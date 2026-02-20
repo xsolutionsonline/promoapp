@@ -4,7 +4,7 @@ import { Component, OnInit, ViewChild, ElementRef, Input, Renderer2, AfterViewIn
   selector: 'app-item-expand-component',
   templateUrl: './item-expand-component.component.html',
   styleUrls: ['./item-expand-component.component.scss'],
-  standalone: false,
+  standalone: true,
 })
 export class ItemExpandComponentComponent implements AfterViewInit {
   @ViewChild("expandWrapper", { read: ElementRef, static: false }) private expandWrapper: ElementRef;
