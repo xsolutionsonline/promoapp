@@ -1,4 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
+import { Firestore, collection, query, where, getDocs } from '@angular/fire/firestore';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -10,53 +12,105 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 export class CartPage implements OnInit {
   displayItems = "Items"
   visCartEmpty = false;
-  count = 2;
+  count = 0;
   productQuantity = 1;
   productPrice = 90;
-  public cartItemsCount = 2;
-  public cartItems = [
-    {
-      img: "assets/images/shoes/sale/1.png", name: "Product Title Will Be Go Here! Product Title", quantity: "1", price: "90", bgRadius: "solid 8px black", color: "black", size: "S", id: 0, visCard: true, visDeleteItem: true,
-      subItemsColor: [
-        { color: "#1C197A", bgRadius: "8px solid #1C197A", text: "Blue", selectSize: false },
-        { color: "#5A197A", bgRadius: "8px solid #5A197A", text: "Purple", selectSize: true },
-        { color: "#913523", bgRadius: "8px solid #913523", text: "Brown", selectSize: false },
-        { color: "#7A6719", bgRadius: "8px solid #7A6719", text: "Camel", selectSize: false },
-      ],
-      subItemsSize: [
-        { name: "S", text: "Small", selectSize: true },
-        { name: "M", text: "Medium", selectSize: false },
-        { name: "L", text: "Large", selectSize: false },
-        { name: "XL", text: "Xtra Large", selectSize: false },
-      ]
-    },
-    {
-      img: "assets/images/shoes/new/3.png", name: "Product Title Will Be Go Here! Product Title", quantity: "1", price: "90", bgRadius: "solid 8px #334457", color: "#334457", size: "S", id: 1, visCard: true, visDeleteItem: true,
-      subItemsColor: [
-        { color: "#1C197A", bgRadius: "8px solid #1C197A", text: "Blue", selectSize: true },
-        { color: "#5A197A", bgRadius: "8px solid #5A197A", text: "Purple", selectSize: false },
-        { color: "#913523", bgRadius: "8px solid #913523", text: "Brown", selectSize: false },
-        { color: "#7A6719", bgRadius: "8px solid #7A6719", text: "Camel", selectSize: false },
-      ],
-      subItemsSize: [
-        { name: "S", text: "Small", selectSize: false },
-        { name: "M", text: "Medium", selectSize: true },
-        { name: "L", text: "Large", selectSize: false },
-        { name: "XL", text: "Xtra Large", selectSize: false },
-      ]
-    },
-  ];
-  constructor() { }
+  public cartItemsCount = 0;
+  public cartItems = [];
+  private orderId: string = null;
+  private userUid: string = null;
+
+  constructor(
+    private router: Router,
+    private firestore: Firestore,
+  ) { }
 
   ngOnInit() {
   }
+
+  ionViewWillEnter() {
+    this.userUid = localStorage.getItem('user_order_uid');
+
+    if (this.userUid) {
+      this.loadCartItems();
+    } else {
+      // No user, so cart is empty
+      this.visCartEmpty = true;
+      this.cartItems = [];
+      this.updateCartCount();
+    }
+  }
+
+  async loadCartItems() {
+    if (!this.userUid) return;
+
+    const ordersRef = collection(this.firestore, 'orders');
+    const q = query(ordersRef, where('userUid', '==', this.userUid));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const orderDocSnap = querySnapshot.docs[0];
+      this.orderId = orderDocSnap.id; // Store the orderId for other operations
+      const orderData = orderDocSnap.data();
+      const products = orderData['products'] || [];
+      const flattenedItems = [];
+
+      products.forEach(product => {
+        product.variants.forEach(variant => {
+          const getVariantDetail = (type, field) => {
+            const v = variant.selectedVariants.find(sv => sv.type === type);
+            return v ? v[field] : null;
+          };
+
+          const variantDescription = [
+            getVariantDetail('group', 'text'),
+            getVariantDetail('color', 'text'),
+            getVariantDetail('size', 'text')
+          ].filter(Boolean).join(' / ');
+
+          flattenedItems.push({
+            productId: product.productId,
+            name: product.productName,
+            img: product.productImg,
+            quantity: variant.quantity,
+            price: variant.totalPrice,
+            color: getVariantDetail('color', 'color'),
+            size: getVariantDetail('size', 'name'),
+            group: getVariantDetail('group', 'text'),
+            variantDescription: variantDescription,
+            bgRadius: `solid 8px ${getVariantDetail('color', 'color') || 'transparent'}`,
+            subItemsColor: [],
+            subItemsSize: [],
+            visCard: true,
+            visDeleteItem: true,
+            variantId: Math.random().toString(36).substring(2, 9)
+          });
+        });
+      });
+
+      this.cartItems = flattenedItems;
+      this.visCartEmpty = this.cartItems.length === 0;
+    } else {
+      console.log("No order document for this user!");
+      this.visCartEmpty = true;
+      this.cartItems = [];
+      localStorage.removeItem('user_cart_order_id');
+    }
+    this.updateCartCount();
+  }
+
+  updateCartCount() {
+    this.count = this.cartItems.length;
+    this.cartItemsCount = this.count;
+    if (this.count === 1) {
+      this.displayItems = "Item";
+    } else {
+      this.displayItems = "Items";
+    }
+  }
+
   public editProduct(item) {
-    if (item.id == 0) {
-      item.visCard = false;
-    }
-    else if (item.id == 1) {
-      item.visCard = false;
-    }
+    item.visCard = false;
   }
   //for color
   isColorCheck(item) {
@@ -105,33 +159,18 @@ export class CartPage implements OnInit {
     }
   }
   cancel(item) {
-    if (item.id == 0) {
-      item.visCard = true;
-    }
-    else if (item.id == 1) {
-      item.visCard = true;
-    }
+    item.visCard = true;
   }
   update(item) {
-    if (item.id == 0) {
-      item.visCard = true;
-    }
-    else if (item.id == 1) {
-      item.visCard = true;
-    }
+    item.visCard = true;
   }
   deleteItem(item) {
-    if (item.id == 0) {
-      item.visDeleteItem = false;
-      this.count = this.count - 1;
-      this.cartItemsCount = this.cartItemsCount - 1;
-    }
-    else if (item.id == 1) {
-      item.visDeleteItem = false;
-      this.count = this.count - 1;
-      this.cartItemsCount = this.cartItemsCount - 1;
-    }
-    if (this, this.count == 1) {
+    // This needs to be updated to modify Firestore and then reload
+    /* item.visDeleteItem = false;
+    this.count = this.count - 1;
+    this.cartItemsCount = this.cartItemsCount - 1;
+
+    if (this.count == 1) {
       this.displayItems = "Item"
     }
     if (this.count == 0) {
@@ -139,5 +178,6 @@ export class CartPage implements OnInit {
       this.displayItems = "Item"
 
     }
+    */
   }
 }

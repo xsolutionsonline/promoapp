@@ -17,6 +17,7 @@ import { BlankModalPageModule } from './blank-modal/blank-modal.module';
 // for product detail modal
 import { ProductDetailModalPageModule } from './product-detail-modal/product-detail-modal.module';
 import { SplashScreenPageModule } from './splash-screen/splash-screen.module';
+import { LoadingModule } from './loading/loading.module';
 
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
@@ -40,7 +41,8 @@ import { AngularFireModule } from '@angular/fire/compat';
     IonicModule.forRoot(),
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireStorageModule
+    AngularFireStorageModule,
+    LoadingModule
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, },

@@ -15,6 +15,7 @@ import { SplashScreenPage } from './splash-screen.page';
     IonicModule,
     SplashScreenPageRoutingModule
   ],
-  declarations: [SplashScreenPage]
+  declarations: [SplashScreenPage],
+  exports: [SplashScreenPage]
 })
 export class SplashScreenPageModule {}

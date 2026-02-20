@@ -40,28 +40,24 @@
                   <ion-row>
                     <ion-col size="12">
                       <p>{{item.name}}</p>
+                      <p class="variant-description" *ngIf="item.variantDescription">{{item.variantDescription}}</p>
                     </ion-col>
                   </ion-row>
                   <ion-row>
-                    <ion-col size="2">
-                      <p class="quantity-para">x{{item.quantity}}</p>
-                    </ion-col>
-                    <ion-col size="10" class="price-col">
+                    <ion-col class="price-col">
                       <p>${{item.price}}</p>
                     </ion-col>
                   </ion-row>
-                  <ion-row>
-                    <ion-col size="1.5" class="color-col">
+                  <ion-row class="variant-row">
+                    <ion-col class="color-col" *ngIf="item.color">
                       <div class="octagon-top" [ngStyle]="{'border-bottom':item.bgRadius}"></div>
                       <div class="octagon" [ngStyle]="{'background': item.color}"></div>
                       <div class="octagon-bottom" [ngStyle]="{'border-top':item.bgRadius}"></div>
                     </ion-col>
-                    <ion-col size="2" class="size-col">
-                      <div class="div-size">
-                        {{item.size}}
-                      </div>
+                    <ion-col class="size-col" *ngIf="item.size">
+                      <div class="div-size">{{item.size}}</div>
                     </ion-col>
-                    <ion-col size="8.5" class="btn-col ion-align-self-center">
+                    <ion-col class="btn-col ion-align-self-center">
                       <ion-button (click)="editProduct(item)">
                         Edit
                         <ion-icon src="assets/icon/edit.svg"></ion-icon>

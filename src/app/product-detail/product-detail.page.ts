@@ -4,6 +4,16 @@ import { ModalController, ToastController, NavController } from '@ionic/angular'
 import { ProductDetailModalPage } from '../product-detail-modal/product-detail-modal.page'
 import { Events } from '../services/events.service';
 import { Router } from '@angular/router';
+import { FirestoreService } from '../services/firestore.service';
+import { Firestore, collection, query, where, getDocs, doc, updateDoc } from '@angular/fire/firestore';
+import { LoadingService } from '../services/loading.service';
+
+interface GroupVariant {
+  text: string;
+  dprice: number;
+  price: number;
+  active: boolean;
+}
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -19,6 +29,7 @@ export class ProductDetailPage implements OnInit, OnDestroy {
   productQuantity = 1;
   productPrice = 90;
   productDPrice = 100; // Added for discount price
+  public cartItemCount = 0;
 
   //for blur effect
   public visiablePopup = false;
@@ -38,6 +49,7 @@ export class ProductDetailPage implements OnInit, OnDestroy {
   ];
   public colorItems = [];
   public sizeItems = [];
+  public groupItems: GroupVariant[] = [];
   sliderConfig = {
     slidesPerView: 2.1,
     spaceBetween: 5,
@@ -49,6 +61,7 @@ export class ProductDetailPage implements OnInit, OnDestroy {
 
   // Variable to hold the current product data
   currentProduct: any = null;
+  private currentOrderId: string = null;
 
   // Autoplay interval
   private autoplayInterval: any;
@@ -57,12 +70,57 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     public events: Events, private elementRef: ElementRef,
     private toastController: ToastController,
     private navCtrl: NavController,
-    private router: Router) {
+    private router: Router,
+    private firestoreService: FirestoreService,
+    private firestore: Firestore,
+    private loadingService: LoadingService) {
 
     this.events.subscribe('blurValue', (data) => {
       this.divBlur = data;
       this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
     });
+  }
+
+  async updateOrderQuantity() {
+    const useruid = localStorage.getItem('user_order_uid');
+    if (!useruid) {
+      this.cartItemCount = 0;
+      return;
+    }
+
+    const ordersRef = collection(this.firestore, 'orders');
+    const q = query(ordersRef, where('userUid', '==', useruid));
+
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      this.cartItemCount = 0;
+      return;
+    }
+
+    let totalQuantity = 0;
+    querySnapshot.forEach(orderDoc => {
+      const orderData = orderDoc.data();
+      if (orderData && orderData['products']) {
+        orderData['products'].forEach(product => {
+          if (product.variants && product.variants.length > 0) {
+            totalQuantity += product.variants.reduce((acc, variant) => acc + (variant.quantity || 0), 0);
+          } else {
+            totalQuantity += product.quantity || 0;
+          }
+        });
+      }
+    });
+
+    this.cartItemCount = totalQuantity;
+  }
+
+  getOrCreateUserUid(): string {
+    let userUid = localStorage.getItem('user_order_uid');
+    if (!userUid) {
+      userUid = 'user_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+      localStorage.setItem('user_order_uid', userUid);
+    }
+    return userUid;
   }
 
   ngOnInit() {
@@ -103,15 +161,38 @@ export class ProductDetailPage implements OnInit, OnDestroy {
       if (data.variants) {
         this.colorItems = data.variants[0].colors || [];
         this.sizeItems = data.variants[0].sizes || [];
+        this.groupItems = (data.variants[0].groups || []).map((group, index) => ({
+          ...group,
+          active: index === 0 // Set only the first item as active
+        }));
       } else {
-        // Fallback or empty if no variants
         this.colorItems = [];
         this.sizeItems = [];
+        this.groupItems = [];
       }
 
       // Reset quantity
       this.productQuantity = 1;
+      this.updateTotalPrice();
     }
+  }
+
+  selectGroup(selectedGroup: GroupVariant) {
+    this.groupItems.forEach(group => group.active = (group.text === selectedGroup.text));
+    this.updateTotalPrice();
+  }
+
+  updateTotalPrice() {
+    const selectedGroup = this.groupItems.find(g => g.active);
+
+    let unitPrice;
+    if (selectedGroup) {
+      unitPrice = selectedGroup.dprice; // Use dprice for calculation as requested
+    } else {
+      unitPrice = this.currentProduct ? parseFloat(this.currentProduct.price) : 0;
+    }
+
+    this.productPrice = unitPrice * this.productQuantity;
   }
 
   ionViewDidLeave() {
@@ -211,11 +292,16 @@ export class ProductDetailPage implements OnInit, OnDestroy {
        // console.log("Product received via Event:", data);
        // this.initializeProductData(data);
     });
+    this.updateOrderQuantity();
   }
   goToProductDetailModal() {
-    this.divBlur = "blur(6px)"
-    this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
-    this.visiablePopup = true;//for blur effect
+    this.loadingService.show();
+    setTimeout(() => {
+      this.loadingService.hide();
+      this.divBlur = "blur(6px)"
+      this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
+      this.visiablePopup = true;//for blur effect
+    }, 2000);
   }
   dismiss() {
     this.events.publish('blurValue', "blur(0px)");
@@ -238,32 +324,144 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     this.sizeItems.forEach(s => s.selectSize = false);
     item.selectSize = true;
   }
+
   isSelectSizeCheck(item) {
     item.selectSize = false;
   }
   addBtn() {
-    this.productQuantity = this.productQuantity + 1;
-    const unitPrice = this.currentProduct ? parseFloat(this.currentProduct.price) : 45; // Default 45 if no product
-    this.productPrice = unitPrice * this.productQuantity;
+    this.productQuantity++;
+    this.updateTotalPrice();
   }
   subBtn() {
-    this.productQuantity = this.productQuantity - 1;
-    if (this.productQuantity < 1) {
-      this.productQuantity = 1;
+    if (this.productQuantity > 1) {
+      this.productQuantity--;
+      this.updateTotalPrice();
     }
-    const unitPrice = this.currentProduct ? parseFloat(this.currentProduct.price) : 45;
-    this.productPrice = unitPrice * this.productQuantity;
   }
   goToReview() {
     this.navCtrl.navigateForward("review");
   }
-  goToproductSucessfull() {
-    this.visProductSuccessful = false;
+  async goToproductSucessfull() {
+    try {
+      const userUid = this.getOrCreateUserUid();
+      const selectedGroup = this.groupItems.find(g => g.active);
+      const selectedColor = this.colorItems.find(c => c.selectSize);
+      const selectedSize = this.sizeItems.find(s => s.selectSize);
+
+      const newVariantInfo = {
+        quantity: this.productQuantity,
+        totalPrice: this.productPrice,
+        selectedVariants: []
+      };
+      if (selectedGroup) newVariantInfo.selectedVariants.push({ type: 'group', ...selectedGroup });
+      if (selectedColor) newVariantInfo.selectedVariants.push({ type: 'color', ...selectedColor });
+      if (selectedSize) newVariantInfo.selectedVariants.push({ type: 'size', ...selectedSize });
+
+      const ordersRef = collection(this.firestore, 'orders');
+      const q = query(ordersRef, where('userUid', '==', userUid));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        // --- CREATE a new order document for this user ---
+        const newProductEntry = {
+          productId: this.currentProduct.id,
+          productName: this.currentProduct.title || this.currentProduct.text,
+          productImg: this.currentProduct.img,
+          variants: [newVariantInfo],
+        };
+
+        const order = {
+          userUid: userUid,
+          products: [newProductEntry], // Array of products
+          createdAt: new Date(),
+          paymentStatus: 'pending'
+        };
+        const docRef = await this.firestoreService.create('orders', order);
+        this.currentOrderId = docRef.id; // Store the new order ID
+      } else {
+        // --- UPDATE existing order document ---
+        const orderDoc = querySnapshot.docs[0];
+        const orderData = orderDoc.data();
+        this.currentOrderId = orderDoc.id; // Store the existing order ID
+        const products = orderData['products'] || [];
+        const orderDocRef = doc(this.firestore, 'orders', orderDoc.id);
+
+        const productIndex = products.findIndex(p => p.productId === this.currentProduct.id);
+
+        if (productIndex > -1) {
+          // Product is already in the cart, check for duplicate variant
+          const existingProduct = products[productIndex];
+          const existingVariants = existingProduct.variants || [];
+
+          // Helper to compare variants
+          const variantsAreEqual = (v1, v2) => {
+            const getVariant = (arr, type) => arr.find(v => v.type === type);
+            const group1 = getVariant(v1, 'group'), color1 = getVariant(v1, 'color'), size1 = getVariant(v1, 'size');
+            const group2 = getVariant(v2, 'group'), color2 = getVariant(v2, 'color'), size2 = getVariant(v2, 'size');
+            const groupMatch = (!group1 && !group2) || (group1?.text === group2?.text);
+            const colorMatch = (!color1 && !color2) || (color1?.color === color2?.color);
+            const sizeMatch = (!size1 && !size2) || (size1?.name === size2?.name);
+            return groupMatch && colorMatch && sizeMatch;
+          };
+
+          const isDuplicate = existingVariants.some(variant => variantsAreEqual(variant.selectedVariants, newVariantInfo.selectedVariants));
+
+          if (isDuplicate) {
+            const toast = await this.toastController.create({
+              message: 'This product configuration is already in your cart.',
+              duration: 3000,
+              color: 'warning',
+              position: 'top'
+            });
+            toast.present();
+            return; // Stop execution
+          }
+
+          // Add new variant to the existing product's variants array
+          existingProduct.variants.push(newVariantInfo);
+        } else {
+          // Product is not in the cart, add it as a new entry
+          const newProductEntry = {
+            productId: this.currentProduct.id,
+            productName: this.currentProduct.title || this.currentProduct.text,
+            productImg: this.currentProduct.img,
+            variants: [newVariantInfo],
+          };
+          products.push(newProductEntry);
+        }
+
+        // Update the entire products array in the document
+        await updateDoc(orderDocRef, {
+          products: products
+        });
+      }
+
+      // Show success view after creating/updating
+      this.visProductSuccessful = false;
+
+    } catch (error) {
+      console.error("Error creating/updating order:", error);
+      const toast = await this.toastController.create({
+        message: 'There was an error placing your order. Please try again.',
+        duration: 3000,
+        color: 'danger'
+      });
+      toast.present();
+    }
   }
   goToCart() {
+    this.loadingService.show();
     this.events.publish('blurValue', "blur(0px)");
     this.visProductSuccessful = true;
-    this.navCtrl.navigateForward("cart");
+    // Pass the orderId to the cart page
+    setTimeout(() => {
+      this.loadingService.hide();
+      this.navCtrl.navigateForward('cart', {
+        state: {
+          orderId: this.currentOrderId
+        }
+      });
+    }, 2000);
   }
   goToHome() {
     this.events.publish('blurValue', "blur(0px)");

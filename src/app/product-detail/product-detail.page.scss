@@ -14,19 +14,20 @@
      transition: filter 0.3s ease;
   }
 
-  ion-item {
+  .item-header {
     position: absolute;
-
     z-index: 999;
     width: 100%;
     --background: transparent;
-    ion-searchbar {
-      margin-top: 20px;
-      height: 46px;
-      opacity: 0.5;
-      --placeholder-opacity: 1;
-      --placeholder-color: #582f00;
+    padding-top: 20px;
+
+    .header-title {
+      font-family: "century-school-back-bold";
+      font-size: 20px;
+      color: #1A2363;
+      text-align: center;
     }
+
     ion-button,
     ion-menu-button {
       height: 42px;
@@ -186,6 +187,8 @@
         }
       }
     }
+
+
   }
 
   /* Botón de Comprar */
@@ -228,15 +231,6 @@
       }
       .new {
         background: #1473e6;
-      }
-      ion-button {
-        height: 20px;
-        float: right;
-        --padding-end: 0;
-        ion-icon {
-          font-size: 18px;
-          color: #81624e;
-        }
       }
     }
     .row-product-name {
@@ -345,24 +339,26 @@
       max-height: 80vh; /* Limit height */
       border-radius: 20px;
       overflow-y: auto; /* Scroll if content is too long */
-      padding-bottom: 20px;
+      padding: 20px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      position: relative;
 
-      .header-item {
-        --background: transparent;
-        ion-icon {
-          font-size: 25px;
-          margin-top: 10px;
-          margin-right: 10px;
-          color: #c5c2c2;
-        }
+      .close-popup-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 28px;
+        color: #1A2363;
+        cursor: pointer;
+        z-index: 10;
       }
       .color-header {
         font-family: "century-school-back-bold";
         font-size: 18px;
-        margin-left: 16px;
-        margin-top: 0;
-        margin-bottom: 10px;
+        margin: 0 0 10px 0;
+        background-color: #1A2363;
+        color: white;
+        padding: 8px 16px;
       }
 
       /* --- NEW MODERN COLOR SELECTOR STYLES --- */
@@ -444,9 +440,10 @@
       .header-size {
         font-family: "century-school-back-bold";
         font-size: 18px;
-        margin-left: 16px;
-        margin-top: 10px;
-        margin-bottom: 10px;
+        margin: 20px 0 10px 0;
+        background-color: #1A2363;
+        color: white;
+        padding: 8px 16px;
       }
 
       /* --- NEW MODERN SIZE SELECTOR STYLES --- */
@@ -528,6 +525,65 @@
         }
       }
 
+      .group-list {
+        padding: 0 16px;
+        margin-bottom: 20px;
+
+        .group-card {
+          width: 100%;
+          margin: 0 0 10px 0;
+          border-radius: 10px;
+          background: #f9f7f6;
+          border: 2px solid transparent;
+          transition: all 0.3s ease;
+          cursor: pointer;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+
+          ion-card-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+
+            .item-text {
+              font-family: "roboto-medium";
+              font-size: 15px;
+              color: #333;
+            }
+
+            .price-wrapper {
+              text-align: right;
+
+              .striked-price {
+                text-decoration: line-through;
+                color: red;
+                font-size: 12px;
+                font-family: "roboto-regular";
+              }
+
+              .main-price {
+                font-family: "roboto-bold";
+                font-size: 16px;
+                color: #1A2363;
+              }
+            }
+          }
+
+          &.selected {
+            background: #1A2363;
+            border-color: #1A2363;
+
+            ion-card-content {
+              .item-text,
+              .price-wrapper .striked-price,
+              .price-wrapper .main-price {
+                color: white;
+              }
+            }
+          }
+        }
+      }
+
       .grid-quantity {
         margin-left: 16px;
         margin-right: 16px;
@@ -539,9 +595,8 @@
           border: solid 1px #707070;
           border-radius: 5px;
           color: black;
-          p {
+          span {
             font-size: 20px;
-            margin-top: 17px;
           }
         }
         div {
@@ -569,6 +624,17 @@
           font-size: 13px;
           --border-radius: 20px;
           width: 80%;
+        }
+        .close-btn {
+          text-transform: capitalize;
+          --background: #B446FF;
+          --color: white;
+          font-family: "roboto-regular";
+          height: 42px;
+          font-size: 13px;
+          --border-radius: 20px;
+          width: 80%;
+          margin-top: 10px;
         }
       }
     }

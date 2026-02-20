@@ -9,7 +9,7 @@
         <ion-icon [name]="isGrid ? 'list' : 'grid'"></ion-icon>
       </ion-button>
       <ion-button shape="round" slot="end" routerLink="/cart">
-        <ion-badge class="home-badge">0</ion-badge>
+        <ion-badge class="home-badge">{{ cartItemCount }}</ion-badge>
         <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
       </ion-button>
     </ion-item>

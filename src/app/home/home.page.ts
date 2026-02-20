@@ -5,7 +5,7 @@ import { Browser } from '@capacitor/browser';
 import { Events } from '../services/events.service';
 import { DataService } from '../services/data.service';
 import { Router, NavigationExtras } from '@angular/router';
-import { Firestore, collection, query, where, collectionData, doc, updateDoc, orderBy } from '@angular/fire/firestore';
+import { Firestore, collection, query, where, collectionData, doc, updateDoc, orderBy, getDocs } from '@angular/fire/firestore';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -23,6 +23,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
   public newItems = [];
   public saleItems = [];
   public isGrid = false; // Default to list view (1 column)
+  public cartItemCount = 0;
 
   @ViewChildren('scrollContainer') scrollContainers: QueryList<ElementRef>;
   private autoScrollInterval: any;
@@ -73,6 +74,39 @@ export class HomePage implements AfterViewInit, OnDestroy {
     collectionData(saleItemsQuery, { idField: 'id' }).subscribe((data: any[]) => {
       this.saleItems = data;
     });
+  }
+
+  async updateOrderQuantity() {
+    const useruid = localStorage.getItem('user_order_uid');
+    if (!useruid) {
+      this.cartItemCount = 0;
+      return;
+    }
+
+    const ordersRef = collection(this.firestore, 'orders');
+    const q = query(ordersRef, where('userUid | |', '==', useruid));
+
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      this.cartItemCount = 0;
+      return;
+    }
+
+    let totalQuantity = 0;
+    querySnapshot.forEach(orderDoc => {
+      const orderData = orderDoc.data();
+      if (orderData && orderData['products']) {
+        orderData['products'].forEach(product => {
+          if (product.variants && product.variants.length > 0) {
+            totalQuantity += product.variants.reduce((acc, variant) => acc + (variant.quantity || 0), 0);
+          } else {
+            totalQuantity += product.quantity || 0;
+          }
+        });
+      }
+    });
+
+    this.cartItemCount = totalQuantity;
   }
 
   ngAfterViewInit() {
@@ -187,6 +221,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.visiablePopup = false;//for blur effect
     this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
     this.startAutoScroll();
+    this.updateOrderQuantity();
   }
 
   ionViewWillLeave() {

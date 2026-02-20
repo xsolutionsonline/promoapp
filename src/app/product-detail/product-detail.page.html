@@ -1,16 +1,15 @@
 <ion-content class="content-product">
   <div class="blur-content" style='filter:var(--my-var)'>
-    <ion-item class="item-searcbar" lines="none">
+    <ion-item class="item-header" lines="none">
       <ion-menu-button class="menu-btn" slot="start">
-        <ion-icon src="assets/icon/menu.svg"></ion-icon>
+        <ion-icon src="assets/icon/menu.svg" />
       </ion-menu-button>
-      <ion-searchbar name="search" placeholder="search">
-      </ion-searchbar>
+      <ion-title class="header-title">Detalles del Producto</ion-title>
       <ion-button shape="round" slot="end" routerLink="/cart" routerDirection="forward">
         <ion-badge class="home-badge">
           0
         </ion-badge>
-        <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
+        <ion-icon src="assets/icon/shopping-cart.svg" />
       </ion-button>
     </ion-item>
 
@@ -33,13 +32,6 @@
       </div>
     </div>
 
-    <!-- Cart Button below slides, aligned right -->
-    <div style="display: flex; justify-content: flex-end; padding-right: 16px; margin-top: -20px; position: relative; z-index: 10;">
-      <ion-button shape="round" class="buy-btn" (click)="goToProductDetailModal()">
-        <ion-icon slot="icon-only" name="cart"></ion-icon>
-      </ion-button>
-    </div>
-
     <ion-grid class="grid-tags">
       <ion-row class="row-tags">
         <ion-col size="3" class="ion-align-self-end">
@@ -57,12 +49,6 @@
             On Sale
           </div>
         </ion-col>
-        <ion-col size="3" class="ion-align-self-center">
-          <ion-button (click)="share()" fill="clear">
-            <ion-icon src="assets/icon/share.svg">
-            </ion-icon>
-          </ion-button>
-        </ion-col>
       </ion-row>
       <ion-row class="row-product-name">
         <ion-col size="7">
@@ -71,13 +57,14 @@
           </h2>
         </ion-col>
         <ion-col size="5" class="ion-align-self-start col-heart-icon">
+          <ion-button shape="round" class="buy-btn" (click)="goToProductDetailModal()">
+            <ion-icon slot="icon-only" name="cart" />
+          </ion-button>
           <ion-button fill="clear" *ngIf="visHeart" (click)="heart()">
-            <ion-icon name="heart" class="icon-empty">
-            </ion-icon>
+            <ion-icon name="heart" class="icon-empty" />
           </ion-button>
           <ion-button fill="clear" *ngIf="!visHeart" (click)="heart()">
-            <ion-icon name="heart" class="icon-filled">
-            </ion-icon>
+            <ion-icon name="heart" class="icon-filled" />
           </ion-button>
         </ion-col>
       </ion-row>
@@ -88,25 +75,25 @@
         <ion-col size="3">
           <p class="para-price">${{productPrice}}</p>
         </ion-col>
-        <ion-col size="6" class="col-stock">
+        <ion-col size="9" class="col-stock">
           <p>In Stock</p>
         </ion-col>
       </ion-row>
       <ion-row class="row-star">
         <ion-col size="0.4" class="ion-align-self-start" (click)="goToReview()">
-          <ion-icon name="star"></ion-icon>
+          <ion-icon name="star" />
         </ion-col>
         <ion-col size="0.4" class="ion-align-self-start" (click)="goToReview()">
-          <ion-icon name="star"></ion-icon>
+          <ion-icon name="star" />
         </ion-col>
         <ion-col size="0.4" class="ion-align-self-start" (click)="goToReview()">
-          <ion-icon name="star"></ion-icon>
+          <ion-icon name="star" />
         </ion-col>
         <ion-col size="0.4" class="ion-align-self-start" (click)="goToReview()">
-          <ion-icon name="star"></ion-icon>
+          <ion-icon name="star" />
         </ion-col>
         <ion-col size="1" class="ion-align-self-start" (click)="goToReview()">
-          <ion-icon name="star" class="empty-icon"></ion-icon>
+          <ion-icon name="star" class="empty-icon" />
         </ion-col>
         <ion-col>
           <p class="review-para">
@@ -148,9 +135,9 @@
               </ion-col>
               <ion-col size="7" class="col-heart">
                 <ion-icon *ngIf="!productSlide.heartVis" (click)="heartProduct(productSlide)" class="col-heart-empty"
-                  name="heart"></ion-icon>
+                  name="heart" />
                 <ion-icon *ngIf="productSlide.heartVis" (click)="heartProduct(productSlide)" class="col-heart-filled"
-                  name="heart"></ion-icon>
+                  name="heart" />
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -162,12 +149,10 @@
   <div class="main-popup" *ngIf="visiablePopup">
     <!-- div with white color -->
     <div class="inner-div" *ngIf="visProductSuccessful">
-      <ion-item class="header-item" lines="none">
-        <ion-icon slot="end" name="close" (click)="dismiss()"></ion-icon>
-      </ion-item>
+      <ion-icon class="close-popup-icon" name="close" (click)="dismiss()" />
 
       <!-- Colors Container -->
-      <ng-container *ngIf="colorItems && colorItems.length > 0">
+      <ng-container *ngIf="colorItems && colorItems.length > 0 && !(groupItems && groupItems.length > 0)">
         <h2 class="color-header">Select Colors:</h2>
         <ion-grid class="grid-color">
           <ion-row>
@@ -179,7 +164,7 @@
                 </div>
                 <p>{{item.text}}</p>
                 <div class="icon-tick" *ngIf="item.selectSize">
-                  <ion-icon name="checkmark"></ion-icon>
+                  <ion-icon name="checkmark" />
                 </div>
               </div>
             </ion-col>
@@ -188,7 +173,7 @@
       </ng-container>
 
       <!-- Sizes Container -->
-      <ng-container *ngIf="sizeItems && sizeItems.length > 0">
+      <ng-container *ngIf="sizeItems && sizeItems.length > 0 && !(groupItems && groupItems.length > 0)">
         <h2 class="header-size">Select Size:</h2>
         <ion-grid class="grid-size">
           <ion-row>
@@ -199,7 +184,7 @@
                 </div>
                 <p>{{item.text}}</p>
                 <div class="icon-tick" *ngIf="item.selectSize">
-                  <ion-icon name="checkmark"></ion-icon>
+                  <ion-icon name="checkmark" />
                 </div>
               </div>
             </ion-col>
@@ -207,21 +192,38 @@
         </ion-grid>
       </ng-container>
 
+      <!-- Group Container -->
+      <ng-container *ngIf="groupItems && groupItems.length > 0">
+        <h2 class="header-size">Select Promotion:</h2>
+        <div class="group-list">
+          <ion-card class="group-card" *ngFor="let item of groupItems; let i=index" [class.selected]="item.active" (click)="selectGroup(item)">
+            <ion-card-content>
+              <div class="item-text">{{item.text}}</div>
+              <div class="price-wrapper">
+                <div class="striked-price">${{item.price}}</div>
+                <div class="main-price">${{item.dprice}}</div>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </div>
+      </ng-container>
+
       <!-- Quantity Container -->
+       <ng-container *ngIf=" !(groupItems && groupItems.length > 0)">
       <h2 class="header-size">Select Quantity:</h2>
       <ion-grid class="grid-quantity ion-no-padding">
         <ion-row>
           <ion-col class="ion-no-padding" size="2">
             <ion-button fill="clear" (click)="addBtn()">
-              <p>+</p>
+              <span>+</span>
             </ion-button>
           </ion-col>
           <ion-col class="ion-no-padding ion-align-self-center" size="2">
             <div>{{productQuantity}}</div>
           </ion-col>
           <ion-col class="ion-no-padding" size="2">
-            <ion-button fill="clear" size="2" (click)="subBtn()">
-              <p>-</p>
+            <ion-button fill="clear" (click)="subBtn()">
+              <span>-</span>
             </ion-button>
           </ion-col>
           <ion-col class="ion-no-padding">
@@ -229,19 +231,23 @@
           </ion-col>
         </ion-row>
       </ion-grid>
+      </ng-container>
 
       <div class="cart-div">
         <ion-button (click)="goToproductSucessfull()" class="cart-btn">
           Add To Cart
         </ion-button>
+        <ion-button (click)="dismiss()" class="close-btn">
+          Close
+        </ion-button>
       </div>
     </div>
     <div class="inner-div-sucess" *ngIf="!visProductSuccessful">
       <ion-item class="header-item" lines="none">
-        <ion-icon slot="end" name="close" (click)="dismiss()"></ion-icon>
+        <ion-icon slot="end" name="close" (click)="dismiss()" />
       </ion-item>
       <div class="sucess-div-icon">
-        <ion-icon src="assets/icon/checked.svg"></ion-icon>
+        <ion-icon src="assets/icon/checked.svg" />
         <p>Your Product Has Been Successfully Added To Your Cart</p>
       </div>
       <div class="cart-div">
