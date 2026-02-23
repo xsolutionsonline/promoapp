@@ -237,13 +237,13 @@
     <div class="div-icon">
       <ion-icon class="animated headShake" id="icon-animation" src="assets/icon/empty-cart.svg"></ion-icon>
       <h2 class="header-text">Your Cart is Empty!</h2>
-      <ion-button fill="clear" routerLink="/category-detail" routerDirection="forward">
+      <ion-button fill="clear" routerLink="/home" routerDirection="forward">
         <u>Continue Shopping</u>
       </ion-button>
     </div>
   </div>
 </ion-content>
-<ion-footer>
+<ion-footer *ngIf="!visCartEmpty">
   <div class="btn-div" style='filter:var(--my-var)'>
     <ion-button class="animated fadeIn" shape="round" routerLink="/checkout" routerDirection="forward">
       <p>Proceed</p>

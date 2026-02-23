@@ -24,7 +24,7 @@
     ion-menu-button {
       height: 42px;
       margin-top: auto;
-      --background: #1A2363; // Blue color for menu and cart buttons
+      --background: var(--ion-color-primary); // Blue color for menu and cart buttons
       width: 55px;
       margin-left: 0;
       margin-bottom: 0;
@@ -38,7 +38,7 @@
         height: 12px;
         font-size: 8px;
         --background: white;
-        --color: #1A2363;
+        --color: var(--ion-color-primary);
       }
     }
     .menu-btn {
@@ -53,7 +53,7 @@
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     --background: white;
-    box-shadow: 1px 1px 4px 1px #1A2363;
+    box-shadow: 1px 1px 4px 1px var(--ion-color-primary);
     ion-thumbnail {
       height: 130px;
       width: 100%;
@@ -153,15 +153,15 @@
             margin-right: auto;
             width: 23px;
             height: 0;
-            border-left: 7px solid #f9f7f6;
-            border-right: 7px solid #f9f7f6;
+            border-left: 7px solid white;
+            border-right: 7px solid white;
           }
           .octagon-bottom {
             margin-right: auto;
             width: 23px;
             height: 0;
-            border-left: 7px solid #f9f7f6;
-            border-right: 7px solid #f9f7f6;
+            border-left: 7px solid white;
+            border-right: 7px solid white;
           }
         }
         .size-col {
@@ -196,7 +196,7 @@
           text-align: right;
           padding-top: 0;
           ion-button {
-            --background: #d4d4d4;
+            --background: var(--ion-color-medium);
             --color: black;
             --border-radius: 5px;
             margin-right: 0;
@@ -265,7 +265,7 @@
           height: 48px;
           text-transform: capitalize;
           --box-shadow: none !important;
-          --background: #1A2363; // Purple color for apply button
+          --background: var(--ion-color-primary); // Purple color for apply button
         }
       }
     }
@@ -322,7 +322,7 @@
     z-index: 9;
     width: 100%;
     ion-button {
-      --background: #69247c; // Purple color for proceed button
+      --background: var(--ion-color-secondary); // Purple color for proceed button
       text-transform: capitalize;
       --border-radius: 10px;
       height: 45px;
@@ -339,7 +339,7 @@
       ion-col {
         .div-outer,
         .div-select {
-          background: #f9f7f6;
+          background: var(--ion-color-light);
           border-radius: 10px;
           height: 80px;
           text-align: center;
@@ -357,7 +357,7 @@
             margin-bottom: 11px;
           }
           .icon-tick {
-            background: #582f00;
+            background: var(--ion-color-primary);
             border-radius: 25px;
             color: white;
             position: absolute;
@@ -366,7 +366,7 @@
           }
         }
         .div-select {
-          background: #d4d4d4 !important;
+          background: var(--ion-color-medium) !important;
         }
         .div-btns {
           text-align: center;
@@ -379,7 +379,7 @@
             --background-activated: lightgray;
           }
           .apply-btn {
-            --background: #1A2363;
+            --background: var(--ion-color-primary);
           }
           .reset-btn {
             --background: #919191;
@@ -402,8 +402,8 @@
             width: 23px;
             height: 0;
             //   border-bottom: 8px solid red;
-            border-left: 7px solid #f9f7f6;
-            border-right: 7px solid #f9f7f6;
+            border-left: 7px solid var(--ion-color-light);
+            border-right: 7px solid var(--ion-color-light);
           }
           .octagon-bottom,
           .octagon-select-bottom {
@@ -412,13 +412,13 @@
             width: 23px;
             height: 0;
             //   border-top: 8px solid red;
-            border-left: 7px solid #f9f7f6;
-            border-right: 7px solid #f9f7f6;
+            border-left: 7px solid var(--ion-color-light);
+            border-right: 7px solid var(--ion-color-light);
           }
           .octagon-select-top,
           .octagon-select-bottom {
-            border-left: 7px solid #d4d4d4 !important;
-            border-right: 7px solid #d4d4d4 !important;
+            border-left: 7px solid var(--ion-color-medium) !important;
+            border-right: 7px solid var(--ion-color-medium) !important;
           }
         }
       }
@@ -433,7 +433,7 @@
       ion-col {
         .div-outer,
         .div-select {
-          background: #f9f7f6;
+          background: var(--ion-color-light);
           border-radius: 10px;
           height: 80px;
           text-align: center;
@@ -464,7 +464,7 @@
             margin-bottom: 11px;
           }
           .icon-tick {
-            background: #582f00;
+            background: var(--ion-color-primary);
             border-radius: 25px;
             color: white;
             position: absolute;
@@ -473,7 +473,7 @@
           }
         }
         .div-select {
-          background: #d4d4d4 !important;
+          background: var(--ion-color-medium) !important;
         }
       }
     }
@@ -481,7 +481,7 @@
   .update-col {
     text-align: center;
     ion-button {
-      --background: #1A2363;
+      --background: var(--ion-color-primary);
       text-transform: capitalize;
       --border-radius: 8px;
       height: 32px;
@@ -551,7 +551,7 @@
     ion-button {
       font-size: 17px;
       font-family: "roboto-medium";
-      --color: #5a3104;
+      --color: #1A2363;
       text-transform: capitalize;
     }
   }
@@ -589,7 +589,7 @@ ion-footer {
     ion-button {
       margin: 0;
       height: 60px;
-      --background: #69247c; // Purple color for proceed button
+      --background: var(--ion-color-secondary); // Purple color for proceed button
       width: 100%;
       --box-shadow: none;
       --border-radius: 15px;

@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { FirestoreService } from '../services/firestore.service';
 import { Firestore, collection, query, where, getDocs, doc, updateDoc } from '@angular/fire/firestore';
 import { LoadingService } from '../services/loading.service';
+import {pendingUntilEvent} from "@angular/core/rxjs-interop";
 
 interface GroupVariant {
   text: string;
@@ -89,7 +90,8 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     }
 
     const ordersRef = collection(this.firestore, 'orders');
-    const q = query(ordersRef, where('userUid', '==', useruid));
+    const q = query(ordersRef, where('userUid', '==', useruid), where('status', '==', 'pending'));
+
 
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
@@ -392,7 +394,8 @@ export class ProductDetailPage implements OnInit, OnDestroy {
   }
   async goToproductSucessfull() {
     try {
-      const userUid = this.getOrCreateUserUid();
+      debugger;
+      const useruid = this.getOrCreateUserUid();
       const selectedGroup = this.groupItems.find(g => g.active);
       const selectedColor = this.colorItems.find(c => c.selectSize);
       const selectedSize = this.sizeItems.find(s => s.selectSize);
@@ -407,7 +410,8 @@ export class ProductDetailPage implements OnInit, OnDestroy {
       if (selectedSize) newVariantInfo.selectedVariants.push({ type: 'size', ...selectedSize });
 
       const ordersRef = collection(this.firestore, 'orders');
-      const q = query(ordersRef, where('userUid', '==', userUid));
+      const q = query(ordersRef, where('userUid', '==', useruid), where('status', '==', 'pending'));
+
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
@@ -420,10 +424,11 @@ export class ProductDetailPage implements OnInit, OnDestroy {
         };
 
         const order = {
-          userUid: userUid,
+          userUid: useruid,
           products: [newProductEntry], // Array of products
           createdAt: new Date(),
-          paymentStatus: 'pending'
+          paymentStatus: 'pending',
+          status: 'pending',
         };
         const docRef = await this.firestoreService.create('orders', order);
         this.currentOrderId = docRef.id; // Store the new order ID
@@ -434,6 +439,8 @@ export class ProductDetailPage implements OnInit, OnDestroy {
         this.currentOrderId = orderDoc.id; // Store the existing order ID
         const products = orderData['products'] || [];
         const orderDocRef = doc(this.firestore, 'orders', orderDoc.id);
+        const q = query(ordersRef, where('userUid', '==', useruid), where('status', '==', 'pending'));
+
 
         const productIndex = products.findIndex(p => p.productId === this.currentProduct.id);
 

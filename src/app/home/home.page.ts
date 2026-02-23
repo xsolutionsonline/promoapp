@@ -84,7 +84,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     }
 
     const ordersRef = collection(this.firestore, 'orders');
-    const q = query(ordersRef, where('userUid', '==', useruid));
+    const q = query(ordersRef, where('userUid', '==', useruid), where('status', '==', 'pending'));
 
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {

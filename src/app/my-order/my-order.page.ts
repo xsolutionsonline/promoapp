@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { FirestoreService } from '../services/firestore.service';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -8,102 +9,77 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
   standalone: false,
 })
 export class MyOrderPage implements OnInit {
-  seg2 = 2;
-  public inProgress = true;
-  public inProgressActive = false;
-  public delivered = false;
-  public deliveredActive = true;
-  public cancelled = true;
-  public cancelledActive = false;
-  animationLeft = false;
-  // for deliverd details
-  public visDeliveredDetails = false;
-  public progressItems = [
-    { orderId: "#1902", date: "Jul 30, 2019", price: "USD 229.00", status: "In Progress" },
-    { orderId: "#1902", date: "Jul 30, 2019", price: "USD 229.00", status: "In Transit" },
-  ];
-  public deliceredItems = [
-    { orderId: "#1902", date: "Jul 30, 2019", price: "USD 229.00", status: "Delivered" },
-  ];
-  public cancelledItems = [
-    { orderId: "#1902", date: "Jul 30, 2019", price: "USD 229.00", status: "Cancelled", cancelledReason: "*Cancel Reason: Order cancelled due to technical error!" },
-  ];
-  public deliveredCards = [
-    { headerText: "Shipping Address", contentText: "123, Abc, New York, USA" },
-    { headerText: "Billing Address", contentText: "123, Abc, New York, USA" },
-    { headerText: "Shipping Method", contentText: "Free Shipping" },
-  ];
-  constructor() { }
+
+  public selectedSegment: string = 'pending';
+  public selectedOrder: any = null;
+  public isModalOpen = false;
+
+  public pendingItems: any[] = [];
+  public confirmedItems: any[] = [];
+  public deliceredItems: any[] = [];
+  public deliveryItems: any[] = [];
+
+  constructor(private firestoreService: FirestoreService) { }
 
   ngOnInit() {
+    this.getPendingOrders();
+    this.getConfirmedOrders();
+    this.getDeliveredOrders();
+    this.getDeliveryOrders();
   }
-  segmentSelected(val) {
-    if (val == "inProgress") {
-      this.inProgress = false;
-      this.inProgressActive = true;
-      this.delivered = true;
-      this.deliveredActive = false;
-      this.cancelled = true;
-      this.cancelledActive = false;
-      this.seg2 = 1;
-      console.log(this.seg2);
-    }
-    else if (val == "inProgressActive") {
-      this.inProgress = false;
-      this.inProgressActive = true;
-      this.delivered = true;
-      this.deliveredActive = false;
-      this.cancelled = true;
-      this.cancelledActive = false;
-      console.log(this.seg2);
-    }
-    else if (val == "delivered") {
-      this.inProgress = true;
-      this.inProgressActive = false;
-      this.delivered = false;
-      this.deliveredActive = true;
-      this.cancelled = true;
-      this.cancelledActive = false;
-      console.log(this.seg2);
-      if (this.seg2 == 1) {
-        this.animationLeft = true;
-        console.log("animation=left");
-      }
-      else if (this.seg2 == 3) {
-        this.animationLeft = false;
-        console.log("animation=right");
-      }
-    }
-    else if (val == "deliveredActive") {
-      this.inProgress = true;
-      this.inProgressActive = false;
-      this.delivered = false;
-      this.deliveredActive = true;
-      this.cancelled = true;
-      this.cancelledActive = false;
-      console.log(this.seg2);
-    }
-    else if (val == "cancelled") {
-      this.inProgress = true;
-      this.inProgressActive = false;
-      this.delivered = true;
-      this.deliveredActive = false;
-      this.cancelled = false;
-      this.cancelledActive = true;
-      this.seg2 = 3;
-      console.log(this.seg2);
-    }
-    else if (val == "cancelledActive") {
-      this.inProgress = true;
-      this.inProgressActive = false;
-      this.delivered = true;
-      this.deliveredActive = false;
-      this.cancelled = false;
-      this.cancelledActive = true;
-      console.log(this.seg2);
-    }
+
+  getPendingOrders() {
+    this.firestoreService.getByAttribute<any>('orders', 'status', 'pending').subscribe(data => {
+      this.pendingItems = data;
+    });
   }
-  deliveredFun() {
-    this.visDeliveredDetails = true;
+
+  getConfirmedOrders() {
+    this.firestoreService.getByAttribute<any>('orders', 'status', 'confirmed').subscribe(data => {
+      this.confirmedItems = data;
+    });
+  }
+
+  getDeliveredOrders() {
+    this.firestoreService.getByAttribute<any>('orders', 'status', 'Delivered').subscribe(data => {
+      this.deliceredItems = data;
+    });
+  }
+
+  getDeliveryOrders() {
+    this.firestoreService.getByAttribute<any>('orders', 'status', 'In Delivery').subscribe(data => {
+      this.deliveryItems = data;
+    });
+  }
+
+  segmentChanged(event: any) {
+    this.selectedSegment = event.detail.value;
+  }
+
+  showProducts(order: any) {
+    this.selectedOrder = order;
+    this.isModalOpen = true;
+  }
+
+  closeProducts() {
+    this.isModalOpen = false;
+    this.selectedOrder = null;
+  }
+
+  calculateTotalPrice(order: any): number {
+    if (!order || !order.products) {
+      return 0;
+    }
+
+    let total = order.products.reduce((sum, product) => {
+      const productTotal = product.variants.reduce((subTotal, variant) => subTotal + variant.totalPrice, 0);
+      return sum + productTotal;
+    }, 0);
+
+    if (order.discount && typeof order.discount === 'number' && order.discount > 0) {
+      total -= order.discount;
+    }
+
+    return total;
   }
 }

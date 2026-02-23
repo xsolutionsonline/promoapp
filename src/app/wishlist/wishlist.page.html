@@ -1,6 +1,6 @@
 <ion-content class="wishlist-content">
   <div *ngIf="!visEmptyWishlist">
-    <div style='filter:var(--my-var)'>
+    <div [style.filter]="divBlur">
       <ion-item class="item-searcbar" lines="none">
         <ion-menu-button class="menu-btn" slot="start">
           <ion-icon src="assets/icon/menu.svg"></ion-icon>
@@ -19,65 +19,30 @@
         </ion-icon>
         <p>Wishlist</p>
       </ion-item>
-      <ion-card class="card-header animated fadeIn">
-        <ion-thumbnail>
-          <ion-img src="assets/images/other/category-header-uno.png">
-          </ion-img>
-        </ion-thumbnail>
-      </ion-card>
+
       <!-- grid wishlist -->
       <div class="list-card" *ngFor="let product of wishlistItems">
-        <ion-grid class="grid-list" *ngIf="product.visItem">
-          <ion-row>
-            <ion-col size="9" class="tags-col">
-              <ion-row>
-                <ion-col size="3.5" *ngIf="product.featured">
-                  <div class="featured">
-                    Featured
-                  </div>
-                </ion-col>
-                <ion-col size="3.5" *ngIf="product.new">
-                  <div class="new">
-                    New
-                  </div>
-                </ion-col>
-                <ion-col size="3.5" *ngIf="product.sale">
-                  <div class="sale">
-                    On Sale
-                  </div>
-                </ion-col>
-                <ion-col>
-                  <div class="div-height-list"></div>
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col size="12">
-                  <h3 class="text-list">{{product.textList}}</h3>
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col size="2.5">
-                  <p class="para-price-del-list"><del>${{product.dPrice}}</del></p>
-                </ion-col>
-                <ion-col size="2.5">
-                  <p class="para-price-list">${{product.price}}</p>
-                </ion-col>
-                <ion-col size="5.5" class="col-heart">
-                  <ion-icon (click)="trashPopUp(product)" class="col-trash" name="trash">
-                  </ion-icon>
-                </ion-col>
-              </ion-row>
-            </ion-col>
-            <div class="div-img-list">
-              <ion-img class="list-img animated fadeInRight" src="{{product.image}}">
-              </ion-img>
+        <ion-card class="product-card">
+          <ion-img class="list-img animated fadeInRight" [src]="product.img"></ion-img>
+          <ion-card-header>
+            <ion-card-title>{{ product.title }}</ion-card-title>
+            <ion-icon (click)="trashPopUp(product)" class="col-trash" name="trash"></ion-icon>
+          </ion-card-header>
+          <ion-card-content>
+            <div *ngIf="product.variants && product.variants.length > 0">
+              <div *ngFor="let group of product.variants[0].groups" class="variant-group">
+                <p class="variant-text">{{ group.text }}</p>
+                <p class="variant-price">
+                  <del>${{ group.price | number }}</del>
+                  <span>${{ group.dprice | number }}</span>
+                </p>
+              </div>
             </div>
-          </ion-row>
-        </ion-grid>
+          </ion-card-content>
+        </ion-card>
       </div>
     </div>
     <!-- wishlist popup -->
-    <!-- div main which is transparent -->
     <div class="main-popup" *ngIf="visiablePopup">
       <div class="inner-div-sucess" *ngIf="!visProductSuccessful">
         <ion-item class="header-item" lines="none">
@@ -127,6 +92,5 @@
         <u>Continue Shopping</u>
       </ion-button>
     </div>
-
   </div>
 </ion-content>

@@ -54,7 +54,8 @@ export class CartPage implements OnInit {
     if (!this.userUid) return;
 
     const ordersRef = collection(this.firestore, 'orders');
-    const q = query(ordersRef, where('userUid', '==', this.userUid));
+    const q = query(ordersRef, where('userUid', '==', this.userUid), where('status', '==', 'pending'));
+
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {
@@ -151,6 +152,7 @@ export class CartPage implements OnInit {
     // Update the order in Firestore
     if (this.orderId) {
       const orderRef = doc(this.firestore, 'orders', this.orderId);
+
       await updateDoc(orderRef, {
         discount: this.discount,
         couponCode: this.couponCode.trim()

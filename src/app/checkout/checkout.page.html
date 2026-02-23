@@ -1,25 +1,24 @@
 <ion-content class="checkout-content">
-  <ion-item class="item-searcbar" lines="none">
-    <ion-menu-button class="menu-btn" slot="start">
-      <ion-icon src="assets/icon/menu.svg"></ion-icon>
-    </ion-menu-button>
-    <ion-searchbar name="search" placeholder="search">
-    </ion-searchbar>
-    <ion-button shape="round" slot="end" routerLink="/cart" routerDirection="forward">
-      <ion-badge class="home-badge">
-        0
-      </ion-badge>
-      <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
-    </ion-button>
-  </ion-item>
+  <!-- <ion-item class="item-searcbar" lines="none">
+     <ion-menu-button class="menu-btn" slot="start">
+       <ion-icon src="assets/icon/menu.svg"></ion-icon>
+     </ion-menu-button>
+     <ion-searchbar name="search" placeholder="search">
+     </ion-searchbar>
+     <ion-button shape="round" slot="end" routerLink="/cart" routerDirection="forward">
+       <ion-badge class="home-badge">
+         0
+       </ion-badge>
+       <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
+     </ion-button>
+   </ion-item>-->
   <ion-item lines="none" class="item-back">
-    <ion-icon slot="start" class="animated fadeIn" routerLink="/home" routerDirection="back"
-      src="assets/icon/back.svg">
+    <ion-icon slot="start" routerLink="/home" routerDirection="back" src="assets/icon/back.svg">
     </ion-icon>
     <p class="animated fadeIn">{{headerText}}</p>
-    <ion-icon (click)="pinIndicator()" *ngIf="visPin" class="indicator-icon" slot="end"
-      src="assets/icon/gps-fixed-indicator.svg">
-    </ion-icon>
+    <!-- <ion-icon (click)="pinIndicator()" *ngIf="visPin" class="indicator-icon" slot="end"
+       src="assets/icon/gps-fixed-indicator.svg">
+     </ion-icon>-->
   </ion-item>
   <ion-card class="card-header animated fadeIn">
     <ion-thumbnail>
@@ -206,40 +205,41 @@
   <!-- delivery segment -->
   <div *ngIf="visTruckActive">
     <!-- <ion-list class="expand-list ion-no-padding">
-       <ion-item lines="none" *ngFor="let item of upsShippingItems" class="ion-no-padding item-outer">
-         <ion-grid (click)="expandCardFun(item)" class="ion-no-padding">
-           <ion-card class="item-card animated fadeInUp">
-             <ion-item lines="none">
-               <ion-icon slot="start" src="assets/icon/ups.svg">
-               </ion-icon>
-               <p>UPS Shipping</p>
-               <ion-icon slot="end" class="checkmark-icon" name="checkmark" *ngIf="visSelectedUps">
-               </ion-icon>
-               <ion-icon slot="end" src="assets/icon/arrow-circle-right.svg" id="right-icon-arrow">
-               </ion-icon>
-             </ion-item>
-           </ion-card>
+      <ion-item lines="none" *ngFor="let item of upsShippingItems; let i = index" class="ion-no-padding item-outer">
+        <ion-grid (click)="expandCardFun(item)" class="ion-no-padding">
+          <ion-card class="item-card animated fadeInUp">
+            <ion-item lines="none">
+              <ion-icon slot="start" src="assets/icon/ups.svg">
+              </ion-icon>
+              <p>UPS Shipping</p>
+              <ion-icon slot="end" class="checkmark-icon" name="checkmark" *ngIf="visSelectedUps">
+              </ion-icon>
+              <ion-icon slot="end" src="assets/icon/arrow-circle-right.svg" id="right-icon-arrow">
+              </ion-icon>
+            </ion-item>
+          </ion-card>
           <ion-row (click)="expandCardFun(item)">
-
-            <app-item-expand-component expandHeight="450px" [expanded]="item.expanded"
-              class="ion-no-padding expand-comp">
-              <ion-item lines="none" class="ion-no-padding item-inner">
-                <ion-card class="category-card-inner animated fadeInUp">
-                  <ion-radio-group>
-                    <ion-item lines="none" class="radio-item"
-                      *ngFor="let subItem of item.upsShippingSubItems; let i=index" mode="ios" lines="none"
-                      (click)="btnEnbDis(i)">
-                      <p>{{subItem.name}}</p>
-                      <ion-radio mode="ios" slot="end" [value]="subItem"></ion-radio>
-                    </ion-item>
-                  </ion-radio-group>
-                </ion-card>
-              </ion-item>
-            </app-item-expand-component>
+            <ion-col>
+              <app-item-expand-component expandHeight="450px" [expanded]="item.expanded"
+                class="ion-no-padding expand-comp">
+                <ion-item lines="none" class="ion-no-padding item-inner">
+                  <ion-card class="category-card-inner animated fadeInUp">
+                    <ion-radio-group>
+                      <ion-item lines="none" class="radio-item"
+                        *ngFor="let subItem of item.upsShippingSubItems; let i=index" mode="ios" lines="none"
+                        (click)="btnEnbDis(i)">
+                        <p>{{subItem.name}}</p>
+                        <ion-radio mode="ios" slot="end" [value]="subItem"></ion-radio>
+                      </ion-item>
+                    </ion-radio-group>
+                  </ion-card>
+                </ion-item>
+              </app-item-expand-component>
+            </ion-col>
           </ion-row>
         </ion-grid>
       </ion-item>
-    </ion-list>-->
+    </ion-list> -->
     <ion-card class="item-card animated fadeInUp" (click)="btnEnbDis(-1)">
       <ion-item lines="none">
         <ion-icon slot="start" src="assets/icon/free-shipping.svg">
@@ -249,7 +249,7 @@
         </ion-icon>
       </ion-item>
     </ion-card>
-   <!-- <ion-card class="item-card animated fadeInUp" (click)="btnEnbDis(-2)">
+    <!-- <ion-card class="item-card animated fadeInUp" (click)="btnEnbDis(-2)">
       <ion-item lines="none">
         <ion-icon slot="start" src="assets/icon/local-pickup.svg">
         </ion-icon>
@@ -257,7 +257,7 @@
         <ion-icon slot="end" class="checkmark-icon" name="checkmark" *ngIf="visLocalPickUp">
         </ion-icon>
       </ion-item>
-    </ion-card>-->
+    </ion-card> -->
   </div>
   <!-- segment payment -->
   <div *ngIf="visPaymentActive">
@@ -276,27 +276,29 @@
             </ion-item>
           </ion-card>
           <ion-row (click)="expandCardFun(item)">
-            <!-- expandable component "list component". You should  its referebce in "list-expandable" mobile file -->
-            <app-item-expand-component expandHeight="450px" [expanded]="item.expanded"
-              class="ion-no-padding payment-expand">
-              <ion-item lines="full" class="ion-no-padding item-input-payment">
-                <ion-input placeholder="Name on Card"></ion-input>
-              </ion-item>
-              <ion-item lines="full" class="ion-no-padding item-input-payment">
-                <ion-input placeholder="Card Number"></ion-input>
-              </ion-item>
-              <div class="payment-div">
+            <ion-col>
+              <!-- expandable component "list component". You should  its referebce in "list-expandable" mobile file -->
+              <app-item-expand-component expandHeight="450px" [expanded]="item.expanded"
+                class="ion-no-padding payment-expand">
                 <ion-item lines="full" class="ion-no-padding item-input-payment">
-                  <ion-input placeholder="Expiration Date"></ion-input>
+                  <ion-input placeholder="Name on Card"></ion-input>
                 </ion-item>
                 <ion-item lines="full" class="ion-no-padding item-input-payment">
-                  <ion-input placeholder="Security Code"></ion-input>
+                  <ion-input placeholder="Card Number"></ion-input>
                 </ion-item>
-              </div>
-              <div class="div-use-card" (click)="btnPayment(0)">
-                <ion-button>Use This Card</ion-button>
-              </div>
-            </app-item-expand-component>
+                <div class="payment-div">
+                  <ion-item lines="full" class="ion-no-padding item-input-payment">
+                    <ion-input placeholder="Expiration Date"></ion-input>
+                  </ion-item>
+                  <ion-item lines="full" class="ion-no-padding item-input-payment">
+                    <ion-input placeholder="Security Code"></ion-input>
+                  </ion-item>
+                </div>
+                <div class="div-use-card" (click)="btnPayment(0)">
+                  <ion-button>Use This Card</ion-button>
+                </div>
+              </app-item-expand-component>
+            </ion-col>
           </ion-row>
         </ion-grid>
       </ion-item>
@@ -320,12 +322,14 @@
             <p class="heading-para ">Shipping Address:</p>
           </ion-col>
           <ion-col size="5">
-            <p class="normal-para">123-A, Street 2, New York, USA</p>
+            <p class="normal-para">{{shippingAddress}}</p>
           </ion-col>
           <ion-col size="2" class="ion-align-self-center">
-            <ion-button fill="clear">
-              <ion-icon src="assets/icon/edit-checkout.svg"></ion-icon>
-            </ion-button>
+            <ion-item>
+              <ion-button fill="clear" (click)="segmentSelect('invite')">
+                <ion-icon src="assets/icon/edit-checkout.svg"></ion-icon>
+              </ion-button>
+            </ion-item>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -337,17 +341,19 @@
             <p class="heading-para ">Shipping Method:</p>
           </ion-col>
           <ion-col size="5">
-            <p class="normal-para">UPS Shipping</p>
+            <p class="normal-para">{{shippingMethod}}</p>
           </ion-col>
           <ion-col size="2" class="ion-align-self-center">
-            <ion-button fill="clear">
-              <ion-icon src="assets/icon/edit-checkout.svg"></ion-icon>
-            </ion-button>
+            <ion-item>
+              <ion-button fill="clear" (click)="segmentSelect('truck')">
+                <ion-icon src="assets/icon/edit-checkout.svg"></ion-icon>
+              </ion-button>
+            </ion-item>
           </ion-col>
         </ion-row>
       </ion-grid>
     </ion-card>
-    <ion-card class="card-legal-shipping">
+    <ion-card class="card-legal-shipping" *ngIf="paymentMethod !== 'Cash On Delivery'">
       <ion-grid class="ion-no-padding">
         <ion-row>
           <ion-col size="5">
@@ -357,84 +363,37 @@
             <p class="normal-para">**********123</p>
           </ion-col>
           <ion-col size="2" class="ion-align-self-center">
-            <ion-button fill="clear">
-              <ion-icon src="assets/icon/edit-checkout.svg"></ion-icon>
-            </ion-button>
+            <ion-item>
+              <ion-button fill="clear" (click)="segmentSelect('payment')">
+                <ion-icon src="assets/icon/edit-checkout.svg"></ion-icon>
+              </ion-button>
+            </ion-item>
           </ion-col>
         </ion-row>
       </ion-grid>
     </ion-card>
-    <ion-card class="cart-items-card animated fadeInUp">
+    <ion-card class="cart-items-card animated fadeInUp" *ngFor="let item of cartItems">
       <ion-grid class="ion-no-padding">
         <ion-row>
           <!-- for image -->
           <ion-col size="4">
-            <ion-img class="animated fadeInUp" src="assets/images/shoes/new/3.png"></ion-img>
+            <ion-img class="animated fadeInUp" [src]="item.img"></ion-img>
           </ion-col>
           <ion-col size="8">
             <ion-grid class="grid-inner-details">
               <ion-row>
                 <ion-col size="12">
-                  <p>Product Title Will Be Go Here! Product Title</p>
+                  <p class="product-description">{{item.name}}</p>
+                  <p class="variant-description">{{item.variantDescription}}</p>
                 </ion-col>
               </ion-row>
               <ion-row>
-                <ion-col size="2">
-                  <p class="quantity-para">x1</p>
+                <ion-col size="4">
+                  <p class="quantity-para"><strong style="margin-left: 10px">Quantity:</strong> {{item.quantity}}</p>
                 </ion-col>
-                <ion-col size="10" class="price-col">
-                  <p>$90</p>
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col size="1.5" class="color-col">
-                  <div class="octagon-top" style="border-bottom:solid 8px black"></div>
-                  <div class="octagon" style="background: black"></div>
-                  <div class="octagon-bottom" style="border-top:solid 8px black"></div>
-                </ion-col>
-                <ion-col size="2" class="size-col">
-                  <div class="div-size">
-                    S
-                  </div>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-card>
-    <ion-card class="cart-items-card animated fadeInUp">
-      <ion-grid class="ion-no-padding">
-        <ion-row>
-          <!-- for image -->
-          <ion-col size="4">
-            <ion-img class="animated fadeInUp" src="assets/images/shoes/sale/1.png"></ion-img>
-          </ion-col>
-          <ion-col size="8">
-            <ion-grid class="grid-inner-details">
-              <ion-row>
-                <ion-col size="12">
-                  <p>Product Title Will Be Go Here! Product Title</p>
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col size="2">
-                  <p class="quantity-para">x1</p>
-                </ion-col>
-                <ion-col size="10" class="price-col">
-                  <p>$90</p>
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col size="1.5" class="color-col">
-                  <div class="octagon-top" style="border-bottom:solid 8px #334457"></div>
-                  <div class="octagon" style="background: #334457"></div>
-                  <div class="octagon-bottom" style="border-top:solid 8px #334457"></div>
-                </ion-col>
-                <ion-col size="2" class="size-col">
-                  <div class="div-size">
-                    S
-                  </div>
+                <ion-col size="8" class="price-col">
+                  <p class="original-price" style="color: red;font-size: 10px;">${{item.price}}</p>
+                  <p>${{item.dprice}}</p>
                 </ion-col>
               </ion-row>
             </ion-grid>
@@ -449,7 +408,7 @@
             <p>Subtotal</p>
           </ion-col>
           <ion-col size="6">
-            <p>180</p>
+            <p>{{subtotal}}</p>
           </ion-col>
         </ion-row>
         <ion-row>
@@ -457,7 +416,7 @@
             <p>Discount</p>
           </ion-col>
           <ion-col size="6">
-            <p>$0.00</p>
+            <p>${{discount}}</p>
           </ion-col>
         </ion-row>
         <ion-row>
@@ -465,7 +424,7 @@
             <p>Delivery</p>
           </ion-col>
           <ion-col size="6">
-            <p>Free</p>
+            <p>{{delivery === 0 ? 'Free' : delivery}}</p>
           </ion-col>
         </ion-row>
         <ion-row>
@@ -473,7 +432,7 @@
             <p><b>Total Price</b></p>
           </ion-col>
           <ion-col size="6">
-            <p><b>$180</b></p>
+            <p><b>${{totalPrice}}</b></p>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -492,12 +451,12 @@
     </ion-button>
   </div>
   <div class="btn-div" *ngIf="visPaymentActive">
-    <ion-button class="animated fadeIn" shape="round" (click)="goNext('visLegalActive')" [disabled]="paymentBtn">
+    <ion-button class="animated fadeIn" shape="round" (click)="goNext('visLegalActive')">
       <p>Next</p>
     </ion-button>
   </div>
   <div class="btn-div" *ngIf="visLegalActive">
-    <ion-button class="animated fadeIn" shape="round" routerLink="/thankyou" routerDirection="forward">
+    <ion-button class="animated fadeIn" shape="round" (click)="confirmOrder()">
       <p>Confirm Order</p>
     </ion-button>
   </div>
