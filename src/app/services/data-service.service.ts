@@ -6,16 +6,33 @@ import { Injectable } from '@angular/core';
 export class DataServiceService {
   public visTabBar = false;
   public isLoginSucessFull = false;
-  constructor() { }
-  public setLogin(val) {
+  private userData: any = null;
+
+  constructor() {
+    this.isLoginSucessFull = JSON.parse(localStorage.getItem('isLoginSucessFull') || 'false');
+    this.userData = JSON.parse(localStorage.getItem('userData') || 'null');
+  }
+
+  public setLogin(val: boolean) {
     console.log("i am in data service and setlogin=" + val)
     this.isLoginSucessFull = val;
+    localStorage.setItem('isLoginSucessFull', JSON.stringify(val));
   }
+
   public getLogin() {
     return this.isLoginSucessFull;
   }
-  public setvisiableTabBar(val) {
-    //console.log("i am in service and my tab valueis= "+val);
+
+  public setUserData(data: any) {
+    this.userData = data;
+    localStorage.setItem('userData', JSON.stringify(data));
+  }
+
+  public getUserData() {
+    return this.userData;
+  }
+
+  public setvisiableTabBar(val: boolean) {
     if (val == true) {
       this.visTabBar = true;
     }
@@ -23,6 +40,7 @@ export class DataServiceService {
       this.visTabBar = false;
     }
   }
+
   public getvisiableTabBar() {
     return this.visTabBar;
   }

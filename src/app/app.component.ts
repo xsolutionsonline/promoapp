@@ -19,17 +19,18 @@ export class AppComponent {
   public login = false;
   public visProfileItem = false;
   public visEditprofile = false;
+  public userName = '';
   public listItems = [
     { icon: "assets/icon/home-side.svg", text: "Home", visItem: true },
-    { icon: "assets/icon/listview-side.svg", text: "Categories", visItem: true },
+    { icon: "assets/icon/listview-side.svg", text: "Categories", visItem: false },
     { icon: "assets/icon/heart.svg", text: "Wishlist", visItem: true },
     { icon: "assets/icon/about-us.svg", text: "About Us", visItem: false },
     { icon: "assets/icon/contact-us.svg", text: "Contact Us", visItem: false },
     { icon: "assets/icon/privacy.svg", text: "Privacy Policy", visItem: false },
     { icon: "assets/icon/refund.svg", text: "Refund Policy", visItem: false },
     { icon: "assets/icon/terms.svg", text: "Terms & Services", visItem: false },
-    { icon: "assets/icon/share.svg", text: "Share", visItem: true },
-    { icon: "assets/icon/rate-us.svg", text: "Rate Us", visItem: true },
+    { icon: "assets/icon/share.svg", text: "Share", visItem: false },
+    { icon: "assets/icon/rate-us.svg", text: "Rate Us", visItem: false },
     { icon: "assets/icon/settings.svg", text: "Settings", visItem: false },
     { icon: "assets/icon/account-user.svg", text: "Edit Profile", visItem: true },
     { icon: "assets/icon/account-order.svg", text: "My Order", visItem: true },
@@ -66,6 +67,10 @@ export class AppComponent {
     console.log("I am in my app class and login value=" + this.login)
     if (this.login == true) {
       this.visProfileItem = true;
+      const userData = this.service.getUserData();
+      if (userData) {
+        this.userName = userData.fullName;
+      }
     }
   }
   initializeApp() {
@@ -93,6 +98,10 @@ export class AppComponent {
     console.log("I am in my app class and login value=" + this.login)
     if (this.login == true) {
       this.visProfileItem = true;
+      const userData = this.service.getUserData();
+      if (userData) {
+        this.userName = userData.fullName;
+      }
     }
   }
   openMenu() {
@@ -100,6 +109,10 @@ export class AppComponent {
     console.log("I am in my app class and login value=" + this.login)
     if (this.login == true) {
       this.visProfileItem = true;
+      const userData = this.service.getUserData();
+      if (userData) {
+        this.userName = userData.fullName;
+      }
     }
   }
   goToPage(i) {
@@ -225,6 +238,15 @@ export class AppComponent {
   }
   goToLogin() {
     this.navCtrl.navigateForward("login");
+  }
+  logout() {
+    this.service.setLogin(false);
+    this.service.setUserData(null);
+    localStorage.removeItem('isLoginSucessFull');
+    localStorage.removeItem('userData');
+    this.visProfileItem = false;
+    this.userName = '';
+    this.navCtrl.navigateForward("home");
   }
   ngOnInit() {
   }

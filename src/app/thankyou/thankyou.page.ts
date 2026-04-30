@@ -1,11 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Firestore, collection, query, where, orderBy, limit, getDocs } from '@angular/fire/firestore';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth';
+import { IonicModule } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-thankyou',
   templateUrl: './thankyou.page.html',
   styleUrls: ['./thankyou.page.scss'],
-  standalone:false,
+  standalone: true,
+  imports: [IonicModule, CommonModule, RouterLink],
 })
 export class ThankyouPage implements OnInit {
 
@@ -13,33 +18,39 @@ export class ThankyouPage implements OnInit {
   items = 0;
   orderId: string;
 
-  constructor(private firestore: Firestore) { }
+  private auth = inject(Auth);
+  private firestore = inject(Firestore);
+
+  constructor() { }
 
   ngOnInit() {
-    const uid = localStorage.getItem('user_order_uid');
-    if (uid) {
-      const ordersCollection = collection(this.firestore, 'orders');
-      const q = query(ordersCollection,
-        where('userUid', '==', uid),
-        limit(1)
-      );
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        const ordersCollection = collection(this.firestore, 'orders');
+        const q = query(ordersCollection,
+          where('userUid', '==', user.uid),
+          where('status', '==', 'confirmed'),
+          orderBy('createdAt', 'desc'),
+          limit(1)
+        );
 
-      getDocs(q).then(querySnapshot => {
-        if (!querySnapshot.empty) {
-          const doc = querySnapshot.docs[0];
-          this.order = doc.data();
-          this.orderId = doc.id; // Capture the document ID as orderId
-          if (this.order.products) {
-            this.order.products.forEach(product => {
-              if (product.variants) {
-                product.variants.forEach(variant => {
-                  this.items += variant.quantity;
-                });
-              }
-            });
+        getDocs(q).then(querySnapshot => {
+          if (!querySnapshot.empty) {
+            const doc = querySnapshot.docs[0];
+            this.order = doc.data();
+            this.orderId = doc.id;
+            if (this.order.products) {
+              this.order.products.forEach(product => {
+                if (product.variants) {
+                  product.variants.forEach(variant => {
+                    this.items += variant.quantity;
+                  });
+                }
+              });
+            }
           }
-        }
-      });
-    }
+        });
+      }
+    });
   }
 }

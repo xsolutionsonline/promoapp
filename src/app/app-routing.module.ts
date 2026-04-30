@@ -9,7 +9,7 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
+    loadComponent: () => import('./home/home.page').then(m => m.HomePage)
   },
   {
     path: 'list',
@@ -45,7 +45,7 @@ const routes: Routes = [
   },
   {
     path: 'product-detail',
-    loadChildren: () => import('./product-detail/product-detail.module').then(m => m.ProductDetailPageModule)
+    loadComponent: () => import('./product-detail/product-detail.page').then(m => m.ProductDetailPage)
   },
   {
     path: 'product-detail-modal',
@@ -69,15 +69,15 @@ const routes: Routes = [
   },
   {
     path: 'cart',
-    loadChildren: () => import('./cart/cart.module').then(m => m.CartPageModule)
+    loadComponent: () => import('./cart/cart.page').then(m => m.CartPage)
   },
   {
     path: 'checkout',
-    loadChildren: () => import('./checkout/checkout.module').then(m => m.CheckoutPageModule)
+    loadComponent: () => import('./checkout/checkout.page').then(m => m.CheckoutPage)
   },
   {
     path: 'thankyou',
-    loadChildren: () => import('./thankyou/thankyou.module').then(m => m.ThankyouPageModule)
+    loadComponent: () => import('./thankyou/thankyou.page').then(m => m.ThankyouPage)
   },
   {
     path: 'login',
@@ -85,7 +85,7 @@ const routes: Routes = [
   },
   {
     path: 'register',
-    loadChildren: () => import('./register/register.module').then(m => m.RegisterPageModule)
+    loadComponent: () => import('./register/register.page').then(m => m.RegisterPage)
   },
   {
     path: 'forget',
@@ -93,7 +93,7 @@ const routes: Routes = [
   },
   {
     path: 'my-order',
-    loadChildren: () => import('./my-order/my-order.module').then(m => m.MyOrderPageModule)
+    loadComponent: () => import('./my-order/my-order.page').then(m => m.MyOrderPage)
   },
   {
     path: 'reward-points',

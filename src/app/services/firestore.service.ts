@@ -21,9 +21,9 @@ export class FirestoreService {
     return setDoc(docRef, data);
   }
 
-  getAll<T>(collectionName: string) {
+  getAll<T>(collectionName: string): Observable<(T & { id: string })[]> {
     const dataCollection = collection(this.firestore, collectionName);
-    return collectionData(dataCollection, { idField: 'id' }) as Observable<T[]>;
+    return collectionData(dataCollection, { idField: 'id' }) as Observable<(T & { id: string })[]>;
   }
 
   getById<T>(collectionName: string, id: string) {
@@ -31,10 +31,15 @@ export class FirestoreService {
     return getDoc(docRef);
   }
 
-  getByAttribute<T>(collectionName: string, attribute: string, value: string) {
+  getByAttribute<T>(collectionName: string, attribute: string, value: string, userId?: string): Observable<(T & { id: string })[]> {
     const dataCollection = collection(this.firestore, collectionName);
-    const q = query(dataCollection, where(attribute, '==', value));
-    return collectionData(q, { idField: 'id' }) as Observable<T[]>;
+    let q;
+    if (userId) {
+      q = query(dataCollection, where(attribute, '==', value), where('user_order_uid', '==', userId));
+    } else {
+      q = query(dataCollection, where(attribute, '==', value));
+    }
+    return collectionData(q, { idField: 'id' }) as Observable<(T & { id: string })[]>;
   }
 
   async findDocByAttribute<T>(collectionName: string, attribute: string, value: string) {
@@ -42,7 +47,7 @@ export class FirestoreService {
     const q = query(dataCollection, where(attribute, '==', value));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
-      return querySnapshot.docs[0]; // Devuelve el primer documento encontrado
+      return querySnapshot.docs[0];
     }
     return null;
   }

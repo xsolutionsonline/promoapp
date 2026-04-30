@@ -7,14 +7,14 @@
           <ion-menu-toggle auto-hide="true">
             <ion-item lines="none" *ngIf="visProfileItem">
               <ion-avatar slot="start">
-                <ion-img src="assets/images/other/face-images/4.png"></ion-img>
+                <ion-img src="assets/icon/eurocityicon.jpeg"></ion-img>
               </ion-avatar>
               <ion-label>
                 <p>
-                  Your Name Here
+                  {{ userName }}
                 </p>
-                <ion-button fill="clear">
-                  <ion-icon src="assets/icon/logout.svg"></ion-icon>
+                <ion-button (click)="logout()">
+                  <div class="logout-indicator"></div>
                   Logout
                 </ion-button>
               </ion-label>
@@ -23,6 +23,7 @@
           <ion-menu-toggle auto-hide="true">
             <ion-item class="item-username" lines="none" *ngIf="!visProfileItem" (click)="goToLogin()">
               <ion-avatar class="avatar-dummy" slot="start">
+                <ion-img src="assets/icon/eurocityicon.jpeg"></ion-img>
               </ion-avatar>
               <ion-label>
                 <p>

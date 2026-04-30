@@ -19,12 +19,10 @@ import { ProductDetailModalPageModule } from './product-detail-modal/product-det
 import { SplashScreenPageModule } from './splash-screen/splash-screen.module';
 import { LoadingModule } from './loading/loading.module';
 
+import { environment } from '../environments/environment';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideAuth, getAuth } from '@angular/fire/auth';
-import {environment} from "../environments/environment";
-import { AngularFireStorageModule } from '@angular/fire/compat/storage';
-import { AngularFireModule } from '@angular/fire/compat';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 
 @NgModule({
   declarations: [AppComponent],
@@ -40,16 +38,14 @@ import { AngularFireModule } from '@angular/fire/compat';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireStorageModule,
-    LoadingModule
+    LoadingModule,
   ],
   providers: [
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, },
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-    provideFirestore(() => getFirestore()),
     provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore()),
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

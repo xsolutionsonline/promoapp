@@ -1,18 +1,22 @@
-import { Component, ViewEncapsulation, ElementRef, ViewChildren, QueryList, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ViewEncapsulation, ElementRef, ViewChildren, QueryList, AfterViewInit, OnDestroy, inject } from '@angular/core';
 import { HomeModelPage } from '../home-model/home-model.page';
-import { ModalController, NavController, ToastController } from '@ionic/angular';
+import { ModalController, NavController, ToastController, IonicModule } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
 import { Events } from '../services/events.service';
 import { DataService } from '../services/data.service';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router, NavigationExtras, RouterLink } from '@angular/router';
 import { Firestore, collection, query, where, collectionData, doc, updateDoc, orderBy, getDocs } from '@angular/fire/firestore';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  standalone: false,
+  standalone: true,
+  imports: [IonicModule, CommonModule, FormsModule, RouterLink],
 })
 export class HomePage implements AfterViewInit, OnDestroy {
   public visiablePopup = false;
@@ -28,6 +32,9 @@ export class HomePage implements AfterViewInit, OnDestroy {
   @ViewChildren('scrollContainer') scrollContainers: QueryList<ElementRef>;
   private autoScrollInterval: any;
 
+  private auth = inject(Auth);
+  private userUID: string | null = null;
+
   constructor(private elementRef: ElementRef,
     private modalCtrl: ModalController,
     public events: Events,
@@ -38,20 +45,25 @@ export class HomePage implements AfterViewInit, OnDestroy {
     private firestore: Firestore
   ) {
     this.events.publish('tabActive', true);
-
-    // Load data from service
     this.loadData();
-
     this.events.subscribe('blurValue', (data) => {
       this.divBlur = data;
       this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
+    });
+
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        this.userUID = user.uid;
+      } else {
+        this.userUID = null;
+      }
+      this.updateOrderQuantity();
     });
   }
 
   loadData() {
     this.slides = this.dataService.getSlides();
 
-    // Load categories from Firestore
     const categoriesRef = collection(this.firestore, 'category');
     const categoriesQuery = query(categoriesRef, where('active', '==', true));
     collectionData(categoriesQuery, { idField: 'id' }).subscribe((data: any[]) => {
@@ -77,14 +89,13 @@ export class HomePage implements AfterViewInit, OnDestroy {
   }
 
   async updateOrderQuantity() {
-    const useruid = localStorage.getItem('user_order_uid');
-    if (!useruid) {
+    if (!this.userUID) {
       this.cartItemCount = 0;
       return;
     }
 
     const ordersRef = collection(this.firestore, 'orders');
-    const q = query(ordersRef, where('userUid', '==', useruid), where('status', '==', 'pending'));
+    const q = query(ordersRef, where('userUid', '==', this.userUID), where('status', '==', 'pending'));
 
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
@@ -128,12 +139,9 @@ export class HomePage implements AfterViewInit, OnDestroy {
           const scrollAmount = container.offsetWidth * 0.85; // Scroll by roughly one item width
           const maxScrollLeft = container.scrollWidth - container.clientWidth;
 
-          // Check if we are close to the end (within a small tolerance)
           if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
-             // If at the end, scroll back to start smoothly
              container.scrollTo({ left: 0, behavior: 'smooth' });
           } else {
-             // Otherwise scroll forward
              container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
           }
         });
@@ -155,14 +163,12 @@ export class HomePage implements AfterViewInit, OnDestroy {
     const newHeartVis = !item.heartVis;
     item.heartVis = newHeartVis;
 
-    // Update Firestore
     if (item.id) {
       const productDocRef = doc(this.firestore, `products/${item.id}`);
       try {
         await updateDoc(productDocRef, { heartVis: newHeartVis });
       } catch (e) {
         console.error('Error updating heartVis in Firestore', e);
-        // Revert local change if update fails
         item.heartVis = !newHeartVis;
         const toast = await this.toastController.create({
           message: 'Failed to update wishlist status',
@@ -174,14 +180,12 @@ export class HomePage implements AfterViewInit, OnDestroy {
     }
 
     if (newHeartVis) {
-      //toast controller
       const toast = await this.toastController.create({
         message: 'Product Added To Wishlist',
         duration: 1000
       });
       toast.present();
     } else {
-      //toast controller
       const toast = await this.toastController.create({
         message: 'Product Remove To Wishlist',
         duration: 2000
@@ -201,8 +205,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
   async subscribeAlert() {
     this.divBlur = "blur(6px)"
     this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
-    this.visiablePopup = true;//for blue effect
-    // for home NgModel
+    this.visiablePopup = true;
     let modal = await this.modalCtrl.create({
       component: HomeModelPage,
       cssClass: "home-modal",
@@ -211,14 +214,13 @@ export class HomePage implements AfterViewInit, OnDestroy {
       }
     });
     return await modal.present();
-    //value of blur from home modal
   }
+
   ionViewWillEnter() {
-    //value of blur from home modal
     this.events.subscribe('blurValue', (data) => {
       this.divBlur = data;
     });
-    this.visiablePopup = false;//for blur effect
+    this.visiablePopup = false;
     this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
     this.startAutoScroll();
     this.updateOrderQuantity();
@@ -229,7 +231,6 @@ export class HomePage implements AfterViewInit, OnDestroy {
   }
 
   ngOnIt() {
-    //value of blue from home modal
     this.events.subscribe('blurValue', (data) => {
       this.divBlur = data;
     });
@@ -245,7 +246,6 @@ export class HomePage implements AfterViewInit, OnDestroy {
     await Browser.open({ url: 'https://www.linkedin.com/' });
   }
   goToShop(item) {
-
     const navigationExtras: NavigationExtras = {
       state: {
         category: item

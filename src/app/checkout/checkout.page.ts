@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { ItemExpandComponentComponent } from '../components/item-expand-component/item-expand-component.component';
 import { Router, RouterLink } from "@angular/router";
 import { Firestore, collection, query, where, getDocs, doc, updateDoc } from '@angular/fire/firestore';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -67,6 +68,8 @@ export class CheckoutPage implements OnInit {
   public shippingMethod: string;
   public paymentMethod: string;
 
+  private auth = inject(Auth);
+
   constructor(
     private loadingController: LoadingController,
     public formBuilder: FormBuilder,
@@ -100,17 +103,23 @@ export class CheckoutPage implements OnInit {
       city: ['', [Validators.required]],
       postalCode: ['', [Validators.required]]
     });
-    this.userUid = localStorage.getItem('user_order_uid');
-    if (this.userUid) {
-      this.loadCartItems();
-    }
+
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        this.userUid = user.uid;
+        this.loadCartItems();
+      } else {
+        this.userUid = null;
+        this.router.navigate(['/login']);
+      }
+    });
   }
 
   async loadCartItems() {
     if (!this.userUid) return;
 
     const ordersRef = collection(this.firestore, 'orders');
-    const q = query(ordersRef, where('userUid', '==', this.userUid));
+    const q = query(ordersRef, where('userUid', '==', this.userUid), where('status', '==', 'pending'));
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {
@@ -127,13 +136,11 @@ export class CheckoutPage implements OnInit {
             const v = variant.selectedVariants.find(sv => sv.type === type);
             return v ? v[field] : null;
           };
-
           const variantDescription = [
             getVariantDetail('group', 'text'),
             getVariantDetail('color', 'text'),
             getVariantDetail('size', 'text')
           ].filter(Boolean).join(' / ');
-
           flattenedItems.push({
             name: product.productName,
             img: product.productImg,
@@ -144,7 +151,6 @@ export class CheckoutPage implements OnInit {
           });
         });
       });
-
       this.cartItems = flattenedItems;
       this.updateCartSummary();
     }
@@ -160,255 +166,91 @@ export class CheckoutPage implements OnInit {
   }
 
   async presentToast(message: string) {
-    const toast = await this.toastController.create({
-      message,
-      duration: 2000
-    });
+    const toast = await this.toastController.create({ message, duration: 2000 });
     toast.present();
   }
 
   segmentSelect(val) {
-    if (val == 'invite') {
-      this.visInvite = false;
-      this.visTruck = true;
-      this.visPayment = true;
-      this.visLegal = true;
-      this.visInviteActive = true;
-      this.visTruckActive = false;
-      this.visPaymentActive = false;
-      this.visLegalActive = false;
-      this.headerText = "Shipping Address";
-      this.visPin = true;
-      this.visTruckActiveForLines = true;
-    }
-    else if (val == 'inviteActive') {
-      this.visInvite = false;
-      this.visTruck = true;
-      this.visPayment = true;
-      this.visLegal = true;
-      this.visInviteActive = true;
-      this.visTruckActive = false;
-      this.visPaymentActive = false;
-      this.visLegalActive = false;
-      this.headerText = "Shipping Address";
-      this.visPin = true;
-      this.visTruckActiveForLines = true;
-    }
-    else if (val == 'truck') {
-      this.visInvite = true;
-      this.visTruck = false;
-      this.visPayment = true;
-      this.visLegal = true;
-      this.visInviteActive = false;
-      this.visTruckActive = true;
-      this.visPaymentActive = false;
-      this.visLegalActive = false;
-      this.headerText = "Shipping Method";
-      this.visPin = false;
-      this.visTruckActiveForLines = true;
-    }
-    else if (val == 'truckActive') {
-      this.visInvite = true;
-      this.visTruck = false;
-      this.visPayment = true;
-      this.visLegal = true;
-      this.visInviteActive = false;
-      this.visTruckActive = true;
-      this.visPaymentActive = false;
-      this.visLegalActive = false;
-      this.headerText = "Shipping Method";
-      this.visPin = false;
-      this.visTruckActiveForLines = true;
-    }
-    else if (val == 'payment') {
-      this.visInvite = true;
-      this.visTruck = true;
-      this.visPayment = false;
-      this.visLegal = true;
-      this.visInviteActive = false;
-      this.visTruckActive = false;
-      this.visPaymentActive = true;
-      this.visLegalActive = false;
-      this.headerText = "Payment Method";
-      this.visPin = false;
-      this.visTruckActiveForLines = false;
-    }
-    else if (val == 'paymentActive') {
-      this.visInvite = true;
-      this.visTruck = true;
-      this.visPayment = false;
-      this.visLegal = true;
-      this.visInviteActive = false;
-      this.visTruckActive = false;
-      this.visPaymentActive = true;
-      this.visLegalActive = false;
-      this.headerText = "Payment Method";
-      this.visPin = false;
-      this.visTruckActiveForLines = false;
-    }
-    else if (val == 'legal') {
-      this.visInvite = true;
-      this.visTruck = true;
-      this.visPayment = true;
-      this.visLegal = false;
-      this.visInviteActive = false;
-      this.visTruckActive = false;
-      this.visPaymentActive = false;
-      this.visLegalActive = true;
-      this.headerText = "Order Summary";
-      this.visPin = false;
-      this.visTruckActiveForLines = false;
-    }
-    else if (val == 'legalActive') {
-      this.visInvite = true;
-      this.visTruck = true;
-      this.visPayment = true;
-      this.visLegal = false;
-      this.visInviteActive = false;
-      this.visTruckActive = false;
-      this.visPaymentActive = false;
-      this.visLegalActive = true;
-      this.headerText = "Order Summary";
-      this.visPin = false;
-      this.visTruckActiveForLines = false;
+    if (val == 'invite' || val == 'inviteActive') {
+      this.visInvite = false; this.visTruck = true; this.visPayment = true; this.visLegal = true;
+      this.visInviteActive = true; this.visTruckActive = false; this.visPaymentActive = false; this.visLegalActive = false;
+      this.headerText = "Shipping Address"; this.visPin = true; this.visTruckActiveForLines = true;
+    } else if (val == 'truck' || val == 'truckActive') {
+      this.visInvite = true; this.visTruck = false; this.visPayment = true; this.visLegal = true;
+      this.visInviteActive = false; this.visTruckActive = true; this.visPaymentActive = false; this.visLegalActive = false;
+      this.headerText = "Shipping Method"; this.visPin = false; this.visTruckActiveForLines = true;
+    } else if (val == 'payment' || val == 'paymentActive') {
+      this.visInvite = true; this.visTruck = true; this.visPayment = false; this.visLegal = true;
+      this.visInviteActive = false; this.visTruckActive = false; this.visPaymentActive = true; this.visLegalActive = false;
+      this.headerText = "Payment Method"; this.visPin = false; this.visTruckActiveForLines = false;
+    } else if (val == 'legal' || val == 'legalActive') {
+      this.visInvite = true; this.visTruck = true; this.visPayment = true; this.visLegal = false;
+      this.visInviteActive = false; this.visTruckActive = false; this.visPaymentActive = false; this.visLegalActive = true;
+      this.headerText = "Order Summary"; this.visPin = false; this.visTruckActiveForLines = false;
     }
   }
+
   async pinIndicator() {
-    const loading = await this.loadingController.create({
-      message: 'Please Wait',
-      duration: 2000
-    });
+    const loading = await this.loadingController.create({ message: 'Please Wait', duration: 2000 });
     await loading.present();
   }
+
   BillingToggleFun(e) {
     this.billingToggle = !this.billingToggle;
     this.visBilling = !this.visBilling;
-    console.log(this.visBilling);
-    console.log(this.billingToggle);
   }
+
   expandCardFun(item) {
     const rightIconDown = document.getElementById('right-icon-arrow');
-    if (rightIconDown.style.transform == '') {
-      rightIconDown.style.transition = 'width 1s, height 1s, transform 1s';
-      rightIconDown.style.transform = 'rotate(90deg)';
-      console.log("null condition for icon");
+    if (rightIconDown) {
+      rightIconDown.style.transform = rightIconDown.style.transform === 'rotate(90deg)' ? 'rotate(0deg)' : 'rotate(90deg)';
     }
-    else if (rightIconDown.style.transform == 'rotate(90deg)') {
-      rightIconDown.style.transition = 'width 1s, height 1s, transform 1s';
-      rightIconDown.style.transform = 'rotate(0deg)';
-      console.log("rotate(90deg) condition for icon");
-    }
-    else if (rightIconDown.style.transform == 'rotate(0deg)') {
-      rightIconDown.style.transition = 'width 1s, height 1s, transform 1s';
-      rightIconDown.style.transform = 'rotate(90deg)';
-      console.log("rotate(0deg) condition for icon");
-    }
-
-    if (item.expandedHelp) {
-      item.expandedHelp = false;
-      console.log("item.expandedHelp = false");
-    }
-    else {
-      this.upsShippingItems.map(listItem => {
-        if (item == listItem) {
-          listItem.expanded = !listItem.expanded;
-          console.log("if");
-        }
-        else {
-          console.log("else");
-          listItem.expanded = false;
-        }
-        return listItem;
-      });
-    }
+    item.expandedHelp = !item.expandedHelp;
   }
+
   goNext(val) {
     this.isSubmitted = true;
     if (!this.shippingForm.valid) {
       this.presentToast('Please provide all the required values!');
       return false;
-    } else {
-      this.shippingAddress = `${this.shippingForm.value.address}, ${this.shippingForm.value.city}, ${this.shippingForm.value.postalCode}`;
-      if (val == 'visInviteActive') {
-        this.visTruckActiveForLines = true;
-      }
-      else if (val == 'activeTruckDelivery') {
-        this.visInvite = true;
-        this.visTruck = false;
-        this.visPayment = true;
-        this.visLegal = true;
-        this.visInviteActive = false;
-        this.visTruckActive = true;
-        this.visPaymentActive = false;
-        this.visLegalActive = false;
-        this.headerText = "Shipping Method";
-      }
-      else if (val == "activePayment") {
-        if (this.shippingMethodNotSelected) {
-          this.presentToast('Please select a shipping method!');
-          return false;
-        }
-        this.visInvite = true;
-        this.visTruck = true;
-        this.visPayment = false;
-        this.visLegal = true;
-        this.visInviteActive = false;
-        this.visTruckActive = false;
-        this.visPaymentActive = true;
-        this.visLegalActive = false;
-        this.headerText = "Payment Method";
-      }
-      else if (val == "visLegalActive") {
-        if (this.paymentBtn) {
-          this.presentToast('Please select a payment method!');
-          return false;
-        }
-        this.visInvite = true;
-        this.visTruck = true;
-        this.visPayment = true;
-        this.visLegal = false;
-        this.visInviteActive = false;
-        this.visTruckActive = false;
-        this.visPaymentActive = false;
-        this.visLegalActive = true;
-        this.headerText = "Order Summary";
-      }
-      return true;
     }
+    this.shippingAddress = `${this.shippingForm.value.address}, ${this.shippingForm.value.city}, ${this.shippingForm.value.postalCode}`;
+    if (val == 'visInviteActive') {
+      this.visTruckActiveForLines = true;
+    } else if (val == 'activeTruckDelivery') {
+      this.segmentSelect('truck');
+    } else if (val == "activePayment") {
+      if (this.shippingMethodNotSelected) {
+        this.presentToast('Please select a shipping method!');
+        return false;
+      }
+      this.segmentSelect('payment');
+    } else if (val == "visLegalActive") {
+      if (this.paymentBtn) {
+        this.presentToast('Please select a payment method!');
+        return false;
+      }
+      this.segmentSelect('legal');
+    }
+    return true;
   }
+
   btnEnbDis(i) {
     this.shippingMethodNotSelected = false;
-    if (i >= 0) {
-      this.shippingMethod = this.upsShippingItems[0].upsShippingSubItems[i].name;
-      this.visSelectedUps = true;
-      this.visFreeUps = false;
-      this.visLocalPickUp = false;
-    }
-    else if (i == -1) {
-      this.shippingMethod = "Free Shipping";
-      this.visSelectedUps = false;
-      this.visFreeUps = true;
-      this.visLocalPickUp = false;
-    }
-    else if (i == -2) {
-      this.shippingMethod = "Local Pickup";
-      this.visSelectedUps = false;
-      this.visFreeUps = false;
-      this.visLocalPickUp = true;
-    }
+    this.visSelectedUps = i >= 0;
+    this.visFreeUps = i === -1;
+    this.visLocalPickUp = i === -2;
+    if (i >= 0) this.shippingMethod = this.upsShippingItems[0].upsShippingSubItems[i].name;
+    if (i === -1) this.shippingMethod = "Free Shipping";
+    if (i === -2) this.shippingMethod = "Local Pickup";
   }
+
   btnPayment(i) {
     this.paymentBtn = false;
-    if (i == 0) {
-      this.paymentMethod = "Debit/Master Card";
-      this.visMasterCard = true;
-      this.visCashOnDelivery = false;
-    }
-    else if (i == 1) {
-      this.paymentMethod = "Cash On Delivery";
-      this.visMasterCard = false;
-      this.visCashOnDelivery = true;
-    }
+    this.visMasterCard = i === 0;
+    this.visCashOnDelivery = i === 1;
+    if (i === 0) this.paymentMethod = "Debit/Master Card";
+    if (i === 1) this.paymentMethod = "Cash On Delivery";
   }
 
   async confirmOrder() {
@@ -416,7 +258,6 @@ export class CheckoutPage implements OnInit {
       this.presentToast('Error: No order to confirm.');
       return;
     }
-
     const orderRef = doc(this.firestore, 'orders', this.orderId);
     const dataToUpdate = {
       shippingAddress: this.shippingAddress,
@@ -424,7 +265,6 @@ export class CheckoutPage implements OnInit {
       paymentMethod: this.paymentMethod,
       status: 'confirmed'
     };
-
     try {
       await updateDoc(orderRef, dataToUpdate);
       this.router.navigate(['/thankyou']);

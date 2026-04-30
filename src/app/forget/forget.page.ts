@@ -1,5 +1,7 @@
 import { Component, OnInit, ElementRef, ViewEncapsulation } from '@angular/core';
 import { Events } from '../services/events.service';
+import { Auth, sendPasswordResetEmail } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -15,7 +17,9 @@ export class ForgetPage implements OnInit {
   public email = "";
   public resetBtn = true;
   constructor(public events: Events,
-    private elementRef: ElementRef, ) {
+    private elementRef: ElementRef,
+    private auth: Auth,
+    private router: Router) {
     this.events.subscribe('blurValue', (data) => {
       this.divBlur = data;
       this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
@@ -29,10 +33,16 @@ export class ForgetPage implements OnInit {
       this.resetBtn = true;
     }
   }
-  isforgetPassword() {
-    this.divBlur = "blur(6px)"
-    this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
-    this.visiablePopup = true;//for blur effect
+  async isforgetPassword() {
+    try {
+      await sendPasswordResetEmail(this.auth, this.email);
+      this.divBlur = "blur(6px)"
+      this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
+      this.visiablePopup = true;//for blur effect
+    } catch (error) {
+      console.error('Error sending password reset email', error);
+      // Handle error (e.g., show a toast message)
+    }
   }
   ionViewWillEnter() {
     //value of blue from home modal
@@ -45,6 +55,7 @@ export class ForgetPage implements OnInit {
   dismiss() {
     this.events.publish('blurValue', "blur(0px)");
     this.visiablePopup = false;//for disable blur effect
+    this.router.navigate(['/home']);
   }
   ngOnInit() {
   }

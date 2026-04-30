@@ -27,17 +27,23 @@ ion-app {
               color: black;
             }
             ion-button {
-              --background: transparent;
-              --color: black;
+              --background: #1A2363;
+              --color: white;
               font-family: "roboto-regular";
-              font-size: 16px;
+              font-size: 12px;
               text-transform: capitalize;
-              width: 34%;
-              --padding-start: 0;
-              --ripple-color: black;
-              ion-icon {
-                color: black;
-                margin-right: 10px;
+              width: auto;
+              --padding-start: 10px;
+              --padding-end: 10px;
+              --border-radius: 15px;
+              height: 30px;
+              margin-top: 10px;
+              .logout-indicator {
+                width: 10px;
+                height: 10px;
+                background-color: #2dd36f;
+                border-radius: 50%;
+                margin-right: 8px;
               }
             }
           }

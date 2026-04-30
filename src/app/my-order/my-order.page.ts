@@ -1,27 +1,54 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { FirestoreService } from '../services/firestore.service';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth';
+import { IonicModule } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+interface Order {
+  id: string;
+  products?: any[];
+  discount?: number;
+  createdAt?: any; // O un tipo más específico como 'Date' o 'Timestamp' si lo tienes
+  [key: string]: any;
+}
 
 @Component({
   encapsulation: ViewEncapsulation.None,
   selector: 'app-my-order',
   templateUrl: './my-order.page.html',
   styleUrls: ['./my-order.page.scss'],
-  standalone: false,
+  standalone: true,
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class MyOrderPage implements OnInit {
 
   public selectedSegment: string = 'pending';
-  public selectedOrder: any = null;
+  public selectedOrder: Order | null = null;
   public isModalOpen = false;
 
-  public pendingItems: any[] = [];
-  public confirmedItems: any[] = [];
-  public deliceredItems: any[] = [];
-  public deliveryItems: any[] = [];
+  public pendingItems: Order[] = [];
+  public confirmedItems: Order[] = [];
+  public deliceredItems: Order[] = [];
+  public deliveryItems: Order[] = [];
+
+  private auth = inject(Auth);
+  private userUID: string | null = null;
 
   constructor(private firestoreService: FirestoreService) { }
 
   ngOnInit() {
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        this.userUID = user.uid;
+      } else {
+        this.userUID = null;
+      }
+      this.loadOrders();
+    });
+  }
+
+  loadOrders() {
     this.getPendingOrders();
     this.getConfirmedOrders();
     this.getDeliveredOrders();
@@ -29,25 +56,25 @@ export class MyOrderPage implements OnInit {
   }
 
   getPendingOrders() {
-    this.firestoreService.getByAttribute<any>('orders', 'status', 'pending').subscribe(data => {
+    this.firestoreService.getByAttribute<Order>('orders', 'status', 'pending', this.userUID).subscribe(data => {
       this.pendingItems = data;
     });
   }
 
   getConfirmedOrders() {
-    this.firestoreService.getByAttribute<any>('orders', 'status', 'confirmed').subscribe(data => {
+    this.firestoreService.getByAttribute<Order>('orders', 'status', 'confirmed', this.userUID).subscribe(data => {
       this.confirmedItems = data;
     });
   }
 
   getDeliveredOrders() {
-    this.firestoreService.getByAttribute<any>('orders', 'status', 'Delivered').subscribe(data => {
+    this.firestoreService.getByAttribute<Order>('orders', 'status', 'Delivered', this.userUID).subscribe(data => {
       this.deliceredItems = data;
     });
   }
 
   getDeliveryOrders() {
-    this.firestoreService.getByAttribute<any>('orders', 'status', 'In Delivery').subscribe(data => {
+    this.firestoreService.getByAttribute<Order>('orders', 'status', 'In Delivery', this.userUID).subscribe(data => {
       this.deliveryItems = data;
     });
   }
@@ -56,7 +83,7 @@ export class MyOrderPage implements OnInit {
     this.selectedSegment = event.detail.value;
   }
 
-  showProducts(order: any) {
+  showProducts(order: Order) {
     this.selectedOrder = order;
     this.isModalOpen = true;
   }
@@ -66,7 +93,7 @@ export class MyOrderPage implements OnInit {
     this.selectedOrder = null;
   }
 
-  calculateTotalPrice(order: any): number {
+  calculateTotalPrice(order: Order): number {
     if (!order || !order.products) {
       return 0;
     }
