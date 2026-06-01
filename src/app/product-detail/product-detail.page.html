@@ -46,7 +46,7 @@
         </ion-col>
         <ion-col size="3" class="ion-align-self-end">
           <div class="sale" *ngIf="currentProduct?.sale">
-            On Sale
+            Ofertas
           </div>
         </ion-col>
       </ion-row>
@@ -103,12 +103,12 @@
       </ion-row>
     </ion-grid>
 
-    <h2 class="product-desc-header">Description</h2>
+    <h2 class="product-desc-header">Descripciòn</h2>
     <p class="product-desc-para">
       {{currentProduct?.description || 'No description available.'}}
     </p>
 
-    <h2 class="product-desc-header">Similar Products</h2>
+    <h2 class="product-desc-header">Productos Similares</h2>
     <div class="horizontal-scroll-container similar-product-slides">
       <div class="scroll-item" *ngFor="let productSlide of productSlides">
         <ion-card>
@@ -119,7 +119,7 @@
             New
           </div>
           <div class="sale" *ngIf="productSlide.sale">
-            On Sale
+            Ofertas
           </div>
           <ion-thumbnail>
             <ion-img class="animated fadeInUp" [src]="productSlide.img"></ion-img>

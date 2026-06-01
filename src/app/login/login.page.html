@@ -1,4 +1,12 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" text="" icon="arrow-back-outline"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 <ion-content [fullscreen]="true" class="thankyou-content">
+
   <ion-grid class="center-grid">
     <ion-row class="ion-justify-content-center">
       <ion-col size="12" size-sm="10" size-md="8" size-lg="6">
@@ -10,7 +18,7 @@
                   <ion-icon src="assets/icon/m-text.svg"></ion-icon>
                 </div>
               </ion-avatar>
-              <h2>Login Into Your Account</h2>
+              <h2>Ingresar</h2>
             </div>
           </ion-card>
           <ion-list class="list">
@@ -22,15 +30,15 @@
             </div>
           </ion-list>
           <ion-item class="item-forget-pass" lines="none">
-            <p>Don't Remember Your Password?</p>
-            <ion-button routerLink="/forget" routerDirection="forward" fill="clear"><u>Click Here</u></ion-button>
+            <p>Olvidaste tu contraseña?</p>
+            <ion-button routerLink="/forget" routerDirection="forward" fill="clear"><u>Ingresa aqui</u></ion-button>
           </ion-item>
           <div class="btn-div">
-            <ion-button (click)="isLogin()">Login</ion-button>
+            <ion-button (click)="isLogin()">IniciaR Sesiòn</ion-button>
           </div>
-          <p class="para-member">Not A Member?</p>
+          <p class="para-member">Aun no eres miembro?</p>
           <div class="create-div">
-            <ion-button routerLink="/register" routerDirection="forward" fill="clear">Create An Account</ion-button>
+            <ion-button routerLink="/register" routerDirection="forward" fill="clear">Registrarse</ion-button>
           </div>
         </div>
       </ion-col>

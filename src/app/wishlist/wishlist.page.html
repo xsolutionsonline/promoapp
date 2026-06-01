@@ -17,7 +17,7 @@
       <ion-item lines="none" class="item-back">
         <ion-icon slot="start" routerLink="/home" routerDirection="back" src="assets/icon/back.svg">
         </ion-icon>
-        <p>Wishlist</p>
+        <p>Favoritos</p>
       </ion-item>
 
       <!-- grid wishlist -->
@@ -50,14 +50,14 @@
         </ion-item>
         <div class="sucess-div-icon">
           <ion-icon src="assets/icon/wishlist-item-delete.svg"></ion-icon>
-          <p>Are you sure want to remove this item from the wishlist?</p>
+          <p>estas seguro de remover este producto de tus favoritos?</p>
         </div>
         <div class="cart-div">
           <ion-button (click)="itemDelete()" class="cart-btn animated fadeInLeft">
-            Yes
+            SI
           </ion-button>
           <ion-button (click)="itemNotDelete()" class="home-btn animated fadeInLeft">
-            No
+            NO
           </ion-button>
         </div>
       </div>
@@ -65,7 +65,7 @@
   </div>
   <div *ngIf="visEmptyWishlist">
     <ion-item class="item-searcbar" lines="none">
-      <ion-searchbar name="search" placeholder="search">
+      <ion-searchbar name="search" placeholder="Buscar">
       </ion-searchbar>
       <ion-button shape="round" slot="end">
         <ion-badge class="home-badge">
@@ -87,9 +87,9 @@
     </ion-card>
     <div class="div-icon">
       <ion-icon class="animated headShake" id="icon-animation" src="assets/icon/wishlist-empty.svg"></ion-icon>
-      <h2 class="header-text">Your Wishlist is Empty!</h2>
+      <h2 class="header-text">No tienes favoritos!</h2>
       <ion-button fill="clear" routerLink="/category-detail" routerDirection="forward">
-        <u>Continue Shopping</u>
+        <u>Continua comprando</u>
       </ion-button>
     </div>
   </div>

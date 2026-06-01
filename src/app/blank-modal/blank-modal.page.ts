@@ -14,6 +14,6 @@ export class BlankModalPage implements OnInit {
   ngOnInit() {
   }
   ionViewWillEnter() {
-      this.nav.navigateForward('intro');
+      this.nav.navigateForward('home');
   }
 }

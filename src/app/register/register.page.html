@@ -1,4 +1,12 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" text="" icon="arrow-back-outline"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 <ion-content class="thankyou-content">
+
   <ion-grid class="center-grid">
     <ion-row>
       <ion-col size="12">
@@ -10,13 +18,13 @@
                   <ion-icon src="assets/icon/m-text.svg"></ion-icon>
                 </div>
               </ion-avatar>
-              <h2>Create Your Account</h2>
+              <h2>Crea tu cuenta</h2>
             </div>
           </ion-card>
           <ion-list class="list">
             <ion-item>
               <ion-icon name="person-outline"></ion-icon>
-              <ion-input placeholder="Full Name" [(ngModel)]="fullName"></ion-input>
+              <ion-input placeholder="Nombre completo" [(ngModel)]="fullName"></ion-input>
             </ion-item>
             <ion-item>
               <ion-icon name="mail-outline"></ion-icon>
@@ -24,19 +32,19 @@
             </ion-item>
             <ion-item>
               <ion-icon name="lock-closed-outline"></ion-icon>
-              <ion-input placeholder="Password" type="password" [(ngModel)]="password"></ion-input>
+              <ion-input placeholder="Contraseña" type="password" [(ngModel)]="password"></ion-input>
             </ion-item>
             <ion-item>
               <ion-icon name="lock-closed-outline"></ion-icon>
-              <ion-input placeholder="Confirm Password" type="password" [(ngModel)]="confirmPassword"></ion-input>
+              <ion-input placeholder="Confirmar Contraseña" type="password" [(ngModel)]="confirmPassword"></ion-input>
             </ion-item>
           </ion-list>
           <div class="btn-div">
-            <ion-button (click)="register()">Sign Up</ion-button>
+            <ion-button (click)="register()">Registrarse</ion-button>
           </div>
-          <p class="para-member">Already a member?</p>
+          <p class="para-member">ya eres miembro?</p>
           <div class="create-div">
-            <ion-button fill="outline" routerLink="/login">Login</ion-button>
+            <ion-button fill="outline" routerLink="/login">Inicia Sesiòn</ion-button>
           </div>
         </div>
       </ion-col>

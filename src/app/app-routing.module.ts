@@ -20,10 +20,6 @@ const routes: Routes = [
     loadChildren: () => import('./home-model/home-model.module').then(m => m.HomeModelPageModule)
   },
   {
-    path: 'blank-modal',
-    loadChildren: () => import('./blank-modal/blank-modal.module').then(m => m.BlankModalPageModule)
-  },
-  {
     path: 'category-detail',
     loadChildren: () => import('./category-detail/category-detail.module').then(m => m.CategoryDetailPageModule)
   },
@@ -110,10 +106,6 @@ const routes: Routes = [
   {
     path: 'news-detail',
     loadChildren: () => import('./news-detail/news-detail.module').then(m => m.NewsDetailPageModule)
-  },
-  {
-    path: 'intro',
-    loadChildren: () => import('./intro/intro.module').then(m => m.IntroPageModule)
   },
   {
     path: 'contact-us',

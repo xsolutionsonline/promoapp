@@ -14,7 +14,7 @@ export class ProductSortPage implements OnInit {
   public radioItems = [
     { text: "Featured Products", checked: false },
     { text: "-   Newest Products", checked: false },
-    { text: "-   On Sale Products", checked: false },
+    { text: "-   Ofertas Products", checked: false },
     { text: "-   Price Low to High", checked: false },
     { text: "-   Price High to Low", checked: false }
   ]

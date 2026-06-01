@@ -8,9 +8,6 @@
   --padding-end: var(--ion-safe-area-right);
 
   .item-searcbar {
-    position: absolute;
-    z-index: 999;
-    width: 100%;
     --background: transparent;
     ion-searchbar {
       margin-top: 20px;
@@ -59,13 +56,9 @@
     }
   }
   .item-back {
-    position: absolute;
-    top: calc(28px + var(--ion-safe-area-top, 0px));
     color: white;
     font-family: "century-school-back-regular";
     font-size: 20px;
-    z-index: 999;
-    width: 100%;
     --background: transparent;
     ion-icon {
       font-size: 14px;

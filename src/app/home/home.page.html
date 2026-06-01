@@ -16,7 +16,7 @@
 
     <ng-container *ngTemplateOutlet="productSection; context: { title: 'Featured Products', items: featuredItems, icon: '🌟' }"></ng-container>
     <ng-container *ngTemplateOutlet="productSection; context: { title: 'New Products', items: newItems, icon: '🔔' }"></ng-container>
-    <ng-container *ngTemplateOutlet="productSection; context: { title: 'On Sale', items: saleItems, icon: '🎁' }"></ng-container>
+    <ng-container *ngTemplateOutlet="productSection; context: { title: 'Ofertas', items: saleItems, icon: '🎁' }"></ng-container>
 
     <ng-template #productSection let-title="title" let-items="items" let-icon="icon">
       <ng-container *ngIf="items && items.length > 0">
@@ -30,7 +30,7 @@
                     <div class="badge-container">
                       <span *ngIf="item.featured" class="badge featured-tag">Featured</span>
                       <span *ngIf="item.new" class="badge new-tag">New</span>
-                      <span *ngIf="item.sale" class="badge sale-tag">On Sale</span>
+                      <span *ngIf="item.sale" class="badge sale-tag">Ofertas</span>
                     </div>
                     <p>{{item.text}}</p>
                   </ion-col>
@@ -57,7 +57,7 @@
     </ng-template>
 
     <div class="div-category">
-      <h1>Popular Categories</h1>
+      <h1>Categorias</h1>
       <div class="div-line"></div>
       <ion-grid>
         <ion-row *ngFor="let item of categoryItems; let i = index">

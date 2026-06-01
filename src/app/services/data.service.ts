@@ -303,7 +303,7 @@ export class DataService {
   private categoryItems = [
     { img: "assets/images/category/technology.png", text: "Technology" },
     { img: "assets/images/category/pets-dos.png", text: "Pets" },
-    { img: "assets/images/category/health.png", text: "Health" },
+    { img: "assets/images/category/health.png", text: "Salud y Bienestar" },
     { img: "assets/images/category/info-prod.png", text: "Info-products" },
   ];
 

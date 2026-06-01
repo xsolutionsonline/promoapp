@@ -12,8 +12,8 @@ import { FirestoreService } from '../services/firestore.service';
 export class LoginPage implements OnInit {
   public login = false;
   public listLoginItems = [
-    { icon: "assets/icon/username.svg", placeHolder: "Username", type: "text", bindingText: "" },
-    { icon: "assets/icon/password.svg", placeHolder: "Password", type: "password", bindingText: "" },
+    { icon: "assets/icon/username.svg", placeHolder: "Usuario", type: "text", bindingText: "" },
+    { icon: "assets/icon/password.svg", placeHolder: "Contraseña", type: "password", bindingText: "" },
   ];
   constructor(private service: DataServiceService,
     private navCtrl: NavController,

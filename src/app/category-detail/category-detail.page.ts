@@ -79,7 +79,7 @@ export class CategoryDetailPage implements OnInit {
       item.heartVis = false;
       //toast controller
       const toast = await this.toastController.create({
-        message: 'Product Remove To Wishlist',
+        message: 'Producto removido de tus favoritos',
         duration: 2000
       });
       toast.present();
@@ -88,7 +88,7 @@ export class CategoryDetailPage implements OnInit {
       item.heartVis = true;
       //toast controller
       const toast = await this.toastController.create({
-        message: 'Product Added To Wishlist',
+        message: 'Producto agregado a tus favoritos',
         duration: 2000
       });
       toast.present();

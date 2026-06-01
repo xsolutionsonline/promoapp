@@ -21,9 +21,9 @@ export class AppComponent {
   public visEditprofile = false;
   public userName = '';
   public listItems = [
-    { icon: "assets/icon/home-side.svg", text: "Home", visItem: true },
+    { icon: "assets/icon/home-side.svg", text: "Inicio", visItem: true },
     { icon: "assets/icon/listview-side.svg", text: "Categories", visItem: false },
-    { icon: "assets/icon/heart.svg", text: "Wishlist", visItem: true },
+    { icon: "assets/icon/heart.svg", text: "Favortios", visItem: true },
     { icon: "assets/icon/about-us.svg", text: "About Us", visItem: false },
     { icon: "assets/icon/contact-us.svg", text: "Contact Us", visItem: false },
     { icon: "assets/icon/privacy.svg", text: "Privacy Policy", visItem: false },
@@ -32,10 +32,10 @@ export class AppComponent {
     { icon: "assets/icon/share.svg", text: "Share", visItem: false },
     { icon: "assets/icon/rate-us.svg", text: "Rate Us", visItem: false },
     { icon: "assets/icon/settings.svg", text: "Settings", visItem: false },
-    { icon: "assets/icon/account-user.svg", text: "Edit Profile", visItem: true },
-    { icon: "assets/icon/account-order.svg", text: "My Order", visItem: true },
-    { icon: "assets/icon/address.svg", text: "My Addresses", visItem: true },
-    { icon: "assets/icon/reward-points.svg", text: "Reward Points", visItem: true }
+    { icon: "assets/icon/account-user.svg", text: "Editar Perfil", visItem: true },
+    { icon: "assets/icon/account-order.svg", text: "Mis Compras", visItem: true },
+    { icon: "assets/icon/address.svg", text: "Mis Direcciones", visItem: true },
+    { icon: "assets/icon/reward-points.svg", text: "Redimir Puntos", visItem: true }
   ];
   public listInputItems = [
     { placeHolder: "First Name:", type: "text" },
