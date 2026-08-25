@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="68" height="68" viewBox="0 0 68 68">
+  <g id="Group_436" data-name="Group 436" transform="translate(-156 -348)">
+    <circle id="Ellipse_158" data-name="Ellipse 158" cx="34" cy="34" r="34" transform="translate(156 348)" fill="red"/>
+    <g id="rubbish-bin-delete-button" transform="translate(178.032 367.638)">
+      <g id="delete">
+        <path id="Path_2540" data-name="Path 2540" d="M52.657,26.511a3.324,3.324,0,0,0,3.314,3.314H69.226a3.324,3.324,0,0,0,3.314-3.314V6.628H52.657ZM74.2,1.657H68.4L66.741,0H58.456L56.8,1.657H51V4.971H74.2Z" transform="translate(-51)" fill="#fff"/>
+      </g>
+    </g>
+  </g>
+</svg>
