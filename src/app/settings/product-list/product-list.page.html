@@ -1,0 +1,52 @@
+<ion-content class="product-list-content">
+  <ion-item class="header-item" lines="none">
+    <ion-menu-button class="menu-btn" slot="start">
+      <ion-icon src="assets/icon/menu.svg"></ion-icon>
+    </ion-menu-button>
+    <h2>Productos</h2>
+    <ion-button slot="end" class="orders-btn" (click)="goToDiscounts()">
+      <ion-icon name="pricetags-outline" slot="icon-only"></ion-icon>
+    </ion-button>
+    <ion-button slot="end" class="orders-btn" (click)="goToOrders()">
+      <ion-icon name="receipt-outline" slot="icon-only"></ion-icon>
+    </ion-button>
+    <ion-button slot="end" class="add-btn" (click)="createProduct()">
+      <ion-icon name="add" slot="icon-only"></ion-icon>
+    </ion-button>
+  </ion-item>
+
+  <ng-container *ngIf="products$ | async as products; else loading">
+    <div class="empty-state" *ngIf="products.length === 0">
+      <p>Aún no has creado ningún producto.</p>
+      <ion-button (click)="createProduct()">+ Crear el primero</ion-button>
+    </div>
+
+    <div class="product-list">
+      <div class="product-card" *ngFor="let product of products">
+        <div class="product-card-img">
+          <img [src]="product.img || 'assets/images/other/category-header-uno.png'" />
+        </div>
+        <div class="product-card-info">
+          <h3>{{ product.title }}</h3>
+          <p class="category" *ngIf="product.category?.name">{{ product.category.name }}</p>
+          <p class="price">${{ product.price }}</p>
+        </div>
+        <div class="product-card-actions">
+          <ion-button fill="outline" class="edit-btn" (click)="editProduct(product.id)">
+            <ion-icon name="create-outline" slot="start"></ion-icon>
+            Editar
+          </ion-button>
+          <ion-button fill="outline" color="danger" class="delete-btn" [disabled]="deletingIds.has(product.id)" (click)="confirmDeleteProduct(product)">
+            <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #loading>
+    <div class="loading-state">
+      <ion-spinner></ion-spinner>
+    </div>
+  </ng-template>
+</ion-content>

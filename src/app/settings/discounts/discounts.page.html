@@ -1,0 +1,57 @@
+<ion-content class="discounts-content">
+  <ion-item class="header-item" lines="none">
+    <ion-menu-button class="menu-btn" slot="start">
+      <ion-icon src="assets/icon/menu.svg"></ion-icon>
+    </ion-menu-button>
+    <h2>Bonos y Descuentos</h2>
+  </ion-item>
+
+  <div class="create-bono-card">
+    <h3>Crear nuevo bono</h3>
+    <div class="create-bono-row">
+      <ion-item lines="none">
+        <ion-input placeholder="Código (ej. BIENVENIDA)" [(ngModel)]="newCode" [ngModelOptions]="{standalone: true}"></ion-input>
+      </ion-item>
+      <ion-item lines="none" class="percent-item">
+        <ion-input type="number" placeholder="% Desc." [(ngModel)]="newDiscountPercent" [ngModelOptions]="{standalone: true}"></ion-input>
+      </ion-item>
+    </div>
+    <ion-item lines="none">
+      <ion-input placeholder="Descripción (opcional)" [(ngModel)]="newDescription" [ngModelOptions]="{standalone: true}"></ion-input>
+    </ion-item>
+    <p class="hint">El código "BIENVENIDA" es especial: se aplica automáticamente cuando un cliente se registra desde el pop-up de pago contra entrega.</p>
+    <ion-button expand="block" [disabled]="isCreating" (click)="createBono()">
+      {{ isCreating ? 'Creando...' : 'Crear bono' }}
+    </ion-button>
+  </div>
+
+  <ng-container *ngIf="bonos$ | async as bonos; else loading">
+    <div class="empty-state" *ngIf="bonos.length === 0">
+      <p>Aún no has creado ningún bono.</p>
+    </div>
+
+    <div class="bono-list">
+      <div class="bono-card" *ngFor="let bono of bonos" [class.inactive]="!bono.active">
+        <div class="bono-card-header">
+          <span class="bono-code">{{ bono.id }}</span>
+          <ion-toggle [checked]="bono.active" (ionChange)="toggleActive(bono)"></ion-toggle>
+        </div>
+        <p class="bono-description" *ngIf="bono.description">{{ bono.description }}</p>
+        <div class="bono-card-row">
+          <ion-item lines="none" class="percent-edit">
+            <ion-input type="number" [(ngModel)]="bono.discountPercent" [ngModelOptions]="{standalone: true}"></ion-input>
+            <span slot="end" class="percent-suffix">%</span>
+          </ion-item>
+          <ion-button fill="clear" size="small" (click)="saveDiscountPercent(bono)">Guardar</ion-button>
+          <ion-icon name="trash-outline" class="delete-icon" (click)="confirmDelete(bono)"></ion-icon>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #loading>
+    <div class="loading-state">
+      <ion-spinner></ion-spinner>
+    </div>
+  </ng-template>
+</ion-content>

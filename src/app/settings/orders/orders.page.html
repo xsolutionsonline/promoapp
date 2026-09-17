@@ -1,0 +1,72 @@
+<ion-content class="orders-content">
+  <ion-item class="header-item" lines="none">
+    <ion-menu-button class="menu-btn" slot="start">
+      <ion-icon src="assets/icon/menu.svg"></ion-icon>
+    </ion-menu-button>
+    <h2>Pedidos Dropi</h2>
+  </ion-item>
+
+  <ng-container *ngIf="orders$ | async as orders; else loading">
+    <div class="empty-state" *ngIf="orders.length === 0">
+      <p>Aún no hay pedidos registrados.</p>
+    </div>
+
+    <ng-container *ngIf="orders.length > 0">
+      <div class="orders-toolbar">
+        <ion-checkbox
+          [checked]="selectedIds.size === orders.length"
+          [indeterminate]="selectedIds.size > 0 && selectedIds.size < orders.length"
+          (ionChange)="toggleSelectAll(orders)"></ion-checkbox>
+        <span class="orders-toolbar-label">
+          {{ selectedIds.size > 0 ? selectedIds.size + ' seleccionados' : 'Seleccionar todos' }}
+        </span>
+        <ion-select class="status-filter" interface="popover" [(ngModel)]="statusFilter">
+          <ion-select-option value="all">Todos los estados</ion-select-option>
+          <ion-select-option *ngFor="let s of statuses" [value]="s.value">{{ s.label }}</ion-select-option>
+        </ion-select>
+        <ion-button size="small" (click)="downloadExcel(orders)">
+          <ion-icon name="download-outline" slot="start"></ion-icon>
+          Descargar Excel
+        </ion-button>
+      </div>
+
+      <ng-container *ngIf="filterOrders(orders) as filtered">
+        <div class="empty-state" *ngIf="filtered.length === 0">
+          <p>No hay pedidos con ese estado.</p>
+        </div>
+
+        <div class="order-list">
+          <div class="order-card" *ngFor="let order of filtered" [class.order-card-selected]="isSelected(order)" (click)="toggleSelected(order)">
+            <ion-checkbox slot="start" [checked]="isSelected(order)" (ionChange)="toggleSelected(order)" (click)="$event.stopPropagation()"></ion-checkbox>
+            <div class="order-card-info">
+              <h3>{{ order['NOMBRES'] }} {{ order['APELLIDOS'] }}</h3>
+              <p class="meta" *ngIf="order.orderNumber">Pedido #{{ order.orderNumber }}</p>
+              <p class="product">{{ order.productTitle }}</p>
+              <p class="meta">{{ order['CIUDAD'] }}, {{ order['DEPARTAMENTO'] }} &middot; {{ order['TELEFONO'] }}</p>
+              <p class="meta">ID Producto: {{ order['ID DE PRODUCTO'] || '—' }} &middot; Cant: {{ order['CANTIDAD'] }}</p>
+            </div>
+            <div class="order-card-side">
+              <span class="price">${{ order['PRECIO TOTAL (SIN PUNTOS NI COMAS)'] }}</span>
+              <ion-select
+                class="status-select"
+                [ngClass]="'status-' + (order.status || 'nuevo')"
+                interface="popover"
+                [value]="order.status || 'nuevo'"
+                [disabled]="updatingStatusIds.has(order.id)"
+                (click)="$event.stopPropagation()"
+                (ionChange)="updateStatus(order, $event)">
+                <ion-select-option *ngFor="let s of statuses" [value]="s.value">{{ s.label }}</ion-select-option>
+              </ion-select>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #loading>
+    <div class="loading-state">
+      <ion-spinner></ion-spinner>
+    </div>
+  </ng-template>
+</ion-content>

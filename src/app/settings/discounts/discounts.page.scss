@@ -1,0 +1,173 @@
+.discounts-content {
+  --background: #f3edea;
+
+  --padding-top: var(--ion-safe-area-top);
+  --padding-bottom: var(--ion-safe-area-bottom);
+  --padding-start: var(--ion-safe-area-left);
+  --padding-end: var(--ion-safe-area-right);
+
+  .header-item {
+    position: absolute;
+    top: var(--ion-safe-area-top, 0);
+    z-index: 999;
+    width: 100%;
+    --background: transparent;
+
+    h2 {
+      color: white;
+      text-align: center;
+      width: 100%;
+      margin: 0;
+      font-size: 20px;
+      font-family: "roboto-medium";
+      padding-right: 55px;
+    }
+
+    .menu-btn {
+      height: 42px;
+      margin-top: auto;
+      margin-bottom: 0;
+      margin-left: 0;
+      margin-right: 0;
+      --background: #1A2363;
+      width: 55px;
+      --box-shadow: none;
+      --color: white;
+      color: white;
+    }
+  }
+
+  .create-bono-card {
+    margin: 76px 16px 20px;
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    h3 {
+      font-family: "roboto-medium";
+      font-size: 15px;
+      color: #1A2363;
+      margin: 0 0 10px;
+    }
+
+    .create-bono-row {
+      display: flex;
+      gap: 8px;
+
+      .percent-item {
+        flex: 0 0 100px;
+      }
+    }
+
+    ion-item {
+      --background: #f7f5f3;
+      --border-radius: 10px;
+      --padding-start: 12px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: #81624e;
+      line-height: 1.4;
+      margin: 0 0 12px;
+    }
+
+    ion-button {
+      --background: #1A2363;
+      --border-radius: 10px;
+      height: 44px;
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 20px 24px;
+
+    p { color: #81624e; }
+  }
+
+  .bono-list {
+    padding: 0 16px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .bono-card {
+    background: white;
+    border-radius: 14px;
+    padding: 12px 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: opacity 0.15s ease;
+
+    &.inactive {
+      opacity: 0.55;
+    }
+
+    .bono-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .bono-code {
+        font-family: "roboto-medium";
+        font-size: 15px;
+        font-weight: 700;
+        color: #1A2363;
+        letter-spacing: 0.02em;
+      }
+    }
+
+    .bono-description {
+      font-size: 12px;
+      color: #81624e;
+      margin: 4px 0 8px;
+    }
+
+    .bono-card-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+
+      .percent-edit {
+        flex: 0 0 90px;
+        --background: #f7f5f3;
+        --border-radius: 10px;
+        --padding-start: 10px;
+        border-radius: 10px;
+        font-size: 13px;
+        margin: 0;
+
+        .percent-suffix {
+          font-size: 13px;
+          color: #81624e;
+        }
+      }
+
+      ion-button {
+        --color: #1A2363;
+        margin: 0;
+        font-size: 12px;
+      }
+
+      .delete-icon {
+        margin-left: auto;
+        font-size: 18px;
+        color: #c0392b;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .loading-state {
+    margin-top: 140px;
+    text-align: center;
+  }
+}
