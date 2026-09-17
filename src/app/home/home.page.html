@@ -1,74 +1,91 @@
 <ion-content class="home-content">
   <div [style.filter]="divBlur">
-    <ion-item lines="none" class="header-toolbar">
-      <ion-menu-button class="menu-btn" slot="start">
-        <ion-icon src="assets/icon/menu.svg"></ion-icon>
-      </ion-menu-button>
-      <ion-searchbar name="search" placeholder="search"></ion-searchbar>
-      <ion-button shape="round" slot="end" (click)="toggleView()">
-        <ion-icon [name]="isGrid ? 'list' : 'grid'"></ion-icon>
-      </ion-button>
-      <ion-button shape="round" slot="end" routerLink="/cart">
-        <ion-badge class="home-badge">{{ cartItemCount }}</ion-badge>
-        <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
-      </ion-button>
-    </ion-item>
 
-    <ng-container *ngTemplateOutlet="productSection; context: { title: 'Featured Products', items: featuredItems, icon: '🌟' }"></ng-container>
-    <ng-container *ngTemplateOutlet="productSection; context: { title: 'New Products', items: newItems, icon: '🔔' }"></ng-container>
-    <ng-container *ngTemplateOutlet="productSection; context: { title: 'Ofertas', items: saleItems, icon: '🎁' }"></ng-container>
+    <!-- Hero header: gradient, glass controls, search + category picker -->
+    <div class="home-hero">
+      <div class="home-hero-topbar">
+        <ion-menu-button class="glass-btn menu-btn">
+          <ion-icon src="assets/icon/menu.svg"></ion-icon>
+        </ion-menu-button>
 
-    <ng-template #productSection let-title="title" let-items="items" let-icon="icon">
+        <div class="home-hero-brand">
+          <span class="eyebrow">Bienvenido</span>
+          <h1>Descubre tu próxima compra</h1>
+        </div>
+
+        <!-- Web: sit inline, right after the brand text. Mobile: wrap to their own rows below. -->
+        <div class="home-searchbar">
+          <ion-icon name="search-outline"></ion-icon>
+          <ion-searchbar name="search" placeholder="¿Qué estás buscando hoy?" mode="ios"></ion-searchbar>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- "Pago contra entrega" banner, right after the header -->
+    <div class="home-banner">
+      <img src="assets/images/banner/banner-1.png" alt="Paga al recibir" />
+    </div>
+
+    <!-- Compact category picker: first -->
+    <div class="category-select-compact" *ngIf="categoryItems && categoryItems.length > 0">
+      <ion-icon name="grid-outline"></ion-icon>
+      <ion-select interface="popover" placeholder="Explorar por categoría"
+        (ionChange)="goToShop($event.detail.value)">
+        <ion-select-option *ngFor="let item of categoryItems" [value]="item">{{item.text}}</ion-select-option>
+      </ion-select>
+    </div>
+
+    <ng-container *ngTemplateOutlet="productSection; context: { title: 'Ofertas del día', items: saleItems, icon: '🔥', ribbonText: 'Oferta', ribbonClass: 'ribbon-oferta' }"></ng-container>
+    <ng-container *ngTemplateOutlet="productSection; context: { title: 'Nuevos productos', items: newItems, icon: '✨', ribbonText: 'Nuevo', ribbonClass: 'ribbon-nuevo' }"></ng-container>
+    <ng-container *ngTemplateOutlet="productSection; context: { title: 'Destacados', items: featuredItems, icon: '🌟', ribbonText: 'Destacado', ribbonClass: 'ribbon-destacado' }"></ng-container>
+
+    <ng-template #productSection let-title="title" let-items="items" let-icon="icon" let-ribbonText="ribbonText" let-ribbonClass="ribbonClass">
       <ng-container *ngIf="items && items.length > 0">
-        <h2>{{icon}} {{title}}</h2>
-        <div class="horizontal-scroll-container" [class.grid-view]="isGrid" #scrollContainer>
-          <div class="scroll-item" *ngFor="let item of items" (click)="goToProductDetail(item)">
-            <div class="product-card-inner">
-              <ion-grid class="grid-featured">
-                <ion-row>
-                  <ion-col size="12" class="ion-no-padding">
-                    <div class="badge-container">
-                      <span *ngIf="item.featured" class="badge featured-tag">Featured</span>
-                      <span *ngIf="item.new" class="badge new-tag">New</span>
-                      <span *ngIf="item.sale" class="badge sale-tag">Ofertas</span>
-                    </div>
-                    <p>{{item.text}}</p>
-                  </ion-col>
-                </ion-row>
-                <ion-row class="ion-align-items-center">
-                  <ion-col size="8" class="price-col">
-                    <span class="para-price-del"><del>${{item.price}}</del></span>
-                    <span class="para-price">${{item.dPrice}}</span>
-                  </ion-col>
-                  <ion-col size="4" class="col-heart">
-                    <ion-icon [name]="item.heartVis ? 'heart' : 'heart-outline'"
-                              [class.heart-filled]="item.heartVis"
-                              (click)="heart(item); $event.stopPropagation()">
-                    </ion-icon>
-                  </ion-col>
-                </ion-row>
+        <div class="section-heading">
+          <span class="section-icon">{{icon}}</span>
+          <h2>{{title}}</h2>
+          <span class="section-count">{{items.length}}</span>
+        </div>
+        <div class="horizontal-scroll-container" #scrollContainer>
+          <div class="product-card" *ngFor="let item of items" (click)="goToProductDetail(item)">
+            <div class="product-media">
+              <img [src]="item.img" [alt]="item.text" />
 
-              </ion-grid>
-              <ion-img class="swipe-slider-img" [src]="item.img"></ion-img>
+              <!-- Only the ribbon for the section this card is actually shown in —
+                   a product may be featured+new+sale at once, but it's only
+                   displayed here, so it only wears this one ribbon. -->
+              <span class="ribbon" [ngClass]="ribbonClass">{{ribbonText}}</span>
+
+              <button class="wishlist-btn" (click)="heart(item); $event.stopPropagation()">
+                <ion-icon [name]="item.heartVis ? 'heart' : 'heart-outline'" [class.heart-filled]="item.heartVis"></ion-icon>
+              </button>
+            </div>
+
+            <div class="product-info">
+              <p class="product-title">{{item.text}}</p>
+              <div class="product-price-row">
+                <span class="price-now">${{item.price}}</span>
+                <span class="price-was" *ngIf="item.dPrice && item.dPrice !== item.price">${{item.dPrice}}</span>
+              </div>
             </div>
           </div>
         </div>
       </ng-container>
     </ng-template>
 
-    <div class="div-category">
-      <h1>Categorias</h1>
-      <div class="div-line"></div>
-      <ion-grid>
-        <ion-row *ngFor="let item of categoryItems; let i = index">
-          <ion-col class="category-col">
-            <div class="category-wrapper" (click)="goToShop(item)">
-              <ion-img [src]="item.img" class="category-img"></ion-img>
-              <p class="category-text">{{item.text}}</p>
-            </div>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </div>
   </div>
+
+  <!-- Web only: "pago contra entrega" banner as a popup, shown every time the
+       user enters the home page. On mobile this stays inline (see above). -->
+  <ion-modal class="banner-popup-modal" [isOpen]="isBannerPopupOpen" (didDismiss)="closeBannerPopup()">
+    <ng-template>
+      <div class="banner-popup">
+        <img src="assets/images/banner/banner-1.png" alt="Paga al recibir" />
+        <ion-button expand="block" class="banner-popup-btn" (click)="closeBannerPopup()">
+          🎉 ¡Sí, quiero comprar así! Ver la tienda
+        </ion-button>
+      </div>
+    </ng-template>
+  </ion-modal>
 </ion-content>

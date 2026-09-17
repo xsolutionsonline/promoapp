@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
 
 const routes: Routes = [
   {
@@ -44,6 +46,10 @@ const routes: Routes = [
     loadComponent: () => import('./product-detail/product-detail.page').then(m => m.ProductDetailPage)
   },
   {
+    path: 'product-detail/:id',
+    loadComponent: () => import('./product-detail/product-detail.page').then(m => m.ProductDetailPage)
+  },
+  {
     path: 'product-detail-modal',
     loadChildren: () => import('./product-detail-modal/product-detail-modal.module').then(m => m.ProductDetailModalPageModule)
   },
@@ -53,6 +59,7 @@ const routes: Routes = [
   },
   {
     path: 'my-account',
+    canActivate: [authGuard],
     loadChildren: () => import('./my-account/my-account.module').then(m => m.MyAccountPageModule)
   },
   {
@@ -61,6 +68,7 @@ const routes: Routes = [
   },
   {
     path: 'wishlist',
+    canActivate: [authGuard],
     loadChildren: () => import('./wishlist/wishlist.module').then(m => m.WishlistPageModule)
   },
   {
@@ -89,14 +97,17 @@ const routes: Routes = [
   },
   {
     path: 'my-order',
+    canActivate: [authGuard],
     loadComponent: () => import('./my-order/my-order.page').then(m => m.MyOrderPage)
   },
   {
     path: 'reward-points',
+    canActivate: [authGuard],
     loadChildren: () => import('./reward-points/reward-points.module').then(m => m.RewardPointsPageModule)
   },
   {
     path: 'my-addresses',
+    canActivate: [authGuard],
     loadChildren: () => import('./my-addresses/my-addresses.module').then(m => m.MyAddressesPageModule)
   },
   {
@@ -121,11 +132,28 @@ const routes: Routes = [
   },
   {
     path: 'settings',
+    canActivate: [adminGuard],
     loadChildren: () => import('./settings/settings.module').then(m => m.SettingsPageModule)
   },
   {
     path: 'create-product',
+    canActivate: [adminGuard],
     loadChildren: () => import('./settings/create-product/create-product.module').then(m => m.CreateProductPageModule)
+  },
+  {
+    path: 'product-list',
+    canActivate: [adminGuard],
+    loadChildren: () => import('./settings/product-list/product-list.module').then(m => m.ProductListPageModule)
+  },
+  {
+    path: 'orders',
+    canActivate: [adminGuard],
+    loadChildren: () => import('./settings/orders/orders.module').then(m => m.OrdersPageModule)
+  },
+  {
+    path: 'discounts',
+    canActivate: [adminGuard],
+    loadChildren: () => import('./settings/discounts/discounts.module').then(m => m.DiscountsPageModule)
   }
 ];
 

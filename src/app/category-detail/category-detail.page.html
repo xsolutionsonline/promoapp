@@ -1,130 +1,74 @@
 <ion-content class="category-content">
   <div style='filter:var(--my-var)'>
-    <ion-item class="item-searcbar" lines="none">
-      <ion-menu-button class="menu-btn" slot="start">
-        <ion-icon src="assets/icon/menu.svg"></ion-icon>
-      </ion-menu-button>
-      <ion-searchbar name="search" placeholder="search">
-      </ion-searchbar>
-      <ion-button shape="round" slot="end" routerLink="/cart" routerDirection="forward">
-        <ion-badge class="home-badge">
-          0
-        </ion-badge>
-        <ion-icon src="assets/icon/shopping-cart.svg"></ion-icon>
-      </ion-button>
-    </ion-item>
-    <ion-item lines="none" class="item-back">
-      <ion-icon slot="start" routerLink="/home" routerDirection="back" src="assets/icon/back.svg"></ion-icon>
-      <p>{{categoryHeader}}</p>
-    </ion-item>
-    <ion-card class="card-header animated fadeIn">
-      <ion-thumbnail>
-        <ion-img src="assets/images/other/category-header-uno.png">
-        </ion-img>
-      </ion-thumbnail>
-    </ion-card>
-    <!-- for slider header -->
-    <ion-grid class="grid-slider">
-      <ion-row>
-        <ion-col size="2.6" class="col-grid-list">
-          <div>
-            <ion-icon class="icon-grid-bg animated fadeIn" (click)="isGridList('gridBg')" src="assets/icon/grid-view.svg"
-              *ngIf="visiablegridBgList">
-            </ion-icon>
-            <ion-icon class="icon-grid" (click)="isGridList('grid')" src="assets/icon/grid-view.svg" *ngIf="!visiablegridBgList">
-            </ion-icon>
-            <span class="icon-inner-div"></span>
-            <ion-icon class="icon-list" (click)="isGridList('list')" src="assets/icon/list.svg" *ngIf="visiableListBgGrid">
-            </ion-icon>
-            <ion-icon class="icon-list-bg animated fadeIn" (click)="isGridList('listBg')" src="assets/icon/list.svg"
-              *ngIf="!visiableListBgGrid">
-            </ion-icon>
-          </div>
-        </ion-col>
-        <ion-col size="9.4" class="col-spcs">
-          <div class="horizontal-scroll-container animated fadeInRight">
-            <div class="scroll-item">
-              <div (click)="sort(0)" *ngIf="!sortActive">
-                <p class="inactive-p">Sort</p>
-              </div>
-              <div class="active-spcs" (click)="sort(0)" *ngIf="sortActive">
-                <ion-item lines="none">
-                  <ion-icon slot="start" (click)="sort(1)" name="close"></ion-icon>
-                  <p >Sort</p>
-                </ion-item>
-              </div>
-            </div>
-            <div class="scroll-item">
-              <div (click)="price(0)" *ngIf="!priceActive">
-                <p class="inactive-p">Price</p>
-              </div>
-              <div class="active-spcs" (click)="price(0)" *ngIf="priceActive">
-                <ion-item lines="none">
-                  <ion-icon slot="start" (click)="price(1)" name="close"></ion-icon>
-                  <p>Price</p>
-                </ion-item>
-              </div>
-            </div>
-            <div class="scroll-item">
-              <div (click)="color(0)" *ngIf="!colorActive">
-                <p class="inactive-p">Color</p>
-              </div>
-              <div class="active-spcs" (click)="color(0)" *ngIf="colorActive">
-                <ion-item lines="none">
-                  <ion-icon slot="start" (click)="color(1)" name="close"></ion-icon>
-                  <p>Color</p>
-                </ion-item>
-              </div>
-            </div>
-            <div class="scroll-item">
-              <div (click)="size(0)" *ngIf="!sizeActive">
-                <p class="inactive-p">Size</p>
-              </div>
-              <div class="active-spcs" (click)="size(0)" *ngIf="sizeActive">
-                <ion-item lines="none">
-                  <ion-icon slot="start" (click)="size(1)" name="close"></ion-icon>
-                  <p>Size</p>
-                </ion-item>
-              </div>
-            </div>
-          </div>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
 
-    <!-- Products Container (Replicated from Home) -->
-    <div class="products-container" [class.list-card]="!visiableGrid" [class.grid-card]="visiableGrid">
-      <div class="scroll-item" *ngFor="let item of categoryLoop" (click)="goToProductDetail(item)">
-        <div class="product-card-inner">
-          <ion-grid class="grid-featured">
-            <ion-row>
-              <ion-col size="12" class="ion-no-padding">
-                <div class="badge-container">
-                  <span *ngIf="item.featured" class="badge featured-tag">Featured</span>
-                  <span *ngIf="item.new" class="badge new-tag">New</span>
-                  <span *ngIf="item.sale" class="badge sale-tag">Ofertas</span>
-                </div>
-                <strong>{{item.title}}</strong>
-                <p>{{item.text}}</p>
-              </ion-col>
-            </ion-row>
-            <ion-row class="ion-align-items-center">
-              <ion-col size="8" class="price-col">
-                <span class="para-price-del"><del>${{item.dPrice}}</del></span>
-                <span class="para-price">${{item.price}}</span>
-              </ion-col>
-              <ion-col size="4" class="col-heart">
-                <ion-icon [name]="item.heartVis ? 'heart' : 'heart-outline'"
-                          [class.heart-filled]="item.heartVis"
-                          (click)="heart(item); $event.stopPropagation()">
-                </ion-icon>
-              </ion-col>
-            </ion-row>
+    <!-- Hero header: gradient, back control, functional search -->
+    <div class="category-hero">
+      <div class="category-hero-topbar">
+        <button class="glass-btn back-btn" routerLink="/home" routerDirection="back">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </button>
+        <h1 class="category-title">{{categoryHeader}}</h1>
 
-          </ion-grid>
-          <ion-img class="swipe-slider-img" [src]="item.img"></ion-img>
+        <!-- Web: sits inline, right after the title. Mobile: wraps to its own row below. -->
+        <div class="category-searchbar">
+          <ion-icon name="search-outline"></ion-icon>
+          <ion-searchbar name="search" [placeholder]="'Buscar en ' + categoryHeader" mode="ios"
+            [(ngModel)]="searchTerm" (ionInput)="onSearchChange()"></ion-searchbar>
         </div>
       </div>
+    </div>
+
+    <!-- Toolbar: sort by price (menor/mayor) + grid/list toggle -->
+    <div class="category-toolbar">
+      <div class="sort-group">
+        <button class="sort-chip" [class.active]="sortDirection === 'asc'" (click)="setSortDirection('asc')">
+          <ion-icon name="arrow-up"></ion-icon> Menor precio
+        </button>
+        <button class="sort-chip" [class.active]="sortDirection === 'desc'" (click)="setSortDirection('desc')">
+          <ion-icon name="arrow-down"></ion-icon> Mayor precio
+        </button>
+      </div>
+
+      <div class="toolbar-right">
+        <span class="result-count">{{ displayedProducts.length }} producto{{ displayedProducts.length === 1 ? '' : 's' }}</span>
+        <button class="view-toggle-btn" (click)="isGridList(visiableGrid ? 'list' : 'grid')">
+          <ion-icon [name]="visiableGrid ? 'list-outline' : 'grid-outline'"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Products -->
+    <div class="products-container" [class.list-view]="!visiableGrid" [class.grid-view]="visiableGrid" *ngIf="displayedProducts.length > 0">
+      <div class="product-card" *ngFor="let item of displayedProducts" (click)="goToProductDetail(item)">
+        <div class="product-media">
+          <img [src]="item.img" [alt]="item.title" />
+
+          <div class="product-badges">
+            <span *ngIf="item.sale" class="badge sale-tag">🔥 Oferta</span>
+            <span *ngIf="item.new" class="badge new-tag">Nuevo</span>
+            <span *ngIf="item.featured" class="badge featured-tag">Destacado</span>
+          </div>
+
+          <button class="wishlist-btn" (click)="heart(item); $event.stopPropagation()">
+            <ion-icon [name]="item.heartVis ? 'heart' : 'heart-outline'" [class.heart-filled]="item.heartVis"></ion-icon>
+          </button>
+        </div>
+
+        <div class="product-info">
+          <p class="product-title">{{item.title}}</p>
+          <p class="product-desc" *ngIf="item.text">{{item.text}}</p>
+          <div class="product-price-row">
+            <span class="price-now">${{item.price}}</span>
+            <span class="price-was" *ngIf="item.dPrice && item.dPrice !== item.price">${{item.dPrice}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="displayedProducts.length === 0">
+      <ion-icon name="search-outline"></ion-icon>
+      <p *ngIf="searchTerm">No encontramos productos para "{{searchTerm}}" en esta categoría.</p>
+      <p *ngIf="!searchTerm">Todavía no hay productos en esta categoría.</p>
     </div>
 
   </div>

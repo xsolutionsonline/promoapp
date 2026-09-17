@@ -1,12 +1,11 @@
-import { Component, ViewEncapsulation, ElementRef, ViewChildren, QueryList, AfterViewInit, OnDestroy, inject } from '@angular/core';
+import { Component, ViewEncapsulation, ElementRef, ViewChildren, QueryList, AfterViewInit, OnDestroy } from '@angular/core';
 import { HomeModelPage } from '../home-model/home-model.page';
 import { ModalController, NavController, ToastController, IonicModule } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
 import { Events } from '../services/events.service';
 import { DataService } from '../services/data.service';
-import { Router, NavigationExtras, RouterLink } from '@angular/router';
-import { Firestore, collection, query, where, collectionData, doc, updateDoc, orderBy, getDocs } from '@angular/fire/firestore';
-import { Auth, onAuthStateChanged } from '@angular/fire/auth';
+import { Router, NavigationExtras } from '@angular/router';
+import { Firestore, collection, query, where, collectionData, doc, updateDoc, orderBy } from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -16,7 +15,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, RouterLink],
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class HomePage implements AfterViewInit, OnDestroy {
   public visiablePopup = false;
@@ -26,14 +25,37 @@ export class HomePage implements AfterViewInit, OnDestroy {
   public featuredItems = [];
   public newItems = [];
   public saleItems = [];
-  public isGrid = false; // Default to list view (1 column)
-  public cartItemCount = 0;
+
+  // Raw Firestore results per flag — a product can be featured AND new AND
+  // sale at once. rawFeatured/rawNew/rawSale keep the full matches; the
+  // section-assignment map then keeps each such product in only one of the
+  // three home sections, so it isn't shown three times.
+  private rawFeatured: any[] = [];
+  private rawNew: any[] = [];
+  private rawSale: any[] = [];
+  // Each of the 3 Firestore listeners above resolves at its own pace. Until
+  // all three have delivered at least once, a product's eligible-sections
+  // set is incomplete — assigning it early (e.g. only "new" has loaded so
+  // far) would lock it into that section forever, since the later-arriving
+  // "sale" match wouldn't invalidate an already-valid assignment.
+  private featuredLoaded = false;
+  private newLoaded = false;
+  private saleLoaded = false;
+  // Picked once per product per page load (not re-rolled on Firestore
+  // updates like a heart toggle), so it stays put until the next reload.
+  private sectionAssignment = new Map<string, 'featured' | 'new' | 'sale'>();
+
+  // Web-only "pago contra entrega" banner popup, shown each time the user
+  // enters the home page — but only once assets/videos/splash.mp4 (the splash
+  // screen modal) has finished, so it doesn't appear underneath it.
+  // Mobile keeps the banner inline instead (see template).
+  public isBannerPopupOpen = false;
+  private readonly desktopBreakpoint = 900;
+  private splashDone = false;
+  private homeEntered = false;
 
   @ViewChildren('scrollContainer') scrollContainers: QueryList<ElementRef>;
   private autoScrollInterval: any;
-
-  private auth = inject(Auth);
-  private userUID: string | null = null;
 
   constructor(private elementRef: ElementRef,
     private modalCtrl: ModalController,
@@ -50,15 +72,16 @@ export class HomePage implements AfterViewInit, OnDestroy {
       this.divBlur = data;
       this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
     });
-
-    onAuthStateChanged(this.auth, (user) => {
-      if (user) {
-        this.userUID = user.uid;
-      } else {
-        this.userUID = null;
-      }
-      this.updateOrderQuantity();
+    this.events.subscribe('splashVideoEnded', () => {
+      this.splashDone = true;
+      this.maybeShowBannerPopup();
     });
+  }
+
+  private maybeShowBannerPopup() {
+    if (this.homeEntered && this.splashDone && window.innerWidth >= this.desktopBreakpoint) {
+      this.isBannerPopupOpen = true;
+    }
   }
 
   loadData() {
@@ -74,50 +97,72 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
     const featuredQuery = query(productsRef, where('featured', '==', true));
     collectionData(featuredQuery, { idField: 'id' }).subscribe((data: any[]) => {
-      this.featuredItems = data;
+      this.rawFeatured = data;
+      this.featuredLoaded = true;
+      this.recomputeSectionsWhenReady();
     });
 
     const newItemsQuery = query(productsRef, where('new', '==', true));
     collectionData(newItemsQuery, { idField: 'id' }).subscribe((data: any[]) => {
-      this.newItems = data;
+      this.rawNew = data;
+      this.newLoaded = true;
+      this.recomputeSectionsWhenReady();
     });
 
     const saleItemsQuery = query(productsRef, where('sale', '==', true));
     collectionData(saleItemsQuery, { idField: 'id' }).subscribe((data: any[]) => {
-      this.saleItems = data;
+      this.rawSale = data;
+      this.saleLoaded = true;
+      this.recomputeSectionsWhenReady();
     });
   }
 
-  async updateOrderQuantity() {
-    if (!this.userUID) {
-      this.cartItemCount = 0;
-      return;
+  private recomputeSectionsWhenReady(previousAssignment?: Map<string, 'featured' | 'new' | 'sale'>) {
+    if (this.featuredLoaded && this.newLoaded && this.saleLoaded) {
+      this.recomputeSections(previousAssignment);
     }
+  }
 
-    const ordersRef = collection(this.firestore, 'orders');
-    const q = query(ordersRef, where('userUid', '==', this.userUID), where('status', '==', 'pending'));
+  // A product tagged featured+new+sale at once would otherwise be pulled in
+  // by all three queries above and shown three times on the home page. This
+  // keeps it in exactly one of those sections, picked at random the first
+  // time we see it (so it varies on every reload) and then kept stable for
+  // the rest of this visit (so a heart-toggle refresh doesn't reshuffle it).
+  // `previousAssignment` (passed on ionViewWillEnter re-rolls) is excluded
+  // from the random pick when there's more than one option, so a product
+  // never lands back in the same section it was in on the last visit.
+  private recomputeSections(previousAssignment?: Map<string, 'featured' | 'new' | 'sale'>) {
+    const sections: Array<{ key: 'featured' | 'new' | 'sale'; items: any[] }> = [
+      { key: 'featured', items: this.rawFeatured },
+      { key: 'new', items: this.rawNew },
+      { key: 'sale', items: this.rawSale }
+    ];
 
-    const querySnapshot = await getDocs(q);
-    if (querySnapshot.empty) {
-      this.cartItemCount = 0;
-      return;
-    }
+    const eligibleByProductId = new Map<string, Set<'featured' | 'new' | 'sale'>>();
+    sections.forEach(({ key, items }) => {
+      items.forEach(item => {
+        if (!eligibleByProductId.has(item.id)) {
+          eligibleByProductId.set(item.id, new Set());
+        }
+        eligibleByProductId.get(item.id).add(key);
+      });
+    });
 
-    let totalQuantity = 0;
-    querySnapshot.forEach(orderDoc => {
-      const orderData = orderDoc.data();
-      if (orderData && orderData['products']) {
-        orderData['products'].forEach(product => {
-          if (product.variants && product.variants.length > 0) {
-            totalQuantity += product.variants.reduce((acc, variant) => acc + (variant.quantity || 0), 0);
-          } else {
-            totalQuantity += product.quantity || 0;
-          }
-        });
+    eligibleByProductId.forEach((eligible, id) => {
+      if (!this.sectionAssignment.has(id) || !eligible.has(this.sectionAssignment.get(id))) {
+        let options = Array.from(eligible);
+        const previousPick = previousAssignment?.get(id);
+        if (previousPick && options.length > 1) {
+          options = options.filter(option => option !== previousPick);
+        }
+        const pick = options[Math.floor(Math.random() * options.length)];
+        this.sectionAssignment.set(id, pick);
       }
     });
 
-    this.cartItemCount = totalQuantity;
+    this.featuredItems = this.rawFeatured.filter(item => this.sectionAssignment.get(item.id) === 'featured');
+    this.newItems = this.rawNew.filter(item => this.sectionAssignment.get(item.id) === 'new');
+    this.saleItems = this.rawSale.filter(item => this.sectionAssignment.get(item.id) === 'sale');
   }
 
   ngAfterViewInit() {
@@ -131,8 +176,6 @@ export class HomePage implements AfterViewInit, OnDestroy {
   startAutoScroll() {
     this.stopAutoScroll(); // Ensure no duplicate intervals
     this.autoScrollInterval = setInterval(() => {
-      if (this.isGrid) return; // Don't scroll in grid view
-
       if (this.scrollContainers) {
         this.scrollContainers.forEach((containerRef) => {
           const container = containerRef.nativeElement;
@@ -153,10 +196,6 @@ export class HomePage implements AfterViewInit, OnDestroy {
     if (this.autoScrollInterval) {
       clearInterval(this.autoScrollInterval);
     }
-  }
-
-  toggleView() {
-    this.isGrid = !this.isGrid;
   }
 
   async heart(item) {
@@ -223,7 +262,21 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.visiablePopup = false;
     this.elementRef.nativeElement.style.setProperty('--my-var', this.divBlur);
     this.startAutoScroll();
-    this.updateOrderQuantity();
+    this.homeEntered = true;
+    this.maybeShowBannerPopup();
+
+    // Ionic's RouteReuseStrategy keeps this page instance alive instead of
+    // recreating it, so the constructor (and its one-time random section
+    // assignment) only ever ran once. Re-rolling here makes multi-tagged
+    // products actually rotate section every time you come back to home —
+    // excluding the previous pick so it never lands in the same spot twice.
+    const previousAssignment = new Map(this.sectionAssignment);
+    this.sectionAssignment.clear();
+    this.recomputeSectionsWhenReady(previousAssignment);
+  }
+
+  closeBannerPopup() {
+    this.isBannerPopupOpen = false;
   }
 
   ionViewWillLeave() {

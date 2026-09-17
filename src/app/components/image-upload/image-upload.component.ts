@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
-import { finalize } from 'rxjs/operators';
+import { Component, EventEmitter, Output, ChangeDetectorRef, inject } from '@angular/core';
+import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-image-upload',
@@ -14,8 +13,9 @@ export class ImageUploadComponent {
   isUploading: boolean = false;
   private activeUploads: number = 0;
 
+  private storage = inject(Storage);
+
   constructor(
-    private storage: AngularFireStorage,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -29,33 +29,34 @@ export class ImageUploadComponent {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const filePath = `product-images/${new Date().getTime()}_${file.name}`;
-        const fileRef = this.storage.ref(filePath);
-        const task = this.storage.upload(filePath, file);
+        const fileRef = ref(this.storage, filePath);
+        const task = uploadBytesResumable(fileRef, file);
 
-        // Update progress bar
-        task.percentageChanges().subscribe(percent => {
-          if (percent) {
-            this.uploadPercent = percent;
-            this.cdr.detectChanges();
+        task.on('state_changed', (snapshot) => {
+          const percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          this.uploadPercent = percent;
+          this.cdr.detectChanges();
+        }, (error) => {
+          console.error('Upload error', error);
+          this.activeUploads--;
+          if (this.activeUploads === 0) {
+            this.isUploading = false;
+            this.uploadPercent = 0;
           }
+          this.cdr.detectChanges();
+        }, () => {
+          getDownloadURL(task.snapshot.ref).then(url => {
+            this.imageUploaded.emit(url);
+            this.activeUploads--;
+
+            if (this.activeUploads === 0) {
+              this.isUploading = false;
+              this.uploadPercent = 0;
+              event.target.value = '';
+            }
+            this.cdr.detectChanges();
+          });
         });
-
-        task.snapshotChanges().pipe(
-          finalize(() => {
-            fileRef.getDownloadURL().subscribe(url => {
-              this.imageUploaded.emit(url);
-              this.activeUploads--;
-
-              if (this.activeUploads === 0) {
-                this.isUploading = false;
-                this.uploadPercent = 0;
-                // Reset file input value so the same file can be selected again if needed
-                event.target.value = '';
-              }
-              this.cdr.detectChanges();
-            });
-          })
-        ).subscribe();
       }
     }
   }

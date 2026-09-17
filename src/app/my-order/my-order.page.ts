@@ -4,12 +4,27 @@ import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Observable, combineLatest } from 'rxjs';
 
-interface Order {
+interface DropiOrderItem {
+  code: string;
+  name?: string;
+  provider?: string;
+  quantity: number;
+  value: number;
+  isMain: boolean;
+}
+
+// Matches what product-detail.page.ts (submitCheckout) writes to the
+// "dropi-orders" collection — not a generic e-commerce order shape. Extra
+// (add-on) products are just more rows in dropiItems, not a separate list.
+interface MyOrder {
   id: string;
-  products?: any[];
-  discount?: number;
-  createdAt?: any; // O un tipo más específico como 'Date' o 'Timestamp' si lo tienes
+  productTitle?: string;
+  dropiItems?: DropiOrderItem[];
+  createdAt?: any;
+  status?: string;
+  orderNumber?: string;
   [key: string]: any;
 }
 
@@ -23,67 +38,67 @@ interface Order {
 })
 export class MyOrderPage implements OnInit {
 
-  public selectedSegment: string = 'pending';
-  public selectedOrder: Order | null = null;
+  public orders: MyOrder[] = [];
+  public isLoading = true;
+  public isLoggedIn = true;
+  public selectedOrder: MyOrder | null = null;
   public isModalOpen = false;
 
-  public pendingItems: Order[] = [];
-  public confirmedItems: Order[] = [];
-  public deliceredItems: Order[] = [];
-  public deliveryItems: Order[] = [];
-
   private auth = inject(Auth);
-  private userUID: string | null = null;
 
   constructor(private firestoreService: FirestoreService) { }
 
   ngOnInit() {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
-        this.userUID = user.uid;
+        this.isLoggedIn = true;
+        this.loadOrders(user.uid);
       } else {
-        this.userUID = null;
+        this.isLoggedIn = false;
+        this.orders = [];
+        this.isLoading = false;
       }
-      this.loadOrders();
     });
   }
 
-  loadOrders() {
-    this.getPendingOrders();
-    this.getConfirmedOrders();
-    this.getDeliveredOrders();
-    this.getDeliveryOrders();
-  }
+  private async loadOrders(uid: string) {
+    this.isLoading = true;
 
-  getPendingOrders() {
-    this.firestoreService.getByAttribute<Order>('orders', 'status', 'pending', this.userUID).subscribe(data => {
-      this.pendingItems = data;
+    const queries: Observable<MyOrder[]>[] = [
+      this.firestoreService.getByAttribute<MyOrder>('dropi-orders', 'userUid', uid)
+    ];
+
+    // Orders placed before "userUid" started getting stamped on checkout (or
+    // as a guest, before this account existed) don't carry it — fall back to
+    // matching by the phone/email on file so those still show up here too.
+    try {
+      const customerSnap = await this.firestoreService.getById<any>('customers', uid);
+      const customer = customerSnap.exists() ? customerSnap.data() : null;
+      if (customer?.['whatsapp']) {
+        queries.push(this.firestoreService.getByAttribute<MyOrder>('dropi-orders', 'TELEFONO', customer['whatsapp']));
+      }
+      if (customer?.['email']) {
+        queries.push(this.firestoreService.getByAttribute<MyOrder>('dropi-orders', 'EMAIL (NO OBLIGATORIO)', customer['email']));
+      }
+    } catch (error) {
+      console.error('Error loading customer profile for order matching', error);
+    }
+
+    combineLatest(queries).subscribe(resultsArrays => {
+      const merged = new Map<string, MyOrder>();
+      resultsArrays.forEach(list => list.forEach(order => merged.set(order.id, order)));
+      this.orders = [...merged.values()].sort((a, b) => this.orderTimestamp(b) - this.orderTimestamp(a));
+      this.isLoading = false;
     });
   }
 
-  getConfirmedOrders() {
-    this.firestoreService.getByAttribute<Order>('orders', 'status', 'confirmed', this.userUID).subscribe(data => {
-      this.confirmedItems = data;
-    });
+  private orderTimestamp(order: MyOrder): number {
+    const created = order.createdAt;
+    if (!created) { return 0; }
+    return created.seconds ? created.seconds * 1000 : new Date(created).getTime();
   }
 
-  getDeliveredOrders() {
-    this.firestoreService.getByAttribute<Order>('orders', 'status', 'Delivered', this.userUID).subscribe(data => {
-      this.deliceredItems = data;
-    });
-  }
-
-  getDeliveryOrders() {
-    this.firestoreService.getByAttribute<Order>('orders', 'status', 'In Delivery', this.userUID).subscribe(data => {
-      this.deliveryItems = data;
-    });
-  }
-
-  segmentChanged(event: any) {
-    this.selectedSegment = event.detail.value;
-  }
-
-  showProducts(order: Order) {
+  showProducts(order: MyOrder) {
     this.selectedOrder = order;
     this.isModalOpen = true;
   }
@@ -91,22 +106,5 @@ export class MyOrderPage implements OnInit {
   closeProducts() {
     this.isModalOpen = false;
     this.selectedOrder = null;
-  }
-
-  calculateTotalPrice(order: Order): number {
-    if (!order || !order.products) {
-      return 0;
-    }
-
-    let total = order.products.reduce((sum, product) => {
-      const productTotal = product.variants.reduce((subTotal, variant) => subTotal + variant.totalPrice, 0);
-      return sum + productTotal;
-    }, 0);
-
-    if (order.discount && typeof order.discount === 'number' && order.discount > 0) {
-      total -= order.discount;
-    }
-
-    return total;
   }
 }

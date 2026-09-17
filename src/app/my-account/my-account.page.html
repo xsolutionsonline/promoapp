@@ -39,6 +39,19 @@
       </ion-label>
     </ion-item>
   </ion-card>
+  <ion-card class="card-bono" *ngIf="visProfileItem && bonoCode">
+    <ion-item lines="none" class="bono-code-item" button (click)="copyBonoCode()">
+      <ion-icon src="assets/icon/reward-points.svg" slot="start"></ion-icon>
+      <ion-label>
+        <p class="bono-code-label">Tu bono personal</p>
+        <h2 class="bono-code-value">{{ bonoCode }}</h2>
+      </ion-label>
+      <ion-button slot="end" fill="clear" (click)="$event.stopPropagation(); copyBonoCode()">
+        <ion-icon name="copy-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-item>
+    <p class="bono-code-hint">Toca para copiar. Aplica solo a productos adicionales que agregues a un pedido, no al que estés comprando en ese momento.</p>
+  </ion-card>
   <ion-list class="list">
     <div *ngFor="let item of listInputItems">
       <ion-item class="animated fadeInRight" lines="none">
@@ -49,6 +62,12 @@
   <div class="update-div">
     <ion-button class="update-btn" (click)="updateProfile()">
       Update
+    </ion-button>
+  </div>
+  <div class="delete-account-div" *ngIf="visProfileItem">
+    <ion-button expand="block" fill="clear" color="danger" [disabled]="isDeletingAccount" (click)="confirmDeleteAccount()">
+      <ion-icon name="trash-outline" slot="start"></ion-icon>
+      Eliminar cuenta
     </ion-button>
   </div>
 </ion-content>

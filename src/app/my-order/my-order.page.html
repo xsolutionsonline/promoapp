@@ -3,132 +3,74 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>My Orders</ion-title>
+    <ion-title>Mis Pedidos</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="order-content">
-  <ion-segment [(ngModel)]="selectedSegment" (ionChange)="segmentChanged($event)">
-    <ion-segment-button value="pending">
-      <ion-icon name="hourglass-outline"></ion-icon>
-    </ion-segment-button>
-    <ion-segment-button value="confirmed">
-      <ion-icon name="checkmark-circle-outline"></ion-icon>
-    </ion-segment-button>
-    <ion-segment-button value="delivered">
-      <ion-icon name="cube-outline"></ion-icon>
-    </ion-segment-button>
-    <ion-segment-button value="delivery">
-      <ion-icon name="rocket-outline"></ion-icon>
-    </ion-segment-button>
-  </ion-segment>
-
-  <div [ngSwitch]="selectedSegment">
-    <!-- Orders lists -->
-    <div *ngSwitchCase="'pending'">
-      <ion-card class="card-total-price animated fadeInUp" *ngFor="let item of pendingItems">
-        <ion-grid>
-          <ion-row>
-            <ion-col size="8">
-              <p><b>Order ID:</b> {{item.id}}</p>
-              <p><b>Date:</b> {{item.createdAt.seconds * 1000 | date: 'medium'}}</p>
-              <p><b>Total:</b> {{calculateTotalPrice(item) | currency}}</p>
-            </ion-col>
-            <ion-col size="4" class="ion-text-center">
-              <ion-button (click)="showProducts(item)">View Products</ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-card>
-    </div>
-    <div *ngSwitchCase="'confirmed'">
-      <ion-card class="card-total-price animated fadeInUp" *ngFor="let item of confirmedItems">
-        <ion-grid>
-          <ion-row>
-            <ion-col size="8">
-              <p><b>Order ID:</b> {{item.id}}</p>
-              <p><b>Date:</b> {{item.createdAt.seconds * 1000 | date: 'medium'}}</p>
-              <p><b>Total:</b> {{calculateTotalPrice(item) | currency}}</p>
-            </ion-col>
-            <ion-col size="4" class="ion-text-center">
-              <ion-button (click)="showProducts(item)">View Products</ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-card>
-    </div>
-    <div *ngSwitchCase="'delivered'">
-      <ion-card class="card-total-price animated fadeInUp" *ngFor="let item of deliceredItems">
-        <ion-grid>
-          <ion-row>
-            <ion-col size="8">
-              <p><b>Order ID:</b> {{item.id}}</p>
-              <p><b>Date:</b> {{item.createdAt.seconds * 1000 | date: 'medium'}}</p>
-              <p><b>Total:</b> {{calculateTotalPrice(item) | currency}}</p>
-            </ion-col>
-            <ion-col size="4" class="ion-text-center">
-              <ion-button (click)="showProducts(item)">View Products</ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-card>
-    </div>
-    <div *ngSwitchCase="'delivery'">
-      <ion-card class="card-total-price animated fadeInUp" *ngFor="let item of deliveryItems">
-        <ion-grid>
-          <ion-row>
-            <ion-col size="8">
-              <p><b>Order ID:</b> {{item.id}}</p>
-              <p><b>Date:</b> {{item.createdAt.seconds * 1000 | date: 'medium'}}</p>
-              <p><b>Total:</b> {{calculateTotalPrice(item) | currency}}</p>
-            </ion-col>
-            <ion-col size="4" class="ion-text-center">
-              <ion-button (click)="showProducts(item)">View Products</ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-card>
-    </div>
+  <div class="order-empty-state" *ngIf="!isLoading && !isLoggedIn">
+    <ion-icon name="log-in-outline"></ion-icon>
+    <p>Inicia sesión para ver tus pedidos.</p>
   </div>
 
-  <!-- Product Details Modal -->
+  <div class="order-empty-state" *ngIf="!isLoading && isLoggedIn && orders.length === 0">
+    <ion-icon name="receipt-outline"></ion-icon>
+    <p>Todavía no tienes pedidos.</p>
+  </div>
+
+  <ion-card class="card-total-price animated fadeInUp" *ngFor="let item of orders">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="8">
+          <p *ngIf="item.orderNumber"><b>N° de pedido:</b> {{ item.orderNumber }}</p>
+          <p><b>Pedido:</b> {{ item.productTitle || item['ID DE PRODUCTO'] }}</p>
+          <p *ngIf="item.createdAt"><b>Fecha:</b> {{ (item.createdAt.seconds ? item.createdAt.seconds * 1000 : item.createdAt) | date: 'medium' }}</p>
+          <p><b>Total:</b> ${{ item['PRECIO TOTAL (SIN PUNTOS NI COMAS)'] | number }}</p>
+          <p class="para-status"><b>Estado:</b> {{ item.status || 'nuevo' }}</p>
+        </ion-col>
+        <ion-col size="4" class="ion-text-center">
+          <ion-button (click)="showProducts(item)">Ver detalle</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+
+  <!-- Order details modal -->
   <ion-modal [isOpen]="isModalOpen" (didDismiss)="closeProducts()">
     <ng-template>
       <ion-header>
         <ion-toolbar color="primary">
-          <ion-title>Product Details</ion-title>
+          <ion-title>Detalle del pedido</ion-title>
           <ion-buttons slot="end">
-            <ion-button (click)="closeProducts()">Close</ion-button>
+            <ion-button (click)="closeProducts()">Cerrar</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
       <ion-content class="ion-padding">
         <div *ngIf="selectedOrder">
-          <ion-card *ngFor="let product of selectedOrder.products">
-            <ion-img [src]="product.productImg"></ion-img>
-            <ion-card-header>
-              <ion-card-title>{{product.productName}}</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              <div *ngFor="let variant of product.variants">
-                <p><b>Quantity:</b> {{variant.quantity}}</p>
-                <hr>
-                <div *ngFor="let selected of variant.selectedVariants">
-                  <p><b>{{selected.text}}</b></p>
-                  <p>Price: <span style="text-decoration: line-through;">{{selected.price | currency}}</span></p>
-                  <p>Discount Price: {{selected.dprice | currency}}</p>
-                </div>
-                <hr>
-                <p class="ion-text-right"><b>Subtotal:</b> {{variant.totalPrice | currency}}</p>
-              </div>
-            </ion-card-content>
-          </ion-card>
+          <p><b>Producto:</b> {{ selectedOrder.productTitle }}</p>
+          <p><b>Cantidad:</b> {{ selectedOrder['CANTIDAD'] }}</p>
+          <p><b>Dirección:</b> {{ selectedOrder['DIRECCION'] }}, {{ selectedOrder['CIUDAD'] }}, {{ selectedOrder['DEPARTAMENTO'] }}</p>
+          <p><b>Teléfono:</b> {{ selectedOrder['TELEFONO'] }}</p>
+
+          <ion-list *ngIf="selectedOrder.dropiItems?.length">
+            <ion-list-header>Productos</ion-list-header>
+            <ion-item lines="full" *ngFor="let dropiItem of selectedOrder.dropiItems">
+              <ion-label>
+                <h3>{{ dropiItem.name || dropiItem.code }} <span *ngIf="dropiItem.isMain">(principal)</span></h3>
+                <p>Código: {{ dropiItem.code }} &middot; Cantidad: {{ dropiItem.quantity }} &middot; Valor: ${{ dropiItem.value | number }}</p>
+                <p *ngIf="dropiItem.provider">Proveedor: {{ dropiItem.provider }}</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+
+          <p class="ion-text-right"><b>Total:</b> ${{ selectedOrder['PRECIO TOTAL (SIN PUNTOS NI COMAS)'] | number }}</p>
         </div>
       </ion-content>
       <ion-footer>
         <ion-toolbar color="primary">
           <ion-buttons slot="end">
-            <ion-button (click)="closeProducts()">Close</ion-button>
+            <ion-button (click)="closeProducts()">Cerrar</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-footer>

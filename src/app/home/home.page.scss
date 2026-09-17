@@ -1,201 +1,424 @@
 .home-content {
-  --background: #f3edea !important;
+  --background: #f4f5fa;
 
-  .header-toolbar {
-    --background: #1A2363;
-    --color: white;
-    padding: 5px;
-    ion-searchbar { --background: white; border-radius: 20px; }
+  // =========================================================================
+  // "Pago contra entrega" banner — right after the header
+  // =========================================================================
+  .home-banner {
+    margin: 16px 16px 8px;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
+
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
   }
 
-  /* Contenedor Base */
+  // =========================================================================
+  // Hero header
+  // =========================================================================
+  .home-hero {
+    background: linear-gradient(135deg, #1A2363 0%, #3d2a7a 55%, #6D28D9 100%);
+    padding: calc(var(--ion-safe-area-top, 0px) + 14px) 16px 26px;
+    border-radius: 0 0 28px 28px;
+    box-shadow: 0 12px 28px rgba(26, 35, 99, 0.25);
+    position: relative;
+    overflow: hidden;
+
+    // subtle decorative glow
+    &::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: rgba(180, 70, 255, 0.35);
+      filter: blur(30px);
+      pointer-events: none;
+    }
+
+    .home-hero-topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+
+      .menu-btn { order: 1; }
+
+      .home-hero-brand {
+        order: 2;
+        flex: 1;
+        min-width: 0;
+        padding: 0 4px;
+
+        .eyebrow {
+          display: block;
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          color: rgba(255, 255, 255, 0.65);
+        }
+
+        h1 {
+          margin: 2px 0 0;
+          font-size: 17px;
+          font-weight: 700;
+          color: white;
+          line-height: 1.25;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .glass-btn {
+        --background: rgba(255, 255, 255, 0.14);
+        --background-hover: rgba(255, 255, 255, 0.22);
+        --background-activated: rgba(255, 255, 255, 0.22);
+        --color: white;
+        --box-shadow: none;
+        --border-radius: 50%;
+        width: 42px;
+        height: 42px;
+        margin: 0;
+        flex-shrink: 0;
+
+        ion-icon {
+          font-size: 20px;
+        }
+      }
+    }
+
+    .home-searchbar {
+      order: 4;
+      flex: 1 1 100%; // mobile: wraps to its own full-width row below the topbar
+      margin-top: 8px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      padding: 0 6px 0 14px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+
+      > ion-icon {
+        font-size: 18px;
+        color: #8a8a8a;
+        flex-shrink: 0;
+      }
+
+      ion-searchbar {
+        --background: transparent;
+        --box-shadow: none;
+        --border-radius: 0;
+        --icon-color: transparent;
+        --placeholder-color: #9a9a9a;
+        --color: #1c1c1c;
+        padding: 0;
+
+        &::part(icon) {
+          display: none;
+        }
+      }
+    }
+
+  }
+
+  // =========================================================================
+  // Compact category picker — first section on the page, deliberately narrow
+  // (not full width) since it's just a shortcut, not a visual showcase.
+  // =========================================================================
+  .category-select-compact {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 14px 16px 4px;
+    background: white;
+    border-radius: 12px;
+    padding: 0 12px;
+    height: 40px;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+
+    > ion-icon {
+      font-size: 15px;
+      color: #6D28D9;
+      flex-shrink: 0;
+    }
+
+    ion-select {
+      --placeholder-color: #6a6a6a;
+      --placeholder-opacity: 1;
+      color: #1A2363;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
+
+  // =========================================================================
+  // Section headings (shared by categories + product rails)
+  // =========================================================================
+  .section-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 22px 16px 12px;
+
+    .section-icon {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+      color: #1A2363;
+      font-family: "roboto-medium", sans-serif;
+    }
+
+    .section-count {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 700;
+      color: #6D28D9;
+      background: rgba(109, 40, 217, 0.1);
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+  }
+
+  // =========================================================================
+  // Product cards (horizontal-scrolling rail)
+  // =========================================================================
   .horizontal-scroll-container {
     display: flex;
     overflow-x: auto;
-    padding: 0 16px 20px 16px;
-    gap: 12px;
+    padding: 4px 16px 22px;
+    gap: 14px;
+    scroll-snap-type: x proximity;
     &::-webkit-scrollbar { display: none; }
 
-    /* --- VISTA LISTA (Scroll Horizontal) --- */
-    &:not(.grid-view) {
-      padding-top: 30px; /* Espacio extra arriba para que la imagen no se corte */
-
-      .scroll-item {
-        flex: 0 0 85%;
-        padding-left: 5px;
-
-        /* Tarjeta contenedora en modo lista */
-        .product-card-inner {
-          position: relative;
-          background: #f9f7f6;
-          border-radius: 12px;
-          padding: 10px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-          overflow: visible; /* Permite que la imagen salga */
-          margin-left: 40px; /* Empuja la tarjeta para dejar espacio a la imagen */
-          min-height: 140px;
-          display: flex;
-          align-items: center;
-        }
-
-        /* En modo lista, quitamos el estilo de tarjeta del grid interno */
-        .grid-featured {
-          background: transparent;
-          box-shadow: none;
-          padding: 0;
-          margin: 0;
-          width: 100%;
-          padding-left: 95px; /* Espacio reservado para la imagen */
-        }
-
-        /* Imagen flotando en la esquina superior izquierda */
-        .swipe-slider-img {
-          position: absolute;
-          left: -45px;
-          top: -30px;
-          width: 135px;
-          height: 135px;
-          object-fit: contain;
-          z-index: 10;
-          filter: drop-shadow(5px 5px 8px rgba(0,0,0,0.25));
-          transform: rotate(-10deg);
-        }
-      }
-    }
-
-    /* --- VISTA GRID (Dos Columnas) --- */
-    &.grid-view {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      overflow-x: hidden;
-
-      .scroll-item {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-
-        /* En grid, el wrapper es transparente/invisible */
-        .product-card-inner {
-          display: contents;
-        }
-
-        .grid-featured {
-          margin-right: 0;
-          min-height: 160px;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-start;
-          padding-bottom: 40px; // Espacio para que la imagen suba
-        }
-
-        .swipe-slider-img {
-          position: relative; // Deja de ser absoluto
-          width: 80%;
-          margin: -50px auto 0 auto; // Sube la imagen sobre el fondo gris
-          order: 2;
-          z-index: 11;
-        }
-
-        h3 { font-size: 12px; height: 3em; }
-        .badge-container { flex-direction: column; align-items: flex-start; }
-      }
+    .product-card {
+      flex: 0 0 62%;
+      max-width: 240px;
+      scroll-snap-align: start;
     }
   }
 
-  /* Estilos de la Tarjeta (Global / Grid Default) */
-  .scroll-item {
-    position: relative;
-    .grid-featured {
-      background: #f9f7f6;
-      border-radius: 12px;
-      padding: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  .product-card {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 
-      h3 {
-        font-family: "roboto-regular";
-        margin: 8px 0;
-        color: #333;
+    &:active {
+      transform: scale(0.98);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+    }
+
+    .product-media {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: linear-gradient(180deg, #f4f2ef, #ece9e4);
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
       }
 
-      /* Descripción con truncado */
-      p {
-        margin: 5px 0;
+      // Diagonal "gift ribbon" corner banner — clipped cleanly by
+      // .product-card's overflow: hidden + rounded corner.
+      .ribbon {
+        position: absolute;
+        top: 14px;
+        left: -34px;
+        width: 130px;
+        padding: 4px 0;
+        text-align: center;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: white;
+        transform: rotate(-45deg);
+        transform-origin: center;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+        z-index: 2;
+
+        &.ribbon-oferta { background: linear-gradient(135deg, #ff4d4d, #ff8a3d); }
+        &.ribbon-nuevo { background: #6D28D9; }
+        &.ribbon-destacado { background: #1A2363; }
+      }
+
+      .wishlist-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(4px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+
+        ion-icon {
+          font-size: 17px;
+          color: #b0b0b0;
+        }
+
+        .heart-filled {
+          color: #FF3B5C;
+        }
+      }
+    }
+
+    .product-info {
+      padding: 10px 12px 12px;
+
+      .product-title {
+        margin: 0 0 6px;
         font-size: 13px;
-        color: #606060;
+        font-weight: 600;
+        color: #262626;
+        line-height: 1.3;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        text-overflow: ellipsis;
-        line-height: 1.2;
+        min-height: 2.6em;
+      }
+
+      .product-price-row {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+
+        .price-now {
+          font-size: 16px;
+          font-weight: 800;
+          color: #1A2363;
+        }
+
+        .price-was {
+          font-size: 12px;
+          color: #a3a3a3;
+          text-decoration: line-through;
+        }
       }
     }
   }
 
-  /* Badges */
-  .badge {
-    font-size: 9px;
-    color: white;
-    padding: 3px 8px;
-    border-radius: 4px;
-    margin-right: 4px;
-    display: inline-block;
-  }
-  .featured-tag { background: #1A2363; }
-  .new-tag { background: #B446FF; }
-  .sale-tag { background: #b90000; }
+}
 
-  /* Precios y Corazón */
-  .price-col {
-    display: flex;
-    flex-direction: column;
-    .para-price { font-weight: bold; font-size: 14px; }
-    .para-price-del { font-size: 11px; color: #888; }
-  }
+// ===========================================================================
+// Web only — mobile stays exactly as above.
+// - Search bar moves inline, right next to "Bienvenido / Descubre tu próxima
+//   compra", instead of wrapping to its own row — and gets more room than
+//   everything else, sitting centered.
+// - Banner becomes full viewport height.
+// ===========================================================================
+@media (min-width: 900px) {
+  .home-content {
+    .home-hero .home-hero-topbar {
+      .home-hero-brand {
+        flex: 0 1 auto; // stop competing with the search bar for space
+      }
 
-  .col-heart {
-    text-align: right;
-    ion-icon { font-size: 22px; color: #c5c2c2; }
-    .heart-filled { color: #B446FF; }
-  }
-
-  /* Botón de Comprar */
-  .buy-btn-row {
-    margin-top: 10px;
-    .buy-btn {
-      --background: transparent; /* Fondo transparente */
-      --color: #1A2363; /* Color del icono */
-      --box-shadow: none; /* Quitamos la sombra por defecto del botón */
-      font-size: 24px; /* Icono más grande */
-      height: 40px;
-      width: 40px;
-      margin: 0 auto; /* Centrado */
-
-      /* Sombra personalizada en la parte inferior */
-      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
-    }
-  }
-
-  /* Categorías */
-  .category-col {
-    padding: 10px 16px;
-    .category-wrapper {
-      position: relative;
-      border-radius: 20px;
-      overflow: hidden;
-      height: 150px;
-      .category-img { object-fit: cover; width: 100%; height: 100%; filter: contrast(0.8); }
-      .category-text {
-        position: absolute;
-        bottom: 15px;
-        left: 0;
-        background: #1A2363;
-        color: white;
-        padding: 5px 20px;
-        border-radius: 0 10px 10px 0;
-        margin: 0;
-        font-size: 18px;
+      .home-searchbar {
+        order: 3;
+        flex: 1 1 auto;
+        max-width: 640px;
+        margin: 0 auto;
       }
     }
+
+    .home-banner {
+      display: none; // replaced by the banner-popup-modal on web
+    }
   }
+}
+
+// ===========================================================================
+// Banner popup (web only) — same banner-1.png, shown as a modal on entering
+// home instead of inline. Mobile never opens it (see home.page.ts), but the
+// media query below keeps it hidden defensively either way.
+// ===========================================================================
+.banner-popup-modal {
+  // Capped (not 100vw): banner-1.png is 3:2, so at full screen width the photo
+  // (object-fit: contain) ends up narrower than the modal, leaving empty
+  // gutters — and the button below it, sized to the modal, looked like an
+  // oversized bar instead of a button. This width keeps the image filling
+  // it edge to edge, so the button matches the image exactly.
+  --width: 90%;
+  --max-width: 640px;
+  --height: auto;
+  --max-height: 90vh;
+  --border-radius: 20px;
+  --box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+
+  @media (max-width: 899px) {
+    display: none;
+  }
+
+  .banner-popup {
+    background: white;
+    padding: 0 0 18px;
+
+    img {
+      width: 100%;
+      height: auto;
+      max-height: 78vh;
+      aspect-ratio: 3 / 2; // banner-1.png is 1536x1024 — matching this ratio shows it in full, uncropped
+      object-fit: contain;
+      display: block;
+      background: #f4f2ef;
+    }
+
+    .banner-popup-btn {
+      --background: #2dd36f;
+      --background-hover: #1A2363;
+      --background-hover-opacity: 1;
+      --background-activated: #1A2363;
+      --background-activated-opacity: 1;
+      --color: #111111;
+      --color-hover: white;
+      --color-activated: white;
+      --border-radius: 14px;
+      // Tight shadow, hugging the rounded corners — a wide blur (24px) spread
+      // into a hazy "ghost" shape well past the curve, especially visible at
+      // the left/right ends once the pulse animation scales it up.
+      --box-shadow: 0 4px 10px rgba(45, 211, 111, 0.35);
+      height: 56px;
+      font-weight: 800;
+      font-size: 15px;
+      // A little side margin so the rounded corners actually show — flush
+      // against the popup's own straight edges, the curve was invisible.
+      margin: 16px 16px 0;
+      animation: banner-popup-pulse 1.8s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes banner-popup-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
 }

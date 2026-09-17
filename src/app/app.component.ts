@@ -1,10 +1,13 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, inject } from '@angular/core';
 
 import { Platform, NavController, ModalController, ToastController } from '@ionic/angular';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { SplashScreen } from '@capacitor/splash-screen';
 import { DataServiceService } from './services/data-service.service';
 import { SplashScreenPage } from './splash-screen/splash-screen.page';
 import { Events } from './services/events.service';
+import { Auth, authState, signOut } from '@angular/fire/auth';
+import { Firestore, doc, getDoc } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +23,8 @@ export class AppComponent {
   public visProfileItem = false;
   public visEditprofile = false;
   public userName = '';
+  private auth = inject(Auth);
+  private firestore = inject(Firestore);
   public listItems = [
     { icon: "assets/icon/home-side.svg", text: "Inicio", visItem: true },
     { icon: "assets/icon/listview-side.svg", text: "Categories", visItem: false },
@@ -31,7 +36,7 @@ export class AppComponent {
     { icon: "assets/icon/terms.svg", text: "Terms & Services", visItem: false },
     { icon: "assets/icon/share.svg", text: "Share", visItem: false },
     { icon: "assets/icon/rate-us.svg", text: "Rate Us", visItem: false },
-    { icon: "assets/icon/settings.svg", text: "Settings", visItem: false },
+    { icon: "assets/icon/settings.svg", text: "Administración", visItem: false },
     { icon: "assets/icon/account-user.svg", text: "Editar Perfil", visItem: true },
     { icon: "assets/icon/account-order.svg", text: "Mis Compras", visItem: true },
     { icon: "assets/icon/address.svg", text: "Mis Direcciones", visItem: true },
@@ -62,6 +67,7 @@ export class AppComponent {
     this.events.subscribe('tabActive', (data) => {
       this.visTab = data;
     });
+    authState(this.auth).subscribe(user => this.refreshAdminMenuItem(user ? user.uid : null));
     // service.getLogin().
     this.login = this.service.getLogin();
     console.log("I am in my app class and login value=" + this.login)
@@ -79,8 +85,34 @@ export class AppComponent {
         StatusBar.setStyle({ style: Style.Default });
       }
       //this.splashScreen.hide();
-      this.SplashModal();
+      // A direct link straight into a product page (e.g. shared from an ad)
+      // shows its own "50off.png" loading popup while the product fetches —
+      // showing the generic splash.mp4 first on top of that would be redundant.
+      // SplashScreenPage (the video modal) is what normally calls
+      // SplashScreen.hide() once it's done — skipping it means we must hide
+      // the native splash ourselves, or its launch image (the EuroCity logo)
+      // stays on screen forever.
+      if (/^\/product-detail(\/|$)/.test(window.location.pathname)) {
+        SplashScreen.hide();
+      } else {
+        this.SplashModal();
+      }
     });
+  }
+  // The "Administración" side-menu item only makes sense for admins, so it
+  // stays hidden until we confirm customers/{uid}.role === 'admin' — the same
+  // check adminGuard uses to protect the routes it links to.
+  private async refreshAdminMenuItem(uid: string | null) {
+    let isAdmin = false;
+    if (uid) {
+      try {
+        const snap = await getDoc(doc(this.firestore, `customers/${uid}`));
+        isAdmin = snap.exists() && (snap.data() as any)?.role === 'admin';
+      } catch (e) {
+        console.error('Error checking admin role', e);
+      }
+    }
+    this.listItems[10].visItem = isAdmin;
   }
   async SplashModal() {
     console.log("splash modal fun");
@@ -239,7 +271,8 @@ export class AppComponent {
   goToLogin() {
     this.navCtrl.navigateForward("login");
   }
-  logout() {
+  async logout() {
+    await signOut(this.auth);
     this.service.setLogin(false);
     this.service.setUserData(null);
     localStorage.removeItem('isLoginSucessFull');

@@ -25,7 +25,7 @@ export class SettingsPage implements OnInit {
 
   onItemClick(config: Configuration) {
     if (config.name && (config.name.toLowerCase().trim() === 'crear producto' || config.name.toLowerCase().trim() === 'create product')) {
-      this.navCtrl.navigateForward('/create-product');
+      this.navCtrl.navigateForward('/product-list');
     }
   }
 

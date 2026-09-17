@@ -111,6 +111,43 @@
       }
     }
   }
+  .card-bono {
+    margin: 12px 16px;
+    border-radius: 14px;
+    box-shadow: none;
+    border: 1px dashed #81624e;
+    --background: #fff8ef;
+
+    .bono-code-item {
+      --background: transparent;
+      --padding-start: 12px;
+
+      ion-icon[slot="start"] {
+        color: #81624e;
+      }
+
+      .bono-code-label {
+        font-size: 12px;
+        color: #7a6a5a;
+        margin: 0;
+      }
+      .bono-code-value {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: #141414;
+        margin: 2px 0 0;
+      }
+    }
+
+    .bono-code-hint {
+      font-size: 11px;
+      color: #7a6a5a;
+      padding: 0 16px 12px;
+      margin: 0;
+    }
+  }
+
   .list {
     margin-left: 16px;
     margin-right: 16px;

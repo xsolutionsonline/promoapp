@@ -1,113 +1,170 @@
 <ion-content class="content-product">
-  <div class="blur-content" style='filter:var(--my-var)'>
+  <!-- Loading popup: a 60%-of-screen card over a dim backdrop while the
+       product data is still loading — the real page keeps rendering
+       underneath (through the backdrop) instead of being hidden outright.
+       Disappears as soon as productLoaded flips to true. -->
+  <div class="pdp-loading-backdrop" *ngIf="!productLoaded">
+    <div class="pdp-loading-overlay">
+      <img src="assets/images/banner/50off.png" alt="Hasta 50% de descuento" />
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  </div>
+
+  <div class="blur-content pdp" style='filter:var(--my-var)' [style.--brand-primary]="brandPrimary" [style.--brand-secondary]="brandSecondary" [style.--brand-dark]="darkBlockBackground" [style.--brand-secondary-text]="secondaryTextColor">
     <ion-item class="item-header" lines="none">
       <ion-menu-button class="menu-btn" slot="start">
         <ion-icon src="assets/icon/menu.svg" />
       </ion-menu-button>
-      <ion-title class="header-title">Detalles del Producto</ion-title>
-      <ion-button shape="round" slot="end" routerLink="/cart" routerDirection="forward">
-        <ion-badge class="home-badge">
-          {{cartItemCount}}
-        </ion-badge>
-        <ion-icon src="assets/icon/shopping-cart.svg" />
-      </ion-button>
+      <ion-title class="header-title">{{categoryHeader}}</ion-title>
     </ion-item>
 
-    <ion-card class="card-header animated fadeIn">
-      <ion-thumbnail>
-        <ion-img src="assets/images/other/category-header-uno.png">
-        </ion-img>
-      </ion-thumbnail>
-    </ion-card>
-    <!-- product slider images -->
-    <div class="horizontal-scroll-container product-slides" #productSlider>
-      <div class="scroll-item" *ngFor="let slide of slides">
-        <ion-card>
-          <div>
-            <ion-thumbnail class="animated fadeInRight">
-              <ion-img [src]="slide"></ion-img>
-            </ion-thumbnail>
+    <!-- Hero: gallery + purchase info. Stacked on mobile, two columns on web (docs/img.png) -->
+    <div class="pdp-hero">
+      <!-- Gallery: professionally framed main image + thumbnail rail -->
+      <div class="pdp-gallery">
+        <div class="pdp-gallery-row">
+          <div class="pdp-gallery-thumbs" *ngIf="slides.length > 1">
+            <div class="pdp-thumb" *ngFor="let slide of slides; let i = index" [class.active]="i === activeSlideIndex" (click)="selectSlide(i)">
+              <img [src]="slide" />
+            </div>
           </div>
-        </ion-card>
+          <div class="pdp-gallery-main">
+            <img *ngIf="slides.length > 0" [src]="slides[activeSlideIndex]" class="animated fadeIn" />
+            <div class="pdp-gallery-placeholder" *ngIf="slides.length === 0"></div>
+            <ion-button fill="clear" class="pdp-heart-btn" *ngIf="visHeart" (click)="heart()">
+              <ion-icon name="heart" class="icon-empty" />
+            </ion-button>
+            <ion-button fill="clear" class="pdp-heart-btn" *ngIf="!visHeart" (click)="heart()">
+              <ion-icon name="heart" class="icon-filled" />
+            </ion-button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pdp-info">
+        <div class="pdp-tags-row">
+          <div class="featured" *ngIf="currentProduct?.featured">Featured</div>
+          <div class="new" *ngIf="currentProduct?.new">New</div>
+          <div class="sale" *ngIf="currentProduct?.sale">Ofertas</div>
+        </div>
+
+        <h1 class="pdp-title">{{categoryHeader}}</h1>
+        <p class="pdp-subtitle" *ngIf="productSubtitle">{{productSubtitle}}</p>
+
+        <div class="pdp-rating" (click)="goToReview()">
+          <ion-icon name="star" *ngFor="let s of [1,2,3,4]"></ion-icon>
+          <ion-icon name="star" class="empty-icon"></ion-icon>
+          <span>Calificado {{ratingValue}} estrellas ({{reviewsCount}} reseñas)</span>
+        </div>
+
+        <div class="pdp-badge" *ngIf="productBadgeText">🔥 {{productBadgeText}}</div>
+        <p class="pdp-urgency" *ngIf="productUrgencyText">{{productUrgencyText}}</p>
+        <p class="pdp-shipping" *ngIf="productShippingText">{{productShippingText}}</p>
+
+        <div class="pdp-description" [innerHTML]="descriptionHtml"></div>
+
+        <!-- Price packages -->
+        <div class="pdp-groups" *ngIf="groupItems && groupItems.length > 0">
+          <div class="pdp-group-card" *ngFor="let item of groupItems" [class.selected]="item.active" (click)="selectGroup(item)">
+            <span class="pdp-group-text">{{item.text}}</span>
+            <span class="pdp-group-prices">
+              <span class="striked" *ngIf="item.price">${{formatPrice(item.price)}}</span>
+              <span class="final">${{formatPrice(item.dprice)}}</span>
+            </span>
+          </div>
+        </div>
+        <div class="pdp-simple-price" *ngIf="!(groupItems && groupItems.length > 0)">
+          <span class="striked" *ngIf="productDPrice">${{formatPrice(productDPrice)}}</span>
+          <span class="final">${{formatPrice(productPrice)}}</span>
+        </div>
+
+        <ion-button expand="block" class="pdp-cta" (click)="goToProductDetailModal()"
+          [style.--background]="ctaBackgroundColor" [style.--color]="ctaTextColor" [style.--cta-hover-color]="ctaHoverColor">
+          {{productCtaText}}
+        </ion-button>
+        <p class="pdp-delivery" *ngIf="productDeliveryText">{{productDeliveryText}}</p>
       </div>
     </div>
 
-    <ion-grid class="grid-tags">
-      <ion-row class="row-tags">
-        <ion-col size="3" class="ion-align-self-end">
-          <div class="featured" *ngIf="currentProduct?.featured">
-            Featured
-          </div>
-        </ion-col>
-        <ion-col size="3" class="ion-align-self-end">
-          <div class="new" *ngIf="currentProduct?.new">
-            New
-          </div>
-        </ion-col>
-        <ion-col size="3" class="ion-align-self-end">
-          <div class="sale" *ngIf="currentProduct?.sale">
-            Ofertas
-          </div>
-        </ion-col>
-      </ion-row>
-      <ion-row class="row-product-name">
-        <ion-col size="7">
-          <h2>
-            {{categoryHeader}}
-          </h2>
-        </ion-col>
-        <ion-col size="5" class="ion-align-self-start col-heart-icon">
-          <ion-button shape="round" class="buy-btn" (click)="goToProductDetailModal()">
-            <ion-icon slot="icon-only" name="cart" />
-          </ion-button>
-          <ion-button fill="clear" *ngIf="visHeart" (click)="heart()">
-            <ion-icon name="heart" class="icon-empty" />
-          </ion-button>
-          <ion-button fill="clear" *ngIf="!visHeart" (click)="heart()">
-            <ion-icon name="heart" class="icon-filled" />
-          </ion-button>
-        </ion-col>
-      </ion-row>
-      <ion-row class="row-price">
-        <ion-col size="3">
-          <p class="para-price-del"><del>${{productDPrice}}</del></p>
-        </ion-col>
-        <ion-col size="3">
-          <p class="para-price">${{productPrice}}</p>
-        </ion-col>
-        <ion-col size="9" class="col-stock">
-          <p>In Stock</p>
-        </ion-col>
-      </ion-row>
-      <ion-row class="row-star">
-        <ion-col size="0.4" class="ion-align-self-start" (click)="goToReview()">
-          <ion-icon name="star" />
-        </ion-col>
-        <ion-col size="0.4" class="ion-align-self-start" (click)="goToReview()">
-          <ion-icon name="star" />
-        </ion-col>
-        <ion-col size="0.4" class="ion-align-self-start" (click)="goToReview()">
-          <ion-icon name="star" />
-        </ion-col>
-        <ion-col size="0.4" class="ion-align-self-start" (click)="goToReview()">
-          <ion-icon name="star" />
-        </ion-col>
-        <ion-col size="1" class="ion-align-self-start" (click)="goToReview()">
-          <ion-icon name="star" class="empty-icon" />
-        </ion-col>
-        <ion-col>
-          <p class="review-para">
-            36 reviews
-          </p>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+    <!-- Video + full sections accordion, side by side on web -->
+    <div class="pdp-media-row" *ngIf="youtubeEmbedUrl || sections.specifications || sections.experience || sections.materials || sections.howToUse">
+      <div class="pdp-video-col" *ngIf="youtubeEmbedUrl">
+        <div class="pdp-gallery-video">
+          <iframe [src]="youtubeEmbedUrl" title="Video del producto" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+        </div>
+      </div>
 
-    <h2 class="product-desc-header">Descripciòn</h2>
-    <p class="product-desc-para">
-      {{currentProduct?.description || 'No description available.'}}
-    </p>
+      <ion-accordion-group class="pdp-sections" value="specs" *ngIf="sections.specifications || sections.experience || sections.materials || sections.howToUse">
+        <ion-accordion value="specs" *ngIf="sections.specifications">
+          <ion-item slot="header" lines="none"><ion-label>Especificaciones</ion-label></ion-item>
+          <div slot="content" class="pdp-section-content" [innerHTML]="sectionHtml(sections.specifications)"></div>
+        </ion-accordion>
+        <ion-accordion value="experience" *ngIf="sections.experience">
+          <ion-item slot="header" lines="none"><ion-label>Experiencia y Diseño</ion-label></ion-item>
+          <div slot="content" class="pdp-section-content" [innerHTML]="sectionHtml(sections.experience)"></div>
+        </ion-accordion>
+        <ion-accordion value="materials" *ngIf="sections.materials">
+          <ion-item slot="header" lines="none"><ion-label>Materiales y Tecnología</ion-label></ion-item>
+          <div slot="content" class="pdp-section-content" [innerHTML]="sectionHtml(sections.materials)"></div>
+        </ion-accordion>
+        <ion-accordion value="howto" *ngIf="sections.howToUse">
+          <ion-item slot="header" lines="none"><ion-label>Cómo usarlo</ion-label></ion-item>
+          <div slot="content" class="pdp-section-content" [innerHTML]="sectionHtml(sections.howToUse)"></div>
+        </ion-accordion>
+      </ion-accordion-group>
+    </div>
 
+    <!-- Benefits -->
+    <div class="pdp-benefits" *ngIf="benefits && benefits.length > 0">
+      <h2>Beneficios</h2>
+      <div class="pdp-benefits-grid">
+        <div class="pdp-benefit" *ngFor="let benefit of benefits">
+          <div class="pdp-benefit-icon">{{benefit.icon}}</div>
+          <div class="pdp-benefit-text">
+            <h3>{{benefit.title}}</h3>
+            <p>{{benefit.text}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Showcase image -->
+    <div class="pdp-showcase" [class.pdp-showcase-two-col]="showcaseImageUrl2" *ngIf="showcaseImageUrl">
+      <img [src]="showcaseImageUrl" [alt]="categoryHeader" />
+      <img *ngIf="showcaseImageUrl2" [src]="showcaseImageUrl2" [alt]="categoryHeader" />
+    </div>
+
+    <!-- Highlight message -->
+    <div class="pdp-highlight" *ngIf="highlightMessage">
+      <p>{{highlightMessage}}</p>
+    </div>
+
+    <!-- Comparison -->
+    <div class="pdp-comparison" *ngIf="comparisonRows && comparisonRows.length > 0">
+      <h2>Nosotros vs Otros</h2>
+      <div class="pdp-comparison-table">
+        <div class="pdp-comparison-head">
+          <span class="pdp-comparison-corner"></span>
+          <span class="pdp-comparison-ours-label">{{categoryHeader}}</span>
+          <span class="pdp-comparison-others-label">Otros</span>
+        </div>
+        <div class="pdp-comparison-row" *ngFor="let row of comparisonRows">
+          <span class="pdp-comparison-label">{{row.label}}</span>
+          <span class="pdp-comparison-ours">{{row.ours}}</span>
+          <span class="pdp-comparison-others">{{row.others}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Closing full-bleed image -->
+    <div class="pdp-closing-image" [class.pdp-closing-image-two-col]="closingImageUrl2" *ngIf="closingImageUrl">
+      <img [src]="closingImageUrl" [alt]="categoryHeader" />
+      <img *ngIf="closingImageUrl2" [src]="closingImageUrl2" [alt]="categoryHeader" />
+    </div>
+
+    <ng-container *ngIf="productSlides && productSlides.length > 0">
     <h2 class="product-desc-header">Productos Similares</h2>
     <div class="horizontal-scroll-container similar-product-slides">
       <div class="scroll-item" *ngFor="let productSlide of productSlides">
@@ -128,10 +185,10 @@
           <ion-grid class="ion-no-padding">
             <ion-row>
               <ion-col size="2.5">
-                <p class="price-del-para"><del>${{productSlide.dPrice}}</del></p>
+                <p class="price-del-para"><del>${{formatPrice(productSlide.dPrice)}}</del></p>
               </ion-col>
               <ion-col size="2.5">
-                <p class="price-para">${{productSlide.price}}</p>
+                <p class="price-para">${{formatPrice(productSlide.price)}}</p>
               </ion-col>
               <ion-col size="7" class="col-heart">
                 <ion-icon *ngIf="!productSlide.heartVis" (click)="heartProduct(productSlide)" class="col-heart-empty"
@@ -144,12 +201,69 @@
         </ion-card>
       </div>
     </div>
+    </ng-container>
+
+    <!-- FAQ -->
+    <div class="pdp-faq" *ngIf="faqs && faqs.length > 0">
+      <div class="pdp-faq-intro">
+        <h2>{{faqTitle}}</h2>
+        <p *ngIf="faqSubtitle">{{faqSubtitle}}</p>
+      </div>
+      <ion-accordion-group class="pdp-faq-list" value="faq-0">
+        <ion-accordion [value]="'faq-' + i" *ngFor="let faq of faqs; let i = index">
+          <ion-item slot="header" lines="none">
+            <ion-label>{{faq.question}}</ion-label>
+          </ion-item>
+          <div slot="content" class="pdp-faq-answer">{{faq.answer}}</div>
+        </ion-accordion>
+      </ion-accordion-group>
+    </div>
+
+    <!-- Footer with legal links -->
+    <div class="pdp-footer">
+      <button type="button" (click)="openLegal('refund')">Política de reembolsos</button>
+      <button type="button" (click)="openLegal('terms')">Términos y condiciones</button>
+      <button type="button" (click)="openLegal('privacy')">Política de privacidad</button>
+    </div>
   </div>
+
+  <!-- Legal content modal -->
+  <ion-modal [isOpen]="activeLegalModal !== null" (didDismiss)="closeLegal()" class="pdp-legal-modal">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{legalModalTitle}}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeLegal()">
+              <ion-icon name="close" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <p class="pdp-legal-text">{{legalModalContent}}</p>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
   <!-- div main which is transparent -->
   <div class="main-popup" *ngIf="visiablePopup">
     <!-- div with white color -->
-    <div class="inner-div" *ngIf="visProductSuccessful">
-      <ion-icon class="close-popup-icon" name="close" (click)="dismiss()" />
+    <div class="inner-div checkout-sheet" *ngIf="visProductSuccessful">
+      <div class="checkout-header">
+        <span>PAGO CONTRA ENTREGA</span>
+        <ion-icon name="close" (click)="dismiss()" />
+      </div>
+
+      <div class="checkout-product-row">
+        <ion-thumbnail>
+          <img [src]="currentProduct?.img" />
+        </ion-thumbnail>
+        <div class="checkout-product-info">
+          <p class="checkout-product-title">{{categoryHeader}}</p>
+          <p class="checkout-product-price">${{formatPrice(productPrice)}}</p>
+        </div>
+      </div>
 
       <!-- Colors Container -->
       <ng-container *ngIf="colorItems && colorItems.length > 0 && !(groupItems && groupItems.length > 0)">
@@ -192,70 +306,279 @@
         </ion-grid>
       </ng-container>
 
-      <!-- Group Container -->
-      <ng-container *ngIf="groupItems && groupItems.length > 0">
-        <h2 class="header-size">Select Promotion:</h2>
-        <div class="group-list">
-          <ion-card class="group-card" *ngFor="let item of groupItems; let i=index" [class.selected]="item.active" (click)="selectGroup(item)">
-            <ion-card-content>
-              <div class="item-text">{{item.text}}</div>
-              <div class="price-wrapper">
-                <div class="striked-price">${{item.price}}</div>
-                <div class="main-price">${{item.dprice}}</div>
-              </div>
-            </ion-card-content>
-          </ion-card>
+      <!-- Add extra products to this order: search + slider -->
+      <div class="addon-section">
+        <h2 class="header-size">Agrega más productos</h2>
+        <ion-searchbar class="addon-searchbar" [(ngModel)]="addOnSearchTerm" [ngModelOptions]="{standalone: true}"
+          placeholder="Buscar productos para agregar" show-clear-button="focus"></ion-searchbar>
+
+        <div class="addon-slider horizontal-scroll-container" *ngIf="addOnResults.length > 0">
+          <div class="addon-card scroll-item" *ngFor="let p of addOnResults" (click)="openAddOnComboPicker(p)">
+            <ion-thumbnail>
+              <img [src]="p.img" />
+            </ion-thumbnail>
+            <p class="addon-card-title">{{ p.title || p.text }}</p>
+            <p class="addon-card-price">${{ formatPrice(p.price) }}</p>
+            <ion-icon name="add-circle" class="addon-add-icon"></ion-icon>
+          </div>
         </div>
-      </ng-container>
+        <p class="addon-empty" *ngIf="addOnSearchTerm && addOnResults.length === 0">No se encontraron productos.</p>
 
-      <!-- Quantity Container -->
-       <ng-container *ngIf=" !(groupItems && groupItems.length > 0)">
-      <h2 class="header-size">Select Quantity:</h2>
-      <ion-grid class="grid-quantity ion-no-padding">
-        <ion-row>
-          <ion-col class="ion-no-padding" size="2">
-            <ion-button fill="clear" (click)="addBtn()">
-              <span>+</span>
-            </ion-button>
-          </ion-col>
-          <ion-col class="ion-no-padding ion-align-self-center" size="2">
-            <div>{{productQuantity}}</div>
-          </ion-col>
-          <ion-col class="ion-no-padding" size="2">
-            <ion-button fill="clear" (click)="subBtn()">
-              <span>-</span>
-            </ion-button>
-          </ion-col>
-          <ion-col class="ion-no-padding">
-            <p class="para-price">Price: ${{productPrice}}</p>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-      </ng-container>
+        <div class="addon-cart" *ngIf="orderExtraItems.length > 0">
+          <div class="addon-cart-item" *ngFor="let item of orderExtraItems">
+            <ion-thumbnail>
+              <img [src]="item.img" />
+            </ion-thumbnail>
+            <div class="addon-cart-info">
+              <span class="addon-cart-title">{{ item.title }}</span>
+              <ng-container *ngIf="bonoDiscountPercent > 0 && item.bonoFinalPrice != null; else addonNormalPrice">
+                <span class="addon-cart-price-striked">${{ formatPrice((item.listPrice ?? item.price) * item.quantity) }}</span>
+                <span class="addon-cart-price">${{ formatPrice(item.bonoFinalPrice * item.quantity) }}</span>
+              </ng-container>
+              <ng-template #addonNormalPrice>
+                <span class="addon-cart-price">${{ formatPrice(item.price * item.quantity) }}</span>
+              </ng-template>
+            </div>
+            <div class="addon-cart-qty">
+              <button type="button" (click)="decrementExtraItem(item)">−</button>
+              <span>{{ item.quantity }}</span>
+              <button type="button" (click)="incrementExtraItem(item)">+</button>
+            </div>
+            <ion-icon name="trash" class="addon-remove-icon" (click)="removeExtraItem(item)"></ion-icon>
+          </div>
+        </div>
+      </div>
 
-      <div class="cart-div">
-        <ion-button (click)="goToproductSucessfull()" class="cart-btn">
-          Add To Cart
-        </ion-button>
-        <ion-button (click)="dismiss()" class="close-btn">
-          Close
+      <!-- Teaser banner: shown before they've added a second product -->
+      <div class="bono-register-banner" *ngIf="!isUserRegistered && orderExtraItems.length === 0">
+        <ion-icon name="gift-outline"></ion-icon>
+        <p>Agrega otro producto arriba y <strong>regístrate</strong> para obtener un bono de hasta <strong>50% de descuento</strong> en tu segundo producto.</p>
+      </div>
+
+      <!-- Inline registration form: appears once they've added an extra product,
+           so the welcome bono can be applied right here to this order. -->
+      <div class="inline-register-form" *ngIf="showInlineRegisterForm">
+        <div class="inline-register-intro">
+          <ion-icon name="gift"></ion-icon>
+          <p>¡Regístrate y recibe un <strong>bono de descuento</strong> para tu segundo producto!</p>
+        </div>
+
+        <ion-item lines="none">
+          <ion-input type="email" placeholder="Correo *" [(ngModel)]="regEmail" [ngModelOptions]="{standalone: true}"></ion-input>
+        </ion-item>
+        <div class="checkout-form-row">
+          <ion-item lines="none">
+            <ion-input type="password" placeholder="Contraseña *" [(ngModel)]="regPassword" [ngModelOptions]="{standalone: true}"></ion-input>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-input type="password" placeholder="Repetir contraseña *" [(ngModel)]="regConfirmPassword" [ngModelOptions]="{standalone: true}"></ion-input>
+          </ion-item>
+        </div>
+        <ion-item lines="none">
+          <ion-input type="tel" placeholder="WhatsApp *" [(ngModel)]="regWhatsapp" [ngModelOptions]="{standalone: true}"></ion-input>
+        </ion-item>
+
+        <p class="inline-register-label" *ngIf="activeCategories.length > 0">¿Qué categorías te interesan para recibir ofertas?</p>
+        <div class="inline-register-categories" *ngIf="activeCategories.length > 0">
+          <span class="category-chip" *ngFor="let cat of activeCategories" [class.selected]="regSelectedCategories.includes(cat.text)" (click)="toggleRegCategory(cat.text)">
+            {{ cat.text }}
+          </span>
+        </div>
+
+        <p class="inline-register-error" *ngIf="registerError">{{ registerError }}</p>
+
+        <ion-button expand="block" class="inline-register-submit" [disabled]="isRegistering" (click)="submitInlineRegister()">
+          {{ isRegistering ? 'Creando cuenta...' : 'Crear cuenta y aplicar bono' }}
         </ion-button>
       </div>
+
+      <!-- Discount bono code (registered users only) -->
+      <div class="bono-section" *ngIf="isUserRegistered">
+        <div class="bono-row" *ngIf="!bonoDiscountPercent">
+          <ion-item lines="none">
+            <ion-input placeholder="Código de bono (opcional)" [(ngModel)]="bonoCode" [ngModelOptions]="{standalone: true}"></ion-input>
+          </ion-item>
+          <ion-button fill="clear" [disabled]="isApplyingBono || !bonoCode.trim()" (click)="applyBono()">
+            {{ isApplyingBono ? '...' : 'Aplicar' }}
+          </ion-button>
+        </div>
+        <div class="bono-applied" *ngIf="bonoDiscountPercent">
+          <ion-icon name="pricetag"></ion-icon>
+          <span>Bono aplicado: -{{ bonoDiscountPercent }}%</span>
+          <ion-icon name="close-circle" (click)="removeBono()"></ion-icon>
+        </div>
+        <p class="bono-error" *ngIf="bonoError">{{ bonoError }}</p>
+      </div>
+
+      <!-- Order summary -->
+      <div class="checkout-summary">
+        <div class="checkout-summary-row">
+          <span>Subtotal</span>
+          <span>${{formatPrice(orderSubtotal)}}</span>
+        </div>
+        <div class="checkout-summary-row discount-row" *ngIf="orderDiscountAmount > 0">
+          <span>Descuento</span>
+          <span>-${{formatPrice(orderDiscountAmount)}}</span>
+        </div>
+        <div class="checkout-summary-row">
+          <span>Envío</span>
+          <span>Gratis</span>
+        </div>
+        <div class="checkout-summary-row total">
+          <span>Total</span>
+          <span>${{formatPrice(orderTotal)}}</span>
+        </div>
+      </div>
+
+      <!-- Customer info (matches Dropi's bulk order upload columns) -->
+      <form class="checkout-form" (ngSubmit)="submitCheckout()">
+        <div class="checkout-form-row">
+          <ion-item lines="none">
+            <ion-input placeholder="Nombre *" [(ngModel)]="checkoutData.nombre" name="nombre" required></ion-input>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-input placeholder="Apellido *" [(ngModel)]="checkoutData.apellido" name="apellido" required></ion-input>
+          </ion-item>
+        </div>
+        <ion-item lines="none">
+          <ion-input type="tel" placeholder="Teléfono *" [(ngModel)]="checkoutData.telefono" name="telefono" required></ion-input>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-input placeholder="Dirección *" [(ngModel)]="checkoutData.direccion" name="direccion" required></ion-input>
+        </ion-item>
+        <div class="checkout-form-row">
+          <ion-item lines="none" button detail="false" (click)="openLocationPicker('departamento')">
+            <ion-label [color]="checkoutData.departamento ? '' : 'medium'">{{ checkoutData.departamento || 'Departamento *' }}</ion-label>
+          </ion-item>
+          <ion-item lines="none" button detail="false" [class.item-disabled]="!checkoutData.departamento" (click)="openLocationPicker('ciudad')">
+            <ion-label [color]="checkoutData.ciudad ? '' : 'medium'">{{ checkoutData.ciudad || 'Ciudad *' }}</ion-label>
+          </ion-item>
+        </div>
+        <ion-item lines="none">
+          <ion-input type="email" placeholder="Correo electrónico (opcional)" [(ngModel)]="checkoutData.email" name="email"></ion-input>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-textarea placeholder="Nota para la entrega (opcional)" [(ngModel)]="checkoutData.nota" name="nota" autoGrow="true"></ion-textarea>
+        </ion-item>
+
+        <ion-button expand="block" type="submit" class="checkout-submit-btn" [disabled]="isSubmittingOrder">
+          {{ isSubmittingOrder ? 'Enviando...' : 'COMPLETA TU COMPRA - $' + formatPrice(orderTotal) }}
+        </ion-button>
+      </form>
     </div>
-    <div class="inner-div-sucess" *ngIf="!visProductSuccessful">
+
+    <!-- Departamento / Ciudad picker: searchable, backed by assets/data/departments.json -->
+    <ion-modal class="location-picker-modal" [isOpen]="isLocationPickerOpen" (didDismiss)="closeLocationPicker()">
+      <ng-template>
+        <ion-header>
+          <ion-toolbar color="primary">
+            <ion-title>{{ locationPickerType === 'departamento' ? 'Selecciona el departamento' : 'Selecciona la ciudad' }}</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="closeLocationPicker()">Cerrar</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar color="primary">
+            <ion-searchbar [(ngModel)]="locationPickerSearchTerm" [placeholder]="locationPickerType === 'departamento' ? 'Buscar departamento' : 'Buscar ciudad'" show-clear-button="focus"></ion-searchbar>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="location-picker-content">
+          <ion-list *ngIf="locationPickerOptions.length > 0">
+            <ion-item button lines="full" *ngFor="let option of locationPickerOptions" (click)="selectLocationOption(option)">
+              <ion-label>{{ option }}</ion-label>
+            </ion-item>
+          </ion-list>
+          <div class="location-picker-empty" *ngIf="locationPickerOptions.length === 0">
+            <ion-icon name="search-outline"></ion-icon>
+            <p>No se encontraron resultados.</p>
+          </div>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+
+    <!-- Combo picker for an add-on product: lets the shopper choose which
+         package (X1/X2/X3) of that extra product to add to the order. -->
+    <ion-modal class="addon-combo-modal" [isOpen]="isAddOnComboModalOpen" (didDismiss)="closeAddOnComboModal()">
+      <ng-template>
+        <ion-header>
+          <ion-toolbar color="primary">
+            <ion-title>Elige el paquete</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="closeAddOnComboModal()">Cerrar</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="addon-combo-content">
+          <div class="addon-combo-product" *ngIf="addOnComboModalProduct">
+            <ion-thumbnail>
+              <img [src]="addOnComboModalProduct.img" />
+            </ion-thumbnail>
+            <p class="addon-combo-title">{{ addOnComboModalProduct.title || addOnComboModalProduct.text }}</p>
+          </div>
+          <div class="pdp-groups addon-combo-groups">
+            <div class="pdp-group-card" *ngFor="let group of addOnComboModalGroups; let i = index"
+              [class.selected]="i === addOnComboModalSelectedIndex" (click)="selectAddOnComboOption(i)">
+              <span class="pdp-group-text">{{ group.text }}</span>
+              <span class="pdp-group-prices">
+                <span class="striked" *ngIf="group.price">${{ formatPrice(group.price) }}</span>
+                <span class="final">${{ formatPrice(group.dprice) }}</span>
+              </span>
+            </div>
+          </div>
+        </ion-content>
+        <ion-footer>
+          <ion-toolbar>
+            <ion-button expand="block" (click)="confirmAddOnCombo()">Agregar al pedido</ion-button>
+          </ion-toolbar>
+        </ion-footer>
+      </ng-template>
+    </ion-modal>
+
+    <!-- Post-purchase upsell: one-click "take another for a discount" -->
+    <div class="upsell-promo animated fadeIn" *ngIf="!visProductSuccessful && showUpsellPromo">
+      <div class="upsell-confirm-line">
+        <ion-icon name="checkmark-circle"></ion-icon>
+        <span>¡Pedido recibido! Te contactaremos pronto para confirmar la entrega.</span>
+      </div>
+
+      <div class="upsell-badge">🎉 OFERTA EXCLUSIVA · SOLO POR HOY</div>
+      <h1 class="upsell-title">¡ESPERA! Antes de irte…</h1>
+
+      <div class="upsell-image-wrap">
+        <img [src]="currentProduct?.promoImageUrl" [alt]="categoryHeader" />
+      </div>
+
+      <p class="upsell-pitch">
+        Lleva <strong>{{ upsellQuantity }}</strong> {{ upsellQuantity === 1 ? 'más' : 'unidades más' }} de tu producto principal a un precio especial de una sola vez:
+      </p>
+
+      <div class="upsell-price-box" [style.--upsell-price-bg]="brandPrimary">
+        <span class="upsell-price-each">Cada frasco por</span>
+        <span class="upsell-price-value">${{ formatPrice(upsellUnitPrice) }}</span>
+        <span class="upsell-price-total" *ngIf="upsellQuantity > 1">Total: ${{ formatPrice(upsellTotalPrice) }}</span>
+      </div>
+
+      <ion-button expand="block" class="upsell-accept-btn" [style.--upsell-accept-hover]="brandPrimary" [disabled]="isProcessingUpsell" (click)="acceptUpsellDiscount()">
+        {{ isProcessingUpsell ? 'Agregando...' : '🔥 ¡SÍ, QUIERO MI DESCUENTO!' }}
+      </ion-button>
+      <ion-button expand="block" fill="clear" class="upsell-decline-btn" [disabled]="isProcessingUpsell" (click)="declineUpsellDiscount()">
+        No gracias, tal vez la próxima 😢
+      </ion-button>
+    </div>
+
+    <div class="inner-div-sucess" *ngIf="!visProductSuccessful && !showUpsellPromo">
       <ion-item class="header-item" lines="none">
         <ion-icon slot="end" name="close" (click)="dismiss()" />
       </ion-item>
       <div class="sucess-div-icon">
         <ion-icon src="assets/icon/checked.svg" />
-        <p>Your Product Has Been Successfully Added To Your Cart</p>
+        <p>¡Pedido recibido! Te contactaremos pronto para confirmar la entrega y el pago contra reembolso.</p>
       </div>
       <div class="cart-div">
-        <ion-button (click)="goToCart()" class="cart-btn animated fadeInLeft">
-          GO To Cart
+        <ion-button (click)="goToHome()" class="cart-btn animated fadeInLeft">
+          Ir al inicio
         </ion-button>
-        <ion-button (click)="goToHome()" class="home-btn animated fadeInLeft">
-          Go To Home
+        <ion-button (click)="dismiss()" class="home-btn animated fadeInLeft">
+          Cerrar
         </ion-button>
       </div>
     </div>

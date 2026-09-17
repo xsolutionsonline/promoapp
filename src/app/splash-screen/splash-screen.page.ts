@@ -46,6 +46,7 @@ export class SplashScreenPage implements OnInit {
     setTimeout(() => {
       console.log("dismiss called");
       this.modalCtrl.dismiss();
+      this.events.publish('splashVideoEnded', true);
     }, 3000);
   }
   ngOnInit() { }
