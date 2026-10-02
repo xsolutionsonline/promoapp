@@ -97,6 +97,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
     const featuredQuery = query(productsRef, where('featured', '==', true));
     collectionData(featuredQuery, { idField: 'id' }).subscribe((data: any[]) => {
+      console.log('[home] featured products JSON:', JSON.stringify(data, null, 2));
       this.rawFeatured = data;
       this.featuredLoaded = true;
       this.recomputeSectionsWhenReady();
@@ -104,6 +105,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
     const newItemsQuery = query(productsRef, where('new', '==', true));
     collectionData(newItemsQuery, { idField: 'id' }).subscribe((data: any[]) => {
+      console.log('[home] new products JSON:', JSON.stringify(data, null, 2));
       this.rawNew = data;
       this.newLoaded = true;
       this.recomputeSectionsWhenReady();
@@ -111,6 +113,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
     const saleItemsQuery = query(productsRef, where('sale', '==', true));
     collectionData(saleItemsQuery, { idField: 'id' }).subscribe((data: any[]) => {
+      console.log('[home] sale products JSON:', JSON.stringify(data, null, 2));
       this.rawSale = data;
       this.saleLoaded = true;
       this.recomputeSectionsWhenReady();

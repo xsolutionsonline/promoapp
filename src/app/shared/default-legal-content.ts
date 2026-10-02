@@ -42,6 +42,8 @@ El tiempo de entrega promedio es de 2 a 7 días hábiles, dependiendo de la ciud
 Información sobre el Mensajero
 El mensajero que realiza la entrega se presentará claramente como entregador asociado a nuestra tienda. Por seguridad, recomendamos recibir el producto solo si el mensajero se identifica adecuadamente.`;
 
+export const DEFAULT_LEGAL_DISCLAIMER = `AVISO LEGAL: Los resultados mencionados no son típicos y los resultados individuales pueden variar. La información y los productos ofrecidos en este sitio tienen fines informativos y no constituyen asesoría médica, diagnóstico ni tratamiento profesional; estos productos no han sido evaluados para diagnosticar, tratar, curar o prevenir ninguna enfermedad. Consulta a tu médico antes de usarlos, especialmente si estás embarazada, en lactancia, tomas medicamentos o tienes una condición médica preexistente. Este sitio y sus anuncios son independientes: no estamos afiliados, asociados, autorizados ni respaldados por Meta, Facebook, Instagram, WhatsApp, Google, YouTube ni TikTok, ni por ninguna de sus subsidiarias o afiliadas, ni tenemos conexión oficial con ellas. Todas las marcas mencionadas pertenecen a sus respectivos propietarios.`;
+
 export const DEFAULT_PRIVACY_POLICY = `Esta Política de Privacidad describe cómo el "Sitio" o "nosotros" recopilamos, usamos y divulgamos su información personal cuando visita o realiza una compra desde el Sitio.
 
 Recopilación de información personal

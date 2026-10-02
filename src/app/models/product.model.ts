@@ -114,6 +114,16 @@ export interface ProductLegal {
   refundPolicy?: string;
   termsOfService?: string;
   privacyPolicy?: string;
+  legalDisclaimer?: string;
+}
+
+export interface ProductSeo {
+  // <title> de la pestaña/buscador y og:title / twitter:title al compartir. Ideal ~60 caracteres.
+  metaTitle?: string;
+  // meta description y og:description / twitter:description al compartir. Ideal ~155 caracteres.
+  metaDescription?: string;
+  // Imagen usada en la tarjeta al compartir (og:image / twitter:image). Si se deja vacío, se usa la imagen principal del producto.
+  ogImage?: string;
 }
 
 export interface Product {
@@ -163,4 +173,5 @@ export interface Product {
   benefits?: Benefit[];
   comparisonRows?: ComparisonRow[];
   legal?: ProductLegal;
+  seo?: ProductSeo;
 }

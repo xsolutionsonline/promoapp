@@ -221,9 +221,12 @@
 
     <!-- Footer with legal links -->
     <div class="pdp-footer">
-      <button type="button" (click)="openLegal('refund')">Política de reembolsos</button>
-      <button type="button" (click)="openLegal('terms')">Términos y condiciones</button>
-      <button type="button" (click)="openLegal('privacy')">Política de privacidad</button>
+      <p class="pdp-legal-disclaimer">{{ legalDisclaimerText }}</p>
+      <div class="pdp-footer-links">
+        <button type="button" (click)="openLegal('refund')">Política de reembolsos</button>
+        <button type="button" (click)="openLegal('terms')">Términos y condiciones</button>
+        <button type="button" (click)="openLegal('privacy')">Política de privacidad</button>
+      </div>
     </div>
   </div>
 

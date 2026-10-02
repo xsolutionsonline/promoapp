@@ -13,12 +13,13 @@ import { DataServiceService } from '../services/data-service.service';
 import { CategoryService, CategoryItem } from '../services/category.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, SafeResourceUrl, Title, Meta } from '@angular/platform-browser';
 import { ProductSections, Benefit, ComparisonRow, ProductLegal, FaqItem } from '../models/product.model';
 import {
   DEFAULT_REFUND_POLICY,
   DEFAULT_TERMS_OF_SERVICE,
-  DEFAULT_PRIVACY_POLICY
+  DEFAULT_PRIVACY_POLICY,
+  DEFAULT_LEGAL_DISCLAIMER
 } from '../shared/default-legal-content';
 
 interface GroupVariant {
@@ -104,6 +105,9 @@ export class ProductDetailPage implements OnInit, OnDestroy {
   public comparisonRows: ComparisonRow[] = [];
   public legal: ProductLegal = {};
   public activeLegalModal: LegalModalType = null;
+  // JSON-LD Product structured data for Google — injected/removed manually
+  // since it's not exposed by Angular's Meta service.
+  private jsonLdScriptEl: HTMLScriptElement | null = null;
   public activeSlideIndex = 0;
   public youtubeEmbedUrl: SafeResourceUrl | null = null;
   public showcaseImageUrl = '';
@@ -225,7 +229,9 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     private categoryService: CategoryService,
     private dataService: DataServiceService,
     private loadingService: LoadingService,
-    private sanitizer: DomSanitizer) {
+    private sanitizer: DomSanitizer,
+    private titleService: Title,
+    private metaService: Meta) {
 
     this.events.subscribe('blurValue', (data) => {
       this.divBlur = data;
@@ -262,6 +268,10 @@ export class ProductDetailPage implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.stopAutoplay();
+    if (this.jsonLdScriptEl) {
+      this.jsonLdScriptEl.remove();
+      this.jsonLdScriptEl = null;
+    }
   }
 
   initializeProductData(data: any) {
@@ -330,6 +340,7 @@ export class ProductDetailPage implements OnInit, OnDestroy {
       this.benefits = data.benefits || [];
       this.comparisonRows = data.comparisonRows || [];
       this.legal = data.legal || {};
+      this.applySeoMetaTags(data);
 
       const youtubeId = data.youtubeUrl ? this.extractYoutubeId(data.youtubeUrl) : null;
       this.youtubeEmbedUrl = youtubeId
@@ -340,6 +351,72 @@ export class ProductDetailPage implements OnInit, OnDestroy {
       this.productQuantity = 1;
       this.updateTotalPrice();
     }
+  }
+
+  // ----- SEO: título/meta tags + JSON-LD, para que Google indexe el
+  // producto y (cuando el crawler ejecuta JS) muestre título/imagen al
+  // compartir. Los bots que NO ejecutan JS (WhatsApp/Facebook/Twitter)
+  // reciben esta misma información desde la Cloud Function de Hosting. -----
+  private applySeoMetaTags(data: any) {
+    const title = this.truncateText(data.seo?.metaTitle || data.title || 'Producto', 70);
+    const rawDescription = data.seo?.metaDescription || data.text || this.stripHtmlTags(data.description || '');
+    const description = this.truncateText(this.stripHtmlTags(rawDescription), 160);
+    const image = data.seo?.ogImage || data.showcaseImageUrl || data.img || '';
+    const url = data.id ? `${window.location.origin}/product-detail/${data.id}` : window.location.href;
+
+    this.titleService.setTitle(title);
+    this.metaService.updateTag({ name: 'description', content: description });
+    this.metaService.updateTag({ property: 'og:type', content: 'product' });
+    this.metaService.updateTag({ property: 'og:title', content: title });
+    this.metaService.updateTag({ property: 'og:description', content: description });
+    this.metaService.updateTag({ property: 'og:image', content: image });
+    this.metaService.updateTag({ property: 'og:url', content: url });
+    this.metaService.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+    this.metaService.updateTag({ name: 'twitter:title', content: title });
+    this.metaService.updateTag({ name: 'twitter:description', content: description });
+    this.metaService.updateTag({ name: 'twitter:image', content: image });
+
+    this.updateProductJsonLd(data, description, image, url);
+  }
+
+  private stripHtmlTags(html: string): string {
+    return (html || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  private truncateText(text: string, max: number): string {
+    const clean = (text || '').trim();
+    return clean.length > max ? `${clean.slice(0, max - 1).trim()}…` : clean;
+  }
+
+  private updateProductJsonLd(data: any, description: string, image: string, url: string) {
+    const jsonLd: any = {
+      '@context': 'https://schema.org/',
+      '@type': 'Product',
+      name: data.title || '',
+      description: this.stripHtmlTags(data.description || '') || description,
+      image: image ? [image] : undefined,
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: 'COP',
+        price: data.price ? String(data.price) : undefined,
+        availability: 'https://schema.org/InStock',
+        url
+      }
+    };
+    if (data.ratingValue && data.reviewsCount) {
+      jsonLd.aggregateRating = {
+        '@type': 'AggregateRating',
+        ratingValue: String(data.ratingValue),
+        reviewCount: String(data.reviewsCount)
+      };
+    }
+
+    if (!this.jsonLdScriptEl) {
+      this.jsonLdScriptEl = document.createElement('script');
+      this.jsonLdScriptEl.type = 'application/ld+json';
+      document.head.appendChild(this.jsonLdScriptEl);
+    }
+    this.jsonLdScriptEl.text = JSON.stringify(jsonLd);
   }
 
   selectSlide(index: number) {
@@ -391,6 +468,11 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     if (this.activeLegalModal === 'terms') { return this.legal.termsOfService || DEFAULT_TERMS_OF_SERVICE; }
     if (this.activeLegalModal === 'privacy') { return this.legal.privacyPolicy || DEFAULT_PRIVACY_POLICY; }
     return '';
+  }
+
+  // Se muestra siempre como texto plano en el footer (no en un botón/modal).
+  get legalDisclaimerText(): string {
+    return this.legal.legalDisclaimer || DEFAULT_LEGAL_DISCLAIMER;
   }
 
   selectGroup(selectedGroup: GroupVariant) {

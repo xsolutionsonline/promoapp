@@ -10,6 +10,44 @@
     Completa cada sección para construir la página inmersiva de tu producto: colores de marca, galería, paquetes de precio, contenido y políticas.
   </p>
 
+  <div class="quick-add-panel ion-margin-horizontal" *ngIf="!isEditMode">
+    <ion-button fill="outline" size="small" (click)="toggleQuickAdd()">
+      <ion-icon name="flash-outline" slot="start"></ion-icon>
+      {{ showQuickAdd ? 'Ocultar alta rápida' : 'Alta rápida (pegar nombre + copy)' }}
+    </ion-button>
+
+    <div class="quick-add-body" [hidden]="!showQuickAdd">
+      <p class="hint">
+        Pega el nombre del producto y el copy completo (con sus secciones numeradas: Copy principal, Especificaciones,
+        Experiencia, Materiales, Cómo usarlo, 4 beneficios cortos, Nosotros vs. ellos, Preguntas frecuentes) y rellena
+        el resto del formulario automáticamente, respetando la negrilla que traiga el texto. Las imágenes quedan con
+        fotos por defecto para reemplazar luego. Si el copy trae una sección de beneficios, se agregan junto con su
+        ícono (emoji) si lo detecta al inicio de cada uno — revisa y corrige los que no traigan ícono.
+        <strong>Nunca crea combos</strong> — esos se arman a mano.
+      </p>
+
+      <ion-item lines="none">
+        <ion-label position="floating">Nombre del producto</ion-label>
+        <ion-input [(ngModel)]="quickAddName" [ngModelOptions]="{standalone: true}"></ion-input>
+      </ion-item>
+
+      <div class="rich-field">
+        <ion-label position="stacked">Copy del producto</ion-label>
+        <p class="hint">Pega el texto tal como lo tengas (negrilla incluida) — se detecta automáticamente.</p>
+        <div
+          #quickAddCopyEditor
+          class="rich-description-editor"
+          contenteditable="true"
+          data-placeholder="1. Copy principal del producto…"
+          (input)="onQuickAddCopyInput($event)"
+          (paste)="onQuickAddCopyPaste($event)">
+        </div>
+      </div>
+
+      <ion-button expand="block" (click)="applyQuickAdd()">Rellenar formulario</ion-button>
+    </div>
+  </div>
+
   <form [formGroup]="productForm" (ngSubmit)="validateAndSave()">
     <ion-accordion-group class="create-product-accordion" multiple="true" [value]="openAccordionSections">
 
@@ -517,6 +555,10 @@
             <ion-label position="stacked">Política de privacidad</ion-label>
             <ion-textarea formControlName="privacyPolicy" autoGrow="true" rows="6"></ion-textarea>
           </ion-item>
+          <ion-item lines="none">
+            <ion-label position="stacked">Aviso legal</ion-label>
+            <ion-textarea formControlName="legalDisclaimer" autoGrow="true" rows="6"></ion-textarea>
+          </ion-item>
         </div>
       </ion-accordion>
 
@@ -551,6 +593,44 @@
             </div>
           </div>
           <ion-button expand="block" fill="outline" (click)="addFaq()">+ Agregar pregunta</ion-button>
+        </div>
+      </ion-accordion>
+
+      <!-- 11. SEO (Google) -->
+      <ion-accordion value="seo" formGroupName="seo">
+        <ion-item slot="header" lines="none" color="light">
+          <ion-label>11. SEO (Google)</ion-label>
+        </ion-item>
+        <div slot="content" class="accordion-content">
+          <p class="hint">
+            Esto es lo que Google muestra en los resultados de búsqueda y lo que aparece al compartir el link en
+            WhatsApp/Facebook/Instagram. Si lo dejas vacío, se usa por defecto el Nombre y la Descripción corta del
+            producto (sección 1). No garantiza que "se vuelva viral" — eso depende del anuncio/contenido — pero ayuda
+            a que Google lo indexe mejor y a que el link se vea bien (con imagen y texto) al compartirlo.
+          </p>
+
+          <ion-item lines="none">
+            <ion-label position="floating">Título SEO (ideal máx. 60 caracteres)</ion-label>
+            <ion-input formControlName="metaTitle" maxlength="70" [placeholder]="f['title'].value"></ion-input>
+          </ion-item>
+
+          <ion-item lines="none">
+            <ion-label position="stacked">Meta descripción (ideal máx. 155 caracteres)</ion-label>
+            <ion-textarea formControlName="metaDescription" maxlength="160" autoGrow="true" rows="3"
+              [placeholder]="f['text'].value"></ion-textarea>
+          </ion-item>
+
+          <ion-item lines="none">
+            <ion-label position="stacked">Imagen para compartir (opcional)</ion-label>
+            <ion-input formControlName="ogImage" placeholder="Por defecto usa la imagen principal del producto"></ion-input>
+          </ion-item>
+
+          <p class="hint">Vista previa aproximada en Google:</p>
+          <div class="seo-google-preview">
+            <div class="seo-preview-url">eurocity.com › product-detail</div>
+            <div class="seo-preview-title">{{ (f['seo'].get('metaTitle').value || f['title'].value || 'Título del producto') | slice:0:70 }}</div>
+            <div class="seo-preview-desc">{{ (f['seo'].get('metaDescription').value || f['text'].value || 'Descripción del producto…') | slice:0:160 }}</div>
+          </div>
         </div>
       </ion-accordion>
 

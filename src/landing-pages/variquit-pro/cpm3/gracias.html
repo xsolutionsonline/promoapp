@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¡Gracias por tu pedido! — Variquit PRO</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-dark:#2f5438;
+    --green:#6f9a6e;
+    --green-light:#8fb48d;
+    --green-soft:#e9f1ea;
+    --gold:#c9a66b;
+    --gold-light:#e3c793;
+    --gold-dark:#a98648;
+    --cream:#faf8f4;
+    --white:#ffffff;
+    --text-dark:#262621;
+    --text-muted:#6b6b63;
+    --red:#c2412f;
+    --radius:20px;
+    --radius-sm:14px;
+    --shadow:0 10px 30px rgba(47,84,56,.12);
+    --shadow-lg:0 24px 60px rgba(47,84,56,.18);
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--cream);color:var(--text-dark);line-height:1.55;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:'Poppins','Inter',sans-serif;font-weight:700;line-height:1.25}
+
+  .logo-bar{text-align:center;padding:18px 0}
+  .logo{font-family:'Poppins',sans-serif;font-weight:700;font-size:19px;color:var(--white);letter-spacing:.03em}
+  .logo span{color:var(--gold-light)}
+
+  .hero{
+    position:relative;overflow:hidden;text-align:center;
+    background:linear-gradient(150deg,var(--green-dark) 0%,#1c3522 100%);
+    padding:4px 1.5rem 72px;
+    animation:fadeDown .6s var(--ease)
+  }
+  .hero::before{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(201,166,107,.28),transparent 70%);top:-110px;right:-80px}
+  .hero::after{content:'';position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(111,154,110,.25),transparent 70%);bottom:-100px;left:-90px}
+
+  .hero-ring{position:relative;width:88px;height:88px;background:rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:1.75rem auto 1.4rem;font-size:38px;border:2px solid rgba(255,255,255,.3);animation:pulse 2.5s infinite;z-index:1}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.22)}50%{box-shadow:0 0 0 16px rgba(255,255,255,0)}}
+  @keyframes fadeDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+  .hero h1{position:relative;font-size:clamp(24px,5.5vw,32px);color:#fff;margin-bottom:.5rem;z-index:1}
+  .hero p{position:relative;font-size:15px;color:rgba(255,255,255,.82);z-index:1}
+
+  .wrap{max-width:560px;margin:-44px auto 0;padding:0 1.1rem 3rem;position:relative;z-index:2}
+
+  .steps-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:1.5rem 1.4rem;margin-bottom:.9rem;animation:fadeUp .6s var(--ease) .05s both}
+  .steps-title{font-size:12px;font-weight:700;color:var(--green-dark);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1.1rem;text-align:center}
+  .steps-row{display:flex;align-items:flex-start;justify-content:space-between;position:relative}
+  .steps-row::before{content:'';position:absolute;top:19px;left:12%;right:12%;height:2px;background:repeating-linear-gradient(90deg,var(--green-light) 0 7px,transparent 7px 14px);z-index:0}
+  .step{display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;position:relative;z-index:1}
+  .step-num{width:38px;height:38px;background:linear-gradient(135deg,var(--green-light),var(--green-dark));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:9px;box-shadow:0 6px 14px rgba(47,84,56,.28)}
+  .step-label{font-size:11px;font-weight:600;color:var(--text-dark);line-height:1.4;max-width:78px}
+
+  .cards{display:flex;flex-direction:column;gap:.8rem}
+
+  .card{background:var(--white);border-radius:var(--radius-sm);padding:1.3rem 1.4rem;position:relative;overflow:hidden;box-shadow:0 6px 18px rgba(47,84,56,.07);border-left:4px solid var(--green);transition:transform .25s var(--ease),box-shadow .25s var(--ease);animation:fadeUp .6s var(--ease) both}
+  .cards .card:nth-child(1){animation-delay:.1s}
+  .cards .card:nth-child(2){animation-delay:.18s}
+  .cards .card:nth-child(3){animation-delay:.26s}
+  .cards .card:nth-child(4){animation-delay:.34s}
+  .card:hover{transform:translateY(-3px);box-shadow:0 16px 32px rgba(47,84,56,.14)}
+  .card-header{display:flex;align-items:center;gap:12px;margin-bottom:.65rem}
+  .card-icon-wrap{width:42px;height:42px;background:linear-gradient(135deg,var(--green-soft),#dcebdd);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+  .card-title{font-size:15px;font-weight:700;color:var(--green-dark);font-family:'Poppins',sans-serif}
+  .card p{font-size:14px;color:var(--text-muted);line-height:1.65;padding-left:54px}
+
+  .card.warn{border-left-color:var(--gold-dark)}
+  .card.warn .card-icon-wrap{background:linear-gradient(135deg,#f6ecd8,#efddb6)}
+  .card.warn .card-title{color:#8a6a1f}
+  .card.warn p{color:#6b5219}
+  .card.warn strong{color:#6b5219}
+
+  .card.secure::before{content:'';position:absolute;top:14px;right:16px;font-size:11px}
+  .card.secure .card-icon-wrap{background:linear-gradient(135deg,var(--green-soft),#dcebdd)}
+  .card.secure .card-title{color:var(--green-dark)}
+
+  .card.urgent{border-left-color:var(--red)}
+  .card.urgent .card-icon-wrap{background:linear-gradient(135deg,#fbe2dd,#f6c7bd)}
+  .card.urgent .card-title{color:#8b2a1a}
+  .card.urgent p{color:#7a3022}
+  .card.urgent strong{color:#8b2a1a}
+
+  .list{list-style:none;margin-top:.6rem;padding-left:54px;display:flex;flex-direction:column;gap:7px}
+  .list li{font-size:14px;color:var(--text-dark);display:flex;align-items:flex-start;gap:8px;line-height:1.5;font-weight:500}
+  .ck{color:var(--green-dark);font-weight:700;flex-shrink:0}
+  .no{color:var(--red);font-weight:700;flex-shrink:0}
+  .ok{color:var(--green-dark);font-weight:700;flex-shrink:0}
+
+  .cta-box{margin-top:.9rem;background:var(--white);border-radius:var(--radius);padding:1.9rem 1.6rem;text-align:center;box-shadow:var(--shadow);position:relative;overflow:hidden;animation:fadeUp .6s var(--ease) .4s both}
+  .cta-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--gold))}
+  .cta-box p{font-size:15px;color:var(--text-dark);line-height:1.65}
+  .cta-box strong{color:var(--green-dark)}
+
+  .heart{text-align:center;font-size:13px;color:var(--text-muted);margin-top:1.4rem;padding-bottom:.5rem}
+
+  @media(min-width:600px){
+    .hero{padding-top:10px}
+    .card p,.list{padding-left:56px}
+  }
+</style>
+
+  <!-- Meta Pixel Code -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '2099883654251019');
+    fbq('track', 'PageView');
+    fbq('track', 'Lead');
+    fbq('track', 'CompleteRegistration');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+                 src="https://www.facebook.com/tr?id=2099883654251019&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+</head>
+<body>
+
+<div class="hero">
+  <div class="logo-bar"><span class="logo">VARIQUIT <span>PRO</span></span></div>
+  <div class="hero-ring">🎉</div>
+  <h1>¡Gracias por tu pedido!</h1>
+  <p>Tu solicitud fue recibida correctamente.</p>
+</div>
+
+<div class="wrap">
+
+  <div class="steps-card">
+    <div class="steps-title">¿Qué pasa ahora?</div>
+    <div class="steps-row">
+      <div class="step">
+        <div class="step-num">📋</div>
+        <div class="step-label">Pedido recibido</div>
+      </div>
+      <div class="step">
+        <div class="step-num">📞</div>
+        <div class="step-label">Asesor te llama</div>
+      </div>
+      <div class="step">
+        <div class="step-num">✅</div>
+        <div class="step-label">Confirmás envío</div>
+      </div>
+      <div class="step">
+        <div class="step-num">📦</div>
+        <div class="step-label">Recibís producto</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cards">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon-wrap">📞</div>
+        <span class="card-title">Te llamamos en minutos</span>
+      </div>
+      <p>Uno de nuestros asesores se va a comunicar con vos para confirmar tu pedido y coordinar el envío.</p>
+      <ul class="list">
+        <li><span class="ck">✔</span> Verificará tus datos de envío</li>
+        <li><span class="ck">✔</span> Te explicará los detalles importantes del producto</li>
+        <li><span class="ck">✔</span> Te dará recomendaciones de uso</li>
+        <li><span class="ck">✔</span> Resolverá cualquier duda que tengas</li>
+      </ul>
+    </div>
+
+    <div class="card warn">
+      <div class="card-header">
+        <div class="card-icon-wrap">⚠️</div>
+        <span class="card-title">¡Importante! — atendé la llamada</span>
+      </div>
+      <p>Para enviarte el producto es necesario que atiendas.<br><br>
+      <strong>El asesor puede llamarte desde un número desconocido o diferente al habitual, ya que usamos varias líneas de atención.</strong></p>
+    </div>
+
+    <div class="card secure">
+      <div class="card-header">
+        <div class="card-icon-wrap">🔒</div>
+        <span class="card-title">Compra 100% segura</span>
+      </div>
+      <ul class="list">
+        <li><span class="no">✕</span> NO pediremos datos bancarios</li>
+        <li><span class="no">✕</span> NO solicitamos tarjetas ni pagos adelantados</li>
+        <li><span class="ok">✔</span> Pagás solo al recibir el producto (contra entrega)</li>
+      </ul>
+    </div>
+
+    <div class="card urgent">
+      <div class="card-header">
+        <div class="card-icon-wrap">⏳</div>
+        <span class="card-title">Alta demanda — sé el primero</span>
+      </div>
+      <p>Los pedidos <strong>no confirmados por llamada</strong> pueden cancelarse automáticamente. Mantenete atento a tu teléfono en las próximas horas.</p>
+    </div>
+
+  </div>
+
+  <div class="cta-box">
+    <p>💬 Estás a <strong>un paso</strong> de recibir tu pedido 🙌<br>Solo necesitás <strong>atender la llamada</strong> para confirmar el envío.</p>
+  </div>
+
+  <p class="heart">Gracias por confiar en nosotros ❤️</p>
+
+</div>
+</body>
+</html>

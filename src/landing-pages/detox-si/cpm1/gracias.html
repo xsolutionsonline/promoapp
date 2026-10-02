@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>&iexcl;Gracias por tu pedido!</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0a3d20 0%,#1a7a4a 50%,#0d5c35 100%);min-height:100vh;padding:2rem 1rem 3rem}
+  .wrap{max-width:580px;margin:0 auto}
+  .hero{text-align:center;padding:2.5rem 1.5rem 2rem;animation:fadeDown 0.6s ease}
+  .hero-ring{width:90px;height:90px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:40px;border:2px solid rgba(255,255,255,0.3);animation:pulse 2.5s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,0.25)}50%{box-shadow:0 0 0 14px rgba(255,255,255,0)}}
+  @keyframes fadeDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+  .hero h1{font-size:26px;font-weight:700;color:#fff;margin-bottom:0.5rem;line-height:1.3}
+  .hero p{font-size:15px;color:rgba(255,255,255,0.85);line-height:1.6}
+  .hero strong{color:#fff}
+  .steps{background:rgba(255,255,255,0.08);border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:0.75rem;border:1px solid rgba(255,255,255,0.15)}
+  .steps-title{font-size:13px;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;text-align:center}
+  .steps-row{display:flex;align-items:flex-start;justify-content:center}
+  .step{display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;position:relative}
+  .step:not(:last-child)::after{content:'';position:absolute;top:18px;left:60%;width:80%;height:2px;background:rgba(255,255,255,0.25)}
+  .step-num{width:36px;height:36px;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:8px;position:relative;z-index:1}
+  .step-label{font-size:11px;color:rgba(255,255,255,0.8);line-height:1.4;max-width:80px}
+  .cards{display:flex;flex-direction:column;gap:0.75rem;animation:fadeUp 0.7s ease 0.2s both}
+  .card{background:#fff;border-radius:16px;padding:1.25rem 1.5rem;overflow:hidden;position:relative;transition:transform 0.2s,box-shadow 0.2s}
+  .card:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.12)}
+  .card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#1a7a4a;border-radius:4px 0 0 4px}
+  .card-header{display:flex;align-items:center;gap:12px;margin-bottom:0.65rem}
+  .card-icon-wrap{width:40px;height:40px;background:#eaf6ee;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+  .card-title{font-size:15px;font-weight:700;color:#0f3d20}
+  .card p{font-size:14px;color:#444;line-height:1.65;padding-left:52px}
+  .card.warn::before{background:#e6a817}
+  .card.warn .card-icon-wrap{background:#fffbeb}
+  .card.warn .card-title{color:#7a5c00}
+  .card.warn p{color:#5a4200}
+  .card.secure::before{background:#1a7a4a}
+  .card.secure .card-icon-wrap{background:#eaf6ee}
+  .card.secure .card-title{color:#0f5233}
+  .card.urgent::before{background:#e03030}
+  .card.urgent .card-icon-wrap{background:#fff3f3}
+  .card.urgent .card-title{color:#8b1a1a}
+  .card.urgent p{color:#6b1a1a}
+  .list{list-style:none;padding:0;margin-top:0.6rem;padding-left:52px;display:flex;flex-direction:column;gap:6px}
+  .list li{font-size:14px;color:#333;display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+  .ck{color:#1a7a4a;font-weight:700;flex-shrink:0}
+  .no{color:#cc2200;font-weight:700;flex-shrink:0}
+  .ok{color:#1a7a4a;font-weight:700;flex-shrink:0}
+  .cta-box{margin-top:0.75rem;background:#fff;border-radius:16px;padding:1.75rem 1.5rem;text-align:center}
+  .cta-box p{font-size:15px;color:#333;line-height:1.6}
+  .cta-box strong{color:#1a7a4a}
+  .heart{text-align:center;font-size:13px;color:rgba(255,255,255,0.6);margin-top:1.25rem;padding-bottom:0.5rem}
+</style>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2099883654251019');
+fbq('track', 'PageView');
+fbq('track', 'Lead');
+fbq('track', 'CompleteRegistration');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2099883654251019&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-ring">&#127881;</div>
+    <h1>&iexcl;Gracias por tu solicitud!</h1>
+    <p>Tu pedido ha sido recibido correctamente.</p>
+  </div>
+
+  <div class="steps">
+    <div class="steps-title">&iquest;Qu&eacute; pasa ahora?</div>
+    <div class="steps-row">
+      <div class="step">
+<div class="step-num">&#128203;</div>
+<div class="step-label">Pedido recibido</div>
+</div>
+      <div class="step">
+<div class="step-num">&#128222;</div>
+<div class="step-label">Asesor te llama</div>
+</div>
+      <div class="step">
+<div class="step-num">&#9989;</div>
+<div class="step-label">Confirmas env&iacute;o</div>
+</div>
+      <div class="step">
+<div class="step-num">&#128230;</div>
+<div class="step-label">Recibes producto</div>
+</div>
+    </div>
+  </div>
+
+  <div class="cards">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon-wrap">&#128222;</div>
+        <span class="card-title">Te llamamos en minutos</span>
+      </div>
+      <p>Uno de nuestros asesores se va a comunicar con vos para confirmar tu pedido y coordinar el env&iacute;o.</p>
+      <ul class="list">
+        <li>
+<span class="ck">&#10004;</span> Verificar&aacute; tus datos de env&iacute;o</li>
+        <li>
+<span class="ck">&#10004;</span> Te explicar&aacute; los detalles importantes del producto</li>
+        <li>
+<span class="ck">&#10004;</span> Te dar&aacute; recomendaciones de uso</li>
+        <li>
+<span class="ck">&#10004;</span> Resolver&aacute; cualquier duda que tengas</li>
+      </ul>
+    </div>
+
+    <div class="card warn">
+      <div class="card-header">
+        <div class="card-icon-wrap">&#9888;&#65039;</div>
+        <span class="card-title">&iexcl;Importante! &mdash; atend&eacute; la llamada</span>
+      </div>
+      <p>Para enviarte el producto es necesario que atiendas.<br><br>
+      <strong>EL ASESOR PUEDE LLAMARTE DESDE UN N&Uacute;MERO DESCONOCIDO O DIFERENTE AL HABITUAL, YA QUE USAMOS VARIAS L&Iacute;NEAS DE ATENCI&Oacute;N.</strong></p>
+    </div>
+
+    <div class="card secure">
+      <div class="card-header">
+        <div class="card-icon-wrap">&#128274;</div>
+        <span class="card-title">Compra 100% segura</span>
+      </div>
+      <ul class="list">
+        <li>
+<span class="no">&#10007;</span> NO pediremos datos bancarios</li>
+        <li>
+<span class="no">&#10007;</span> NO solicitamos tarjetas ni pagos adelantados</li>
+        <li>
+<span class="ok">&#10004;</span> Pag&aacute;s solo al recibir el producto (contra entrega)</li>
+      </ul>
+    </div>
+
+    <div class="card urgent">
+      <div class="card-header">
+        <div class="card-icon-wrap">&#9203;</div>
+        <span class="card-title">Alta demanda &mdash; s&eacute; el primero</span>
+      </div>
+      <p>Los pedidos <strong>no confirmados por llamada</strong> pueden cancelarse autom&aacute;ticamente. Mantenete atento a tu tel&eacute;fono en las pr&oacute;ximas horas.</p>
+    </div>
+
+  </div>
+
+  <div class="cta-box">
+    <p>&#128172; Est&aacute;s a <strong>un paso</strong> de recibir tu pedido &#128588;<br>Solo necesit&aacute;s <strong>atender la llamada</strong> para confirmar el env&iacute;o.</p>
+  </div>
+
+  <p class="heart">Gracias por confiar en nosotros &#10084;&#65039;</p>
+
+</div>
+</body>
+</html>

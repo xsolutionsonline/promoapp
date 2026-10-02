@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+﻿import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FirestoreService } from '../../services/firestore.service';
@@ -10,10 +10,49 @@ import { Observable } from 'rxjs';
 import {
   DEFAULT_REFUND_POLICY,
   DEFAULT_TERMS_OF_SERVICE,
-  DEFAULT_PRIVACY_POLICY
+  DEFAULT_PRIVACY_POLICY,
+  DEFAULT_LEGAL_DISCLAIMER
 } from '../../shared/default-legal-content';
 
 const NEW_CATEGORY_OPTION = '__new_category__';
+
+// Alta rápida: imágenes por defecto cuando se rellena el formulario pegando
+// solo el nombre + el copy del producto, sin subir fotos todavía.
+const QUICK_ADD_NO_PHOTO_IMG = 'https://firebasestorage.googleapis.com/v0/b/bigoff-e8e4d.firebasestorage.app/o/configuraciones%2Fsin-foto.png?alt=media&token=ecf63982-3f9c-4bdc-89b2-c5873f2ca37d';
+const QUICK_ADD_SECONDARY_IMG = 'https://firebasestorage.googleapis.com/v0/b/bigoff-e8e4d.firebasestorage.app/o/product-images%2F1789417986583_50OFF4-3.png?alt=media&token=0deda121-2e2b-4b39-872b-5ae35d4799b9';
+
+interface QuickAddParsed {
+  text: string;
+  description: string;
+  specifications: string;
+  experience: string;
+  materials: string;
+  howToUse: string;
+  highlightMessage: string;
+  comparisonRows: { label: string; ours: string; others: string }[];
+  faqs: { question: string; answer: string }[];
+  benefits: { icon: string; title: string; text: string }[];
+}
+
+type QuickAddSectionKey =
+  | 'main' | 'specifications' | 'experience' | 'materials' | 'howToUse'
+  | 'benefits' | 'reviewsTitle' | 'comparison' | 'faqs';
+
+// Only lines that look like "<n>. <keyword...>" are treated as top-level
+// section headers. Matching on the keyword (not just "\d+\. ") matters
+// because the "Cómo usarlo" copy itself contains numbered steps like
+// "1. Conecta el tubo..." which must NOT be mistaken for a new section.
+const QUICK_ADD_HEADER_PATTERNS: { key: QuickAddSectionKey; regex: RegExp }[] = [
+  { key: 'main', regex: /^\s*\d+\.\s*copy\s+principal/i },
+  { key: 'specifications', regex: /^\s*\d+\.\s*especificaciones/i },
+  { key: 'experience', regex: /^\s*\d+\.\s*experiencia/i },
+  { key: 'materials', regex: /^\s*\d+\.\s*materiales/i },
+  { key: 'howToUse', regex: /^\s*\d+\.\s*c[oó]mo\s+usar/i },
+  { key: 'benefits', regex: /^\s*\d+\..*beneficio/i },
+  { key: 'reviewsTitle', regex: /^\s*\d+\..*rese[ñn]a/i },
+  { key: 'comparison', regex: /^\s*\d+\.\s*nosotros/i },
+  { key: 'faqs', regex: /^\s*\d+\..*pregunta/i },
+];
 
 @Component({
   selector: 'app-create-product',
@@ -28,6 +67,7 @@ export class CreateProductPage implements OnInit {
   @ViewChild('experienceEditor') experienceEditorRef: ElementRef<HTMLDivElement>;
   @ViewChild('materialsEditor') materialsEditorRef: ElementRef<HTMLDivElement>;
   @ViewChild('howToUseEditor') howToUseEditorRef: ElementRef<HTMLDivElement>;
+  @ViewChild('quickAddCopyEditor') quickAddCopyEditorRef: ElementRef<HTMLDivElement>;
 
   productForm: FormGroup;
   product: Product = {
@@ -66,6 +106,12 @@ export class CreateProductPage implements OnInit {
   productId: string | null = null;
   // Closed by default, both when creating a new product and when editing one.
   openAccordionSections: string[] = [];
+
+  // ----- Alta rápida (pegar nombre + copy y rellenar el formulario) -----
+  showQuickAdd = false;
+  quickAddName = '';
+  // HTML (con negrillas preservadas) capturado del editor enriquecido de "Copy del producto".
+  quickAddCopyHtml = '';
 
   availableColors = [
     { name: 'Blue', value: '#1C197A' },
@@ -152,7 +198,14 @@ export class CreateProductPage implements OnInit {
       legal: this.fb.group({
         refundPolicy: [DEFAULT_REFUND_POLICY],
         termsOfService: [DEFAULT_TERMS_OF_SERVICE],
-        privacyPolicy: [DEFAULT_PRIVACY_POLICY]
+        privacyPolicy: [DEFAULT_PRIVACY_POLICY],
+        legalDisclaimer: [DEFAULT_LEGAL_DISCLAIMER]
+      }),
+
+      seo: this.fb.group({
+        metaTitle: ['', Validators.maxLength(70)],
+        metaDescription: ['', Validators.maxLength(160)],
+        ogImage: ['']
       }),
 
       faqTitle: ['Pregúntanos lo que quieras'],
@@ -297,7 +350,14 @@ export class CreateProductPage implements OnInit {
     this.productForm.get('legal').patchValue({
       refundPolicy: data.legal?.refundPolicy || DEFAULT_REFUND_POLICY,
       termsOfService: data.legal?.termsOfService || DEFAULT_TERMS_OF_SERVICE,
-      privacyPolicy: data.legal?.privacyPolicy || DEFAULT_PRIVACY_POLICY
+      privacyPolicy: data.legal?.privacyPolicy || DEFAULT_PRIVACY_POLICY,
+      legalDisclaimer: data.legal?.legalDisclaimer || DEFAULT_LEGAL_DISCLAIMER
+    });
+
+    this.productForm.get('seo').patchValue({
+      metaTitle: data.seo?.metaTitle || '',
+      metaDescription: data.seo?.metaDescription || '',
+      ogImage: data.seo?.ogImage || ''
     });
 
     // Rich contenteditable fields aren't native form controls: hydrate them manually
@@ -886,6 +946,353 @@ export class CreateProductPage implements OnInit {
     this.cdr.detectChanges();
   }
 
+  // ----- Alta rápida -----
+  toggleQuickAdd() {
+    this.showQuickAdd = !this.showQuickAdd;
+  }
+
+  // Rich-paste handlers for the "Copy del producto" editor — same pattern as
+  // onRichInput/onRichPaste, but writing to quickAddCopyHtml instead of a form control.
+  onQuickAddCopyInput(event: Event) {
+    this.quickAddCopyHtml = (event.target as HTMLElement).innerHTML;
+  }
+
+  onQuickAddCopyPaste(event: ClipboardEvent) {
+    event.preventDefault();
+    const html = event.clipboardData?.getData('text/html');
+    const text = event.clipboardData?.getData('text/plain') || '';
+    const insert = html ? this.sanitizePastedHtml(html) : this.escapeHtml(text);
+    document.execCommand('insertHTML', false, insert);
+    this.quickAddCopyHtml = (event.target as HTMLElement).innerHTML;
+  }
+
+  async applyQuickAdd() {
+    const name = this.quickAddName.trim();
+    const copyHtml = this.quickAddCopyHtml.trim();
+
+    if (!name && !copyHtml) {
+      const toast = await this.toastController.create({
+        message: 'Escribe el nombre del producto y/o pega el copy antes de rellenar.',
+        duration: 2500,
+        color: 'warning'
+      });
+      await toast.present();
+      return;
+    }
+
+    // Convierte el HTML pegado (con negrillas) a texto plano con marcadores
+    // **negrilla**, para poder reutilizar el mismo parser por secciones.
+    const copy = this.htmlToMarkedText(copyHtml);
+    const parsed = this.parseQuickAddCopy(copy);
+
+    if (name) {
+      this.productForm.patchValue({ title: name });
+    }
+    this.productForm.patchValue({
+      text: parsed.text || name,
+      description: parsed.description,
+      highlightMessage: parsed.highlightMessage
+    });
+    this.productForm.get('sections').patchValue({
+      specifications: parsed.specifications,
+      experience: parsed.experience,
+      materials: parsed.materials,
+      howToUse: parsed.howToUse
+    });
+
+    while (this.comparisonRows.length) { this.comparisonRows.removeAt(0); }
+    parsed.comparisonRows.forEach(row => {
+      this.comparisonRows.push(this.fb.group({
+        label: [row.label, Validators.required],
+        ours: [row.ours, Validators.required],
+        others: [row.others, Validators.required]
+      }));
+    });
+
+    while (this.faqs.length) { this.faqs.removeAt(0); }
+    parsed.faqs.forEach(faq => {
+      this.faqs.push(this.fb.group({
+        question: [faq.question, Validators.required],
+        answer: [faq.answer, Validators.required]
+      }));
+    });
+
+    // Si el copy trae una sección de beneficios, se agregan con el ícono
+    // (emoji) detectado al inicio de cada uno; si no se detecta ninguno,
+    // queda el ícono por defecto (⭐) para que el admin lo corrija a mano.
+    while (this.benefits.length) { this.benefits.removeAt(0); }
+    parsed.benefits.forEach(benefit => {
+      this.benefits.push(this.fb.group({
+        icon: [benefit.icon],
+        title: [benefit.title, Validators.required],
+        text: [benefit.text, Validators.required]
+      }));
+    });
+
+    // Combos (priceGroups) nunca se crean desde el alta rápida, aunque el
+    // copy pegado los mencione — quedan vacíos para que el admin los arme a mano.
+
+    this.product.img = QUICK_ADD_NO_PHOTO_IMG;
+    this.product.imgSlides = [QUICK_ADD_NO_PHOTO_IMG];
+    this.product.showcaseImageUrl = QUICK_ADD_NO_PHOTO_IMG;
+    this.product.showcaseImageUrl2 = QUICK_ADD_SECONDARY_IMG;
+    this.product.closingImageUrl = QUICK_ADD_NO_PHOTO_IMG;
+    this.product.closingImageUrl2 = QUICK_ADD_SECONDARY_IMG;
+
+    // Los campos contenteditable no son controles de formulario nativos:
+    // hidratarlos manualmente igual que hace populateForm() al editar.
+    setTimeout(() => {
+      if (this.descriptionEditorRef) this.descriptionEditorRef.nativeElement.innerHTML = parsed.description || '';
+      if (this.specsEditorRef) this.specsEditorRef.nativeElement.innerHTML = parsed.specifications || '';
+      if (this.experienceEditorRef) this.experienceEditorRef.nativeElement.innerHTML = parsed.experience || '';
+      if (this.materialsEditorRef) this.materialsEditorRef.nativeElement.innerHTML = parsed.materials || '';
+      if (this.howToUseEditorRef) this.howToUseEditorRef.nativeElement.innerHTML = parsed.howToUse || '';
+      this.cdr.detectChanges();
+    });
+
+    this.openAccordionSections = ['basic', 'category', 'images', 'sections', 'benefits', 'comparison', 'faq'];
+    this.showQuickAdd = false;
+    this.cdr.detectChanges();
+
+    const toast = await this.toastController.create({
+      message: 'Formulario rellenado. Revisa el contenido (íconos de beneficios incluidos), completa precio y categoría, y guarda.',
+      duration: 3500,
+      color: 'success'
+    });
+    await toast.present();
+  }
+
+  private parseQuickAddCopy(raw: string): QuickAddParsed {
+    const result: QuickAddParsed = {
+      text: '', description: '', specifications: '', experience: '',
+      materials: '', howToUse: '', highlightMessage: '',
+      comparisonRows: [], faqs: [], benefits: []
+    };
+    if (!raw) { return result; }
+
+    const lines = raw.replace(/\r\n/g, '\n').split('\n');
+    const matches: { key: QuickAddSectionKey; lineIndex: number }[] = [];
+    lines.forEach((line, i) => {
+      const hit = QUICK_ADD_HEADER_PATTERNS.find(p => p.regex.test(line));
+      if (hit) { matches.push({ key: hit.key, lineIndex: i }); }
+    });
+
+    const bodies: { [key in QuickAddSectionKey]?: string } = {};
+    matches.forEach((m, idx) => {
+      const start = m.lineIndex + 1;
+      const end = idx + 1 < matches.length ? matches[idx + 1].lineIndex : lines.length;
+      bodies[m.key] = lines.slice(start, end).join('\n').trim();
+    });
+
+    if (bodies.main) {
+      const blocks = this.quickAddBlocks(bodies.main);
+      result.text = this.stripBoldMarkers(blocks[0]?.lines[0] || '');
+      result.description = this.quickAddSectionToHtml(bodies.main, true);
+    }
+    result.specifications = this.quickAddSectionToHtml(bodies.specifications || '', false);
+    result.experience = this.quickAddSectionToHtml(bodies.experience || '', false);
+    result.materials = this.quickAddSectionToHtml(bodies.materials || '', false);
+    result.howToUse = this.quickAddSectionToHtml(bodies.howToUse || '', false);
+    result.highlightMessage = this.stripBoldMarkers(bodies.reviewsTitle || '');
+    if (bodies.comparison) {
+      result.comparisonRows = this.parseQuickAddComparison(bodies.comparison);
+    }
+    if (bodies.faqs) {
+      result.faqs = this.parseQuickAddFaqs(bodies.faqs);
+    }
+    if (bodies.benefits) {
+      result.benefits = this.parseQuickAddBenefits(bodies.benefits);
+    }
+
+    return result;
+  }
+
+  // Convierte el HTML pegado (sanitizado por sanitizePastedHtml) a texto plano
+  // con bloques separados por línea en blanco y negrillas marcadas como
+  // **texto**, para que parseQuickAddCopy pueda seguir trabajando sobre texto
+  // simple sin importar si el admin escribió a mano o pegó contenido con formato.
+  private htmlToMarkedText(html: string): string {
+    if (!html) { return ''; }
+    const body = new DOMParser().parseFromString(html, 'text/html').body;
+    const BLOCK_TAGS = new Set(['P', 'DIV', 'LI', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'TR']);
+
+    const isBoldEl = (el: HTMLElement): boolean => {
+      if (el.tagName === 'B' || el.tagName === 'STRONG') { return true; }
+      const weight = el.style?.fontWeight;
+      if (!weight) { return false; }
+      if (weight === 'bold' || weight === 'bolder') { return true; }
+      const numeric = parseInt(weight, 10);
+      return !isNaN(numeric) && numeric >= 600;
+    };
+
+    let out = '';
+    const walk = (node: ChildNode, bold: boolean) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.textContent || '';
+        if (text) { out += bold ? this.wrapBold(text) : text; }
+        return;
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) { return; }
+      const el = node as HTMLElement;
+      if (el.tagName === 'BR') { out += '\n'; return; }
+      if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE') { return; }
+
+      const nowBold = bold || isBoldEl(el);
+      if (el.tagName === 'LI') { out += '- '; }
+
+      Array.from(el.childNodes).forEach(child => walk(child, nowBold));
+
+      if (el.tagName === 'TD' || el.tagName === 'TH') {
+        out += '\t';
+      } else if (BLOCK_TAGS.has(el.tagName)) {
+        const hasContent = (el.textContent || '').trim().length > 0;
+        out += hasContent ? '\n' : '\n\n';
+      }
+    };
+
+    Array.from(body.childNodes).forEach(n => walk(n, false));
+    return out.replace(/\n{3,}/g, '\n\n').trim();
+  }
+
+  private wrapBold(text: string): string {
+    if (!text.trim()) { return text; }
+    const leading = text.match(/^\s*/)[0];
+    const trailing = text.match(/\s*$/)[0];
+    const core = text.slice(leading.length, text.length - trailing.length);
+    return core ? `${leading}**${core}**${trailing}` : text;
+  }
+
+  // Quita los marcadores **negrilla** para los campos de texto plano
+  // (inputs simples) donde la negrilla no se puede representar.
+  private stripBoldMarkers(text: string): string {
+    return text.replace(/\*\*(.+?)\*\*/g, '$1').trim();
+  }
+
+  // Detecta un emoji al inicio de la línea (ícono del beneficio) y separa el resto.
+  private extractLeadingIcon(line: string): { icon: string; rest: string } {
+    const trimmed = line.trim();
+    const match = trimmed.match(/^(\p{Extended_Pictographic}(?:\uFE0F)?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F)?)*)\s*/u);
+    if (match && match[1]) {
+      return { icon: match[1], rest: trimmed.slice(match[0].length).trim() };
+    }
+    return { icon: '', rest: trimmed };
+  }
+
+  private quickAddBlocks(body: string): { lines: string[] }[] {
+    return body.split(/\n\s*\n/)
+      .map(b => b.split('\n').map(l => l.trim()).filter(Boolean))
+      .filter(lines => lines.length > 0)
+      .map(lines => ({ lines }));
+  }
+
+  private quickAddSectionToHtml(body: string, isMainCopy: boolean): string {
+    const blocks = this.quickAddBlocks(body);
+    if (!blocks.length) { return ''; }
+
+    return blocks.map((block, idx) => {
+      const { lines } = block;
+      if (idx === 0 && lines.length === 1) {
+        return isMainCopy
+          ? `<p><strong>${this.quickAddInline(lines[0])}</strong></p>`
+          : `<h3><strong>${this.quickAddInline(lines[0])}</strong></h3>`;
+      }
+      if (lines.length > 1) {
+        return `<ul>${lines.map(l => `<li>${this.quickAddInline(l)}</li>`).join('')}</ul>`;
+      }
+      return `<p>${this.quickAddInline(lines[0])}</p>`;
+    }).join('');
+  }
+
+  // Escapes HTML then turns **bold** markdown into <strong>.
+  private quickAddInline(line: string): string {
+    return this.escapeHtml(line).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  }
+
+  // Soporta dos formatos de tabla:
+  // - 3 columnas: aspecto | nosotros | ellos (ej. "600 ml automáticos | ✓ | ✕")
+  // - 2 columnas: nosotros | ellos, con el ✅/❌ ya incluido en el texto de
+  //   cada celda (ej. "✅ Va contigo | ❌ Depende de una ubicación") — el
+  //   "aspecto" no viene por separado, así que se deriva quitándole el ícono
+  //   a la celda "nosotros".
+  // La fila de encabezado de la tabla (ej. "Característica | Nuestro X | Otros Y")
+  // se detecta porque, a diferencia de las filas de datos, ninguna de sus
+  // celdas trae un ícono tipo ✅/❌/✓ al inicio.
+  private parseQuickAddComparison(body: string): { label: string; ours: string; others: string }[] {
+    const rows: { label: string; ours: string; others: string }[] = [];
+    body.split('\n').map(l => l.trim()).filter(Boolean).forEach(line => {
+      const parts = line.split(/\t|\||\s{2,}/).map(p => this.stripBoldMarkers(p).trim()).filter(Boolean);
+
+      if (parts.length === 3) {
+        const [label, ours, others] = parts;
+        if (!this.extractLeadingIcon(ours).icon && !this.extractLeadingIcon(others).icon) { return; }
+        rows.push({ label, ours, others });
+      } else if (parts.length === 2) {
+        const [ours, others] = parts;
+        const oursIcon = this.extractLeadingIcon(ours);
+        const othersIcon = this.extractLeadingIcon(others);
+        if (!oursIcon.icon && !othersIcon.icon) { return; }
+        const label = oursIcon.rest || othersIcon.rest || ours;
+        rows.push({ label, ours, others });
+      }
+    });
+    return rows;
+  }
+
+  private parseQuickAddFaqs(body: string): { question: string; answer: string }[] {
+    const faqs: { question: string; answer: string }[] = [];
+    const doc = new DOMParser().parseFromString(body, 'text/html');
+    doc.body.querySelectorAll('details').forEach(detail => {
+      const summary = detail.querySelector('summary');
+      const question = this.stripBoldMarkers(summary?.textContent || '');
+      const clone = detail.cloneNode(true) as HTMLElement;
+      clone.querySelector('summary')?.remove();
+      const answer = this.stripBoldMarkers(clone.textContent || '');
+      if (question && answer) { faqs.push({ question, answer }); }
+    });
+
+    if (faqs.length) { return faqs; }
+
+    // Sin <details>: agrupa cada línea que termina en "?" con las líneas
+    // siguientes hasta la próxima pregunta.
+    let current: { question: string; answer: string[] } | null = null;
+    body.split('\n').map(l => this.stripBoldMarkers(l)).filter(Boolean).forEach(line => {
+      if (/\?\s*$/.test(line)) {
+        if (current) { faqs.push({ question: current.question, answer: current.answer.join(' ').trim() }); }
+        current = { question: line, answer: [] };
+      } else if (current) {
+        current.answer.push(line);
+      }
+    });
+    if (current) { faqs.push({ question: current.question, answer: current.answer.join(' ').trim() }); }
+    return faqs;
+  }
+
+  // No agrupa por bloques separados por línea en blanco — esa línea en blanco
+  // no siempre sobrevive intacta al pegar HTML (depende de cómo el editor de
+  // origen estructura los párrafos). En su lugar usa el ícono como ancla:
+  // cada línea que arranca con un emoji abre un beneficio nuevo, y todo lo
+  // que sigue (hasta el próximo ícono) es su descripción. Las líneas antes
+  // del primer ícono (ej. el subtítulo de la sección) se ignoran.
+  private parseQuickAddBenefits(body: string): { icon: string; title: string; text: string }[] {
+    const lines = body.split('\n').map(l => this.stripBoldMarkers(l).trim()).filter(Boolean);
+    const benefits: { icon: string; title: string; text: string[] }[] = [];
+
+    lines.forEach(line => {
+      const { icon, rest: title } = this.extractLeadingIcon(line);
+      if (icon) {
+        benefits.push({ icon, title, text: [] });
+      } else if (benefits.length) {
+        benefits[benefits.length - 1].text.push(line);
+      }
+    });
+
+    return benefits.map(b => ({
+      icon: b.icon,
+      title: b.title,
+      text: b.text.join(' ').trim() || b.title
+    }));
+  }
+
   // ----- Save -----
   async validateAndSave() {
     if (this.productForm.invalid) {
@@ -971,6 +1378,7 @@ export class CreateProductPage implements OnInit {
     this.product.faqSubtitle = formValue.faqSubtitle;
     this.product.faqs = formValue.faqs;
     this.product.legal = formValue.legal;
+    this.product.seo = formValue.seo;
 
     try {
       if (this.isEditMode && this.productId) {

@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="DetoxSi - Suplemento natural que ayuda a reducir molestias intestinales y mejorar la digestión. Pago contra entrega en toda Argentina.">
+    <meta name="keywords"
+        content="DetoxSi, suplemento natural, digestión, intestinos, bienestar, salud intestinal, centella asiática, jengibre, cúrcuma, vitamina C, Argentina, pago contra entrega, delivery, molestias estomacales, apetito, sueño, vitalidad, natural, orgánico, mejorar digestión, reducir molestias, aliviar síntomas, sistema digestivo, flora intestinal, purificar, renovar, revitalizar, energía, wellness, salud, nutrición, bienestar corporal, inmunidad, defensas, antioxidante, antiinflamatorio, detox, limpieza corporal, suplemento dietético, comprimidos, hierbas naturales, plantas medicinales, cuidado personal, rutina saludable, estilo de vida, alimentación, equilibrio, armonía, tranquilidad">
+    <title>DetoxSi - Suplemento Natural para Mejorar tu Digestión</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* Reset y Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            padding-top: 70px;
+            /* Space for fixed header */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar {
+            width: 100%;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .usage-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #27ae60;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #f39c12;
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .bar {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-image: linear-gradient(135deg, rgba(39, 174, 96, 0.8) 0%, rgba(46, 204, 113, 0.8) 50%, rgba(243, 156, 18, 0.8) 100%), url('assets/img/5\ cajas.jpg');
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: overlay;
+            padding: 120px 0 80px;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        .hero-container {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .hero-price {
+            margin-bottom: 2rem;
+        }
+
+        .price-before {
+            font-size: 1.5rem;
+            text-decoration: line-through;
+            opacity: 0.7;
+            margin-right: 1rem;
+        }
+
+        .price-now {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f39c12;
+            margin-right: 1rem;
+        }
+
+        .discount {
+            background-color: #e74c3c;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 1rem 2.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 50px;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+            margin-bottom: 1rem;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.6);
+        }
+
+        .hero-note {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .product-img {
+            max-width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Benefits Section */
+        .benefits {
+            background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 3rem;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .benefit-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .benefit-icon {
+            font-size: 3rem;
+            color: #27ae60;
+            margin-bottom: 1rem;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .benefit-card p {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+
+        /* Ingredients Section */
+        .ingredients {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            padding: 80px 0;
+            color: white;
+        }
+
+        .ingredients .section-title {
+            color: white;
+        }
+
+        .ingredients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .ingredient-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .ingredient-item h4 {
+            color: #f39c12;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .ingredient-item p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Usage Section */
+        .usage {
+            background: #f8f9fa;
+            padding: 80px 0;
+        }
+
+        .usage-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .usage-step {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .usage-step .step-number {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: #8e44ad;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .usage-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .usage-step h3 {
+            color: #2c3e50;
+            margin: 1rem 0;
+            font-size: 1.3rem;
+        }
+
+        .usage-step p {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+
+        /* Order Process Section */
+        .order-process {
+            background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+            padding: 80px 0;
+        }
+
+        .process-intro {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #2c3e50;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .step-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #e74c3c;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .step-image {
+            width: 100%;
+            max-width: 200px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .step-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .step-card p {
+            color: #7f8c8d;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
+            padding: 80px 0;
+            color: white;
+        }
+
+        .form-section .section-title {
+            color: white;
+        }
+
+        .price-highlight {
+            text-align: center;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .price-highlight .price-before {
+            font-size: 1.5rem;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .price-highlight .price-now {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f39c12;
+        }
+
+        .price-highlight .discount {
+            background-color: #e74c3c;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1rem;
+            display: inline-block;
+            align-self: center;
+            margin: 0.5rem 0;
+        }
+
+        .price-highlight .offer-text {
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 480px) {
+            .price-highlight .discount {
+                font-size: 0.9rem;
+                padding: 0.6rem 1.2rem;
+            }
+
+            .price-highlight .offer-text {
+                font-size: 0.9rem;
+            }
+        }
+
+        .form-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+
+      .form-left {
+  display: flex;
+  justify-content: center; /* centra horizontalmente */
+  align-items: center;     /* centra verticalmente si tiene altura */
+  width: 100%;             /* asegura que ocupe todo el ancho en mobile */
+  text-align: center;      /* por compatibilidad */
+}
+        .form-product-img {
+            max-width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain;
+        }
+
+        .form-right {
+            max-width: 500px;
+              width: 100%;         /* ocupa el ancho disponible pero respeta el max */
+  box-sizing: border-box;
+        }
+
+        .order-form {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+           
+           .popup-image {
+    display: none;
+  }
+            .form-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .form-product-img {
+                max-height: 300px;
+            }
+
+             .form-right {
+    margin: 0 auto;        /* centra horizontalmente */
+    display: flex;
+    justify-content: center;
+  }
+
+  .form-right .order-form {
+    width: 90%;            /* evita que quede pegado a los bordes */
+    max-width: 400px;      /* opcional, limite de ancho */
+  }
+
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #8e44ad;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+
+        .submit-button {
+            width: 100%;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .form-note {
+            text-align: left;
+            margin-top: 2rem;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            padding: 80px 0;
+            color: white;
+        }
+
+        .testimonials .section-title {
+            color: white;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .testimonial-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem auto;
+            border: 3px solid #f39c12;
+        }
+
+        .stars {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #f39c12;
+        }
+
+        .testimonial-card p {
+            font-style: italic;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            font-weight: 500;
+            color: #f39c12;
+        }
+
+        /* Delivery Section */
+        .delivery {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            padding: 80px 0;
+            color: white;
+        }
+
+        .delivery .section-title {
+            color: white;
+        }
+
+        .delivery-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .delivery-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .delivery-item i {
+            font-size: 3rem;
+            color: #f39c12;
+            margin-bottom: 1rem;
+        }
+
+        .delivery-item h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .delivery-item p {
+            opacity: 0.9;
+        }
+
+        /* FAQ Section */
+        .faq {
+            background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+            padding: 80px 0;
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: white;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .faq-item h3 {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 1.5rem;
+            margin: 0;
+            cursor: pointer;
+            font-size: 1.1rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item h3:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+        }
+
+        .faq-item h3::after {
+            content: '+';
+            position: absolute;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item h3.active::after {
+            content: '−';
+            transform: rotate(180deg);
+        }
+
+        .faq-item p {
+            padding: 1.5rem;
+            margin: 0;
+            color: #2c3e50;
+            line-height: 1.6;
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item p.show {
+            display: block;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo-img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #27ae60;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #f39c12;
+        }
+
+        .footer-disclaimer {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+            text-align: center;
+        }
+
+        .footer-disclaimer p {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            line-height: 1.5;
+        }
+
+        /* Floating Button */
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+            transition: all 0.3s ease;
+            z-index: 999;
+            display: none;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .floating-btn.show {
+            display: block;
+        }
+
+        /* Exit Intent Popup */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup-overlay.show {
+            display: flex;
+        }
+
+        .popup-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: popupSlide 0.5s ease;
+        }
+
+        @keyframes popupSlide {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #7f8c8d;
+            z-index: 1;
+        }
+
+        .popup-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .popup-product-img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .popup-form h3 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .popup-price {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .popup-price-before {
+            font-size: 1.3rem;
+            text-decoration: line-through;
+            color: #7f8c8d;
+            margin-right: 1rem;
+        }
+
+        .popup-price-now {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #e74c3c;
+            margin-right: 1rem;
+        }
+
+        .popup-discount {
+            background: #27ae60;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .popup-form p {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 1.5rem;
+        }
+
+        .popup-order-form input {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .popup-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .popup-checkbox input {
+            width: auto;
+            margin: 0;
+        }
+
+        .popup-checkbox label {
+            font-size: 0.9rem;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+
+        .popup-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .popup-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+                padding: 2rem 0;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            .nav-toggle.active .bar:nth-child(2) {
+                opacity: 0;
+            }
+
+            .nav-toggle.active .bar:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+
+            .nav-toggle.active .bar:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.4rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .benefits-grid,
+            .steps-grid,
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .popup-body {
+                grid-template-columns: 1fr;
+                padding: 1.5rem;
+                text-align: center;
+            }
+
+            .popup-form h3 {
+                font-size: 1.5rem;
+            }
+
+            .floating-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 100px 0 60px;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .price-now,
+            .popup-price-now {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+
+            .nav-container {
+                padding: 1rem;
+            }
+        }
+
+        /* Image Responsive Utility */
+        img {
+            max-width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+     <!-- INTH_SNIPPET_TOP -->
+  
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a href="index.html">
+                        <img src="assets/img/detoxsi_circular_logo.svg" alt="DetoxSi Logo" class="logo-img">
+                    </a>
+                </div>
+                <div class="nav-menu" id="nav-menu">
+                    <a href="#formulario" class="nav-link">Inicio</a>
+                    <a href="#formulario" class="nav-link">Nosotros</a>
+                    <a href="#formulario" class="nav-link">Contacto</a>
+                    <a href="#formulario" class="nav-link">Privacidad</a>
+                </div>
+                <div class="nav-toggle" id="nav-toggle">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">DetoxSi</h1>
+                <h2 class="hero-subtitle">Mejora tu Bienestar Digestivo de Forma Natural</h2>
+                <p class="hero-description">
+                Es un suplemento natural que ayuda a eliminar los parásitos rápidamente de los intestinos, 
+                evitando que las toxinas ejerzan su impacto negativo en el organismo. 
+                Alivia las molestias estomacales, mejora la digestión, el apetito y el sueño, y aumenta la vitalidad del organismo. 
+                Tómalo 3 veces al día con las comidas.
+                </p>
+                <div class="hero-price">
+                    <span class="price-before"><!-- OLD_PRICE -->  <!-- OFFER_CURRENCY --></span>
+                    <span class="price-now"><!-- CURRENT_PRICE -->   <!-- OFFER_CURRENCY --></span>
+
+                </div>
+                <a href="#formulario" class="cta-button">Ordenar Ahora</a>
+                <p class="hero-note">✅ Pago contra entrega - ✅ Envíos a todo el país</p>
+            </div>
+            <div class="hero-image">
+                <img src="assets/img/real6.jpg" alt="DetoxSi Producto" class="product-img">
+            </div>
+        </div>
+    </section>
+
+    <!-- Beneficios -->
+    <section class="benefits" id="beneficios">
+        <div class="container">
+            <h2 class="section-title">Beneficios de DetoxSi</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>Reduce Molestias Intestinales</h3>
+                    <p>Ayuda a aliviar las molestias estomacales y mejora el bienestar digestivo.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3>100% Natural</h3>
+                    <p>Formulado con extractos naturales de plantas reconocidas por sus propiedades.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Aumenta la Vitalidad</h3>
+                    <p>Mejora la digestión, el apetito y el sueño, aumentando tu energía diaria.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Ayuda a Disminuir la Carga de Toxinas</h3>
+                    <p>Contribuye a reducir el impacto negativo de las toxinas en tu organismo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ingredientes -->
+    <section class="ingredients" id="ingredientes">
+        <div class="container">
+            <h2 class="section-title">Composición Natural</h2>
+            <div class="ingredients-grid">
+                <div class="ingredient-item">
+                    <h4>Centella Asiática</h4>
+                    <p>Conocida por sus propiedades antiinflamatorias y regenerativas.</p>
+                </div>
+                <div class="ingredient-item">
+                    <h4>Extracto de Apio</h4>
+                    <p>Ayuda en los procesos digestivos y tiene propiedades purificantes.</p>
+                </div>
+                <div class="ingredient-item">
+                    <h4>Jengibre</h4>
+                    <p>Tradicional digestivo natural que mejora el confort estomacal.</p>
+                </div>
+                <div class="ingredient-item">
+                    <h4>Cúrcuma</h4>
+                    <p>Potente antioxidante con propiedades antiinflamatorias naturales.</p>
+                </div>
+                <div class="ingredient-item">
+                    <h4>Vitamina C</h4>
+                    <p>Fortalece el sistema inmunológico y actúa como antioxidante.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modo de Uso -->
+    <section class="usage" id="modo-uso">
+        <div class="container">
+            <h2 class="section-title">Modo de Uso</h2>
+            <div class="usage-steps">
+                <div class="usage-step">
+                    <div class="step-number">1</div>
+                    <img src="assets/img/step1.png" alt="Tomar pastilla" class="usage-image">
+                    <h3>Toma la Pastilla</h3>
+                    <p>Toma 1 comprimido con el desayudo, almuerzo y cena.</p>
+                </div>
+                <div class="usage-step">
+                    <div class="step-number">2</div>
+                    <img src="assets/img/step2.png" alt="Disfrutar comida" class="usage-image">
+                    <h3>Disfruta tu Comida</h3>
+                    <p>Disfruta de tu almuerzo saludable sintiendo como mejora tu digestión.</p>
+                </div>
+                <div class="usage-step">
+                    <div class="step-number">3</div>
+                    <img src="assets/img/step3.png" alt="Actividad física" class="usage-image">
+                    <h3>Mantente Activa</h3>
+                    <p>Disfruta de más energía para realizar actividad física y mantenerte saludable.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Proceso de Pedido -->
+    <section class="order-process" id="proceso">
+        <div class="container">
+            <h2 class="section-title">¿Cómo Hacer tu Pedido?</h2>
+            <p class="process-intro">
+                Trabajamos con la modalidad Pago contra entrega. No necesita hacer pagos previos ni usar tarjetas.
+                Para su seguridad puede abonar el producto cuando lo recibe en su casa y en efectivo.
+            </p>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <img src="assets/img/delivery 1.png" alt="Paso 1" class="step-image">
+                    <h3>Completa el Formulario</h3>
+                    <p>Completa el formulario con tu nombre y teléfono.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <img src="assets/img/delivery 2.png" alt="Paso 2" class="step-image">
+                    <h3>Espera la Llamada</h3>
+                    <p>Un agente de ventas le llamará para confirmar su pedido y despejar dudas.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <img src="assets/img/delivery 3.png" alt="Paso 3" class="step-image">
+                    <h3>Recibe en Casa</h3>
+                    <p>Nuestro delivery le entregará su pedido y podrá pagarlo en ese momento.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulario -->
+    <section class="form-section" id="formulario">
+        <div class="container">
+            <h2 class="section-title">Ordena tu DetoxSi Ahora 👇</h2>
+            <div class="form-content">
+                <div class="form-left">
+                    <img src="assets/img/dr.png" alt="DetoxSi Producto" class="form-product-img">
+                </div>
+                <div class="form-right">
+
+                    <form class="order-form  orderForm   " id="orderForm" method="POST">
+                        <div class="price-highlight">
+                            <div class="price-now">¡<!-- CURRENT_PRICE -->   <!-- OFFER_CURRENCY -->!</div>
+                        </div>
+                        <div class="form-group">
+
+                            <label for="nombre">Nombre Completo</label>
+                            <input type="text" id="nombre" name="name" required 
+                                title="Solo letras y espacios permitidos">
+                        </div>
+                        <div class="form-group">
+                            <label for="telefono">Teléfono</label>
+                            <input type="tel" id="telefono" name="phone"   onkeyup="this.value=this.value.replace(/\s/,'')" minlength="5"   required 
+                                title="Solo números, entre 10 y 13 dígitos">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="acepto" name="acepto" required>
+                            <label for="acepto">Acepto recibir una llamada para confirmar mi pedido 📞</label>
+                        </div>
+                        <button type="submit" class="submit-button">Hacer un pedido »</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonios -->
+    <section class="testimonials" id="testimonios">
+        <div class="container">
+            <h2 class="section-title">Lo que Dicen Nuestros Clientes</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <img src="assets/img/Latina_woman_testimonial_portrait_ad664ee9.png" alt="María González"
+                        class="testimonial-photo">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p>"Desde que uso DetoxSi me siento mucho mejor. Mis molestias digestivas disminuyeron
+                        notablemente."</p>
+                    <div class="testimonial-author">- María González, Buenos Aires</div>
+                </div>
+                <div class="testimonial-card">
+                    <img src="assets/img/Elderly_man_testimonial_portrait_7b3c773e.png" alt="Carlos Rodríguez"
+                        class="testimonial-photo">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p>"Producto natural y efectivo. Mejoró mi digestión y tengo más energía durante el día."</p>
+                    <div class="testimonial-author">- Carlos Rodríguez, Córdoba</div>
+                </div>
+                <div class="testimonial-card">
+                    <img src="assets/img/Young_woman_testimonial_portrait_fec84f36.png" alt="Ana López"
+                        class="testimonial-photo">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p>"El proceso de compra fue muy fácil y el pago contra entrega me dio mucha confianza."</p>
+                    <div class="testimonial-author">- Ana López, Rosario</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Entrega -->
+    <section class="delivery" id="entrega">
+        <div class="container">
+            <h2 class="section-title">Información de Entrega</h2>
+            <div class="delivery-info">
+                <div class="delivery-item">
+                    <i class="fas fa-truck"></i>
+                    <h3>Envíos a Todo el País</h3>
+                    <p>Llegamos a todas las provincias de Argentina con entrega segura.</p>
+                </div>
+                <div class="delivery-item">
+                    <i class="fas fa-clock"></i>
+                    <h3>Tiempos de Entrega</h3>
+                    <p>24hs en Buenos Aires - 1 a 3 días resto del país.</p>
+                </div>
+                <div class="delivery-item">
+                    <i class="fas fa-phone-slash"></i>
+                    <h3>Importante</h3>
+                    <p>Desactive por 1 hora su bloqueador de "Número Desconocido" para escuchar la llamada y confirmar
+                        la entrega.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Preguntas Frecuentes -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <h2 class="section-title">Preguntas Frecuentes</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <h3>¿Cuáles son los ingredientes de DetoxSi?</h3>
+                    <p>DetoxSi contiene extractos naturales de Centella Asiática, Apio, Jengibre, Cúrcuma molida y
+                        Vitamina C, junto con estabilizantes naturales.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo se toma DetoxSi?</h3>
+                    <p>Se recomienda tomar 1 comprimido tres veces al día con las comidas principales (desayuno,
+                        almuerzo y cena).</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo hago mi pedido?</h3>
+                    <p>Complete el formulario con su nombre y teléfono. Luego recibirá una llamada para confirmar su
+                        pedido.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Necesito pagar online?</h3>
+                    <p>No. Trabajamos con pago contra entrega. Solo responda la llamada de confirmación y pague cuando
+                        reciba el producto en su casa.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cuánto demora la entrega?</h3>
+                    <p>24 horas en Buenos Aires y de 1 a 3 días para el resto del país.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <a href="index.html">
+                        <img src="assets/img/detoxsi_circular_logo.svg" alt="DetoxSi Logo" class="footer-logo-img">
+                    </a>
+                </div>
+                <div class="footer-links">
+                    <a href="index.html">Inicio</a>
+                    <a href="#formulario">Nosotros</a>
+                    <a href="#formulario">Contacto</a>
+                    <a href="#formulario">Privacidad</a>
+                </div>
+            </div>
+            <div class="footer-disclaimer">
+                <p>
+                    DetoxSi es un suplemento dietético. Los resultados pueden variar según cada persona.
+                    Este producto no está destinado a diagnosticar, tratar o prevenir ninguna enfermedad.
+                    Consulte a su médico antes de su consumo si está embarazada, amamantando o tiene alguna condición
+                    médica.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botón Flotante -->
+    <button class="floating-btn" id="floatingBtn" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Exit Intent Popup -->
+    <div class="popup-overlay" id="exitPopup">
+        <div class="popup-content">
+            <button class="popup-close" id="popupClose">&times;</button>
+            <div class="popup-body">
+                <div class="popup-image">
+                    <img src="assets/img/Woman_presenting_DetoxSi_product_ffc193d8.png" alt="DetoxSi Oferta"
+                        class="popup-product-img">
+                </div>
+                <div class="popup-form">
+                    <h3>¡Espera! Tienes un Descuento</h3>
+                    <div class="popup-price">
+                        <span class="popup-price-before"><!-- OLD_PRICE -->  <!-- OFFER_CURRENCY --></span> <br>
+                        <span class="popup-price-now"><!-- CURRENT_PRICE -->   <!-- OFFER_CURRENCY --></span><br>
+                        <span class="popup-discount">50% OFF</span>
+                    </div>
+                    <p>¡La oferta termina hoy!</p>
+                    <form class="popup-order-form  orderForm"  method="POST">
+                        <input type="text" name="name" placeholder="Tu nombre" required 
+                            title="Solo letras y espacios permitidos">
+                        <input type="tel" name="phone" placeholder="Tu teléfono"   onkeyup="this.value=this.value.replace(/\s/,'')" minlength="5"   required 
+                            title="Solo números, entre 10 y 13 dígitos">
+                        <div class="popup-checkbox">
+                            <input type="checkbox" id="popup-acepto" name="acepto" required>
+                            <label for="popup-acepto">Acepto recibir llamada de confirmación 📞</label>
+                        </div>
+                        <button type="submit" class="popup-submit">Confirmar Pedido</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DetoxSi Landing Page JavaScript
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // ========================
+            // Navigation Hamburger Menu
+            // ========================
+            const navToggle = document.getElementById('nav-toggle');
+            const navMenu = document.getElementById('nav-menu');
+
+            if (navToggle && navMenu) {
+                navToggle.addEventListener('click', function () {
+                    navMenu.classList.toggle('active');
+                    navToggle.classList.toggle('active');
+                });
+
+                // Close menu when clicking on nav links
+                const navLinks = navMenu.querySelectorAll('.nav-link');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function () {
+                        navMenu.classList.remove('active');
+                        navToggle.classList.remove('active');
+                    });
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', function (event) {
+                    if (!navToggle.contains(event.target) && !navMenu.contains(event.target)) {
+                        navMenu.classList.remove('active');
+                        navToggle.classList.remove('active');
+                    }
+                });
+            }
+
+            // ========================
+            // Form Validation
+            // ========================
+            const orderForm = document.getElementById('orderForm');
+            const nombreInput = document.getElementById('nombre');
+            const telefonoInput = document.getElementById('telefono');
+            const aceptoCheckbox = document.getElementById('acepto');
+
+     
+
+
+            // ========================
+            // Popup Form Validation
+            // ========================
+            // Declare popup elements first
+            const exitPopup = document.getElementById('exitPopup');
+            const popupClose = document.getElementById('popupClose');
+            const popupForm = document.querySelector('.popup-order-form');
+
+           
+            // ========================
+            // Exit Intent Popup
+            // ========================
+            let popupShown = false;
+            let mouseLeftScreen = false;
+
+            // Only initialize popup functionality if element exists
+            if (exitPopup) {
+                // Show popup on mouse leave (any side of the screen)
+                document.addEventListener('mouseleave', function (e) {
+                    // Detect if mouse leaves through any side of the screen
+                    const leftScreen = (e.clientY <= 0) ||           // Top
+                        (e.clientX <= 0) ||           // Left
+                        (e.clientX >= window.innerWidth) || // Right  
+                        (e.clientY >= window.innerHeight);  // Bottom
+
+                    if (leftScreen && !popupShown && !exitPopup.classList.contains('show')) {
+                        showExitPopup();
+                    }
+                });
+
+                // Close popup handlers
+                if (popupClose) {
+                    popupClose.addEventListener('click', closeExitPopup);
+                }
+
+                exitPopup.addEventListener('click', function (e) {
+                    if (e.target === exitPopup) {
+                        closeExitPopup();
+                    }
+                });
+
+                // Close popup with ESC key
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && exitPopup.classList.contains('show')) {
+                        closeExitPopup();
+                    }
+                });
+            }
+
+            function showExitPopup() {
+                const popup = document.getElementById('exitPopup');
+                if (popup && !popup.classList.contains('show')) {
+                    popup.classList.add('show');
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling
+                }
+            }
+
+            function closeExitPopup() {
+                const popup = document.getElementById('exitPopup');
+                if (popup) {
+                    popup.classList.remove('show');
+                    document.body.style.overflow = ''; // Restore scrolling
+                    popupShown = true; // Mark as shown to prevent repeated showing
+                }
+            }
+
+            // ========================
+            // Floating Button
+            // ========================
+            const floatingBtn = document.getElementById('floatingBtn');
+
+            // Only add scroll listener if floating button exists
+            if (floatingBtn) {
+                window.addEventListener('scroll', function () {
+                    if (window.pageYOffset > 300) {
+                        floatingBtn.classList.add('show');
+                    } else {
+                        floatingBtn.classList.remove('show');
+                    }
+                });
+            }
+
+            // ========================
+            // Scroll to Top Function
+            // ========================
+            function scrollToTop() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+
+            // Make scrollToTop function globally available
+            window.scrollToTop = scrollToTop;
+
+            // ========================
+            // Smooth Scrolling for Links
+            // ========================
+            const smoothScrollLinks = document.querySelectorAll('a[href^="#"]');
+            smoothScrollLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') {
+                        scrollToTop();
+                        return;
+                    }
+
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        const offsetTop = targetElement.offsetTop - 70; // Account for fixed header
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // ========================
+            // FAQ Accordion (Optional Enhancement)
+            // ========================
+            const faqItems = document.querySelectorAll('.faq-item h3');
+            faqItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    const content = this.nextElementSibling;
+                    const isActive = this.classList.contains('active');
+
+                    // Close all FAQ items
+                    faqItems.forEach(faq => {
+                        faq.nextElementSibling.classList.remove('show');
+                        faq.classList.remove('active');
+                    });
+
+                    // Toggle current item
+                    if (!isActive) {
+                        content.classList.add('show');
+                        this.classList.add('active');
+                    }
+                });
+            });
+
+            // ========================
+            // Form Error Helper Functions
+            // ========================
+            function showError(field, message) {
+                field.style.borderColor = '#e74c3c';
+                field.style.boxShadow = '0 0 5px rgba(231, 76, 60, 0.5)';
+
+                // Remove existing error message
+                const existingError = field.parentNode.querySelector('.error-message');
+                if (existingError) {
+                    existingError.remove();
+                }
+
+                // Add error message
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.style.color = '#e74c3c';
+                errorDiv.style.fontSize = '0.9rem';
+                errorDiv.style.marginTop = '0.5rem';
+                errorDiv.textContent = message;
+                field.parentNode.appendChild(errorDiv);
+            }
+
+            function clearFieldError(field) {
+                field.style.borderColor = '#ddd';
+                field.style.boxShadow = '';
+
+                const errorMessage = field.parentNode.querySelector('.error-message');
+                if (errorMessage) {
+                    errorMessage.remove();
+                }
+            }
+
+            function clearErrors() {
+                const errorMessages = orderForm.querySelectorAll('.error-message');
+                errorMessages.forEach(error => error.remove());
+
+                const inputs = orderForm.querySelectorAll('input');
+                inputs.forEach(input => {
+                    input.style.borderColor = '#ddd';
+                    input.style.boxShadow = '';
+                });
+            }
+
+            function showSuccessMessage() {
+                // Create success overlay
+                const successOverlay = document.createElement('div');
+                successOverlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+        `;
+
+                const successBox = document.createElement('div');
+                successBox.style.cssText = `
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            margin: 20px;
+        `;
+
+                successBox.innerHTML = `
+            <div style="color: #27ae60; font-size: 3rem; margin-bottom: 1rem;">✓</div>
+            <h3 style="color: #2c3e50; margin-bottom: 1rem;">¡Pedido Enviado!</h3>
+            <p style="color: #7f8c8d; margin-bottom: 1.5rem;">
+                Recibirá una llamada telefónica en los próximos minutos para confirmar su pedido.
+            </p>
+            <button onclick="this.closest('.success-overlay').remove()" 
+                    style="background: #27ae60; color: white; border: none; padding: 0.8rem 1.5rem; 
+                           border-radius: 8px; cursor: pointer; font-weight: 500;">
+                Cerrar
+            </button>
+        `;
+
+                successOverlay.className = 'success-overlay';
+                successOverlay.appendChild(successBox);
+                document.body.appendChild(successOverlay);
+
+                // Auto close after 5 seconds
+                setTimeout(() => {
+                    if (successOverlay.parentNode) {
+                        successOverlay.remove();
+                    }
+                }, 5000);
+            }
+
+            // ========================
+            // Popup Error Helper Functions
+            // ========================
+            function showPopupError(field, message) {
+                field.style.borderColor = '#e74c3c';
+                const existingError = field.parentNode.querySelector('.popup-error');
+                if (existingError) {
+                    existingError.remove();
+                }
+
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'popup-error';
+                errorDiv.style.color = '#e74c3c';
+                errorDiv.style.fontSize = '0.8rem';
+                errorDiv.style.marginTop = '0.2rem';
+                errorDiv.textContent = message;
+                field.parentNode.appendChild(errorDiv);
+            }
+
+            function clearPopupFieldError(field) {
+                field.style.borderColor = '#ddd';
+                const errorMessage = field.parentNode.querySelector('.popup-error');
+                if (errorMessage) {
+                    errorMessage.remove();
+                }
+            }
+
+            function clearPopupErrors() {
+                const popupErrors = document.querySelectorAll('.popup-error');
+                popupErrors.forEach(error => error.remove());
+
+                const popupInputs = popupForm.querySelectorAll('input');
+                popupInputs.forEach(input => {
+                    input.style.borderColor = '#ddd';
+                });
+            }
+
+            function showPopupSuccessMessage() {
+                const popupContent = document.querySelector('.popup-form');
+                if (popupContent) {
+                    popupContent.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <div style="color: #27ae60; font-size: 3rem; margin-bottom: 1rem;">✓</div>
+                    <h3 style="color: #2c3e50; margin-bottom: 1rem;">¡Excelente!</h3>
+                    <p style="color: #7f8c8d;">
+                        Su pedido ha sido enviado. Recibirá una llamada para confirmar.
+                    </p>
+                </div>
+            `;
+                }
+            }
+
+            // ========================
+            // Initialize on Load
+            // ========================
+            console.log('DetoxSi Landing Page JavaScript Loaded Successfully');
+        });
+
+        // ========================
+        // Analytics and Tracking (Optional)
+        // ========================
+        function trackEvent(action, category = 'Landing Page') {
+            // Placeholder for analytics tracking
+            console.log(`Track Event: ${category} - ${action}`);
+        }
+
+        // Track form submissions
+        document.addEventListener('submit', function (e) {
+            if (e.target.id === 'orderForm') {
+                trackEvent('Form Submission', 'Order Form');
+            }
+        });
+
+        // Track CTA clicks
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('cta-button')) {
+                trackEvent('CTA Click', 'Hero Button');
+            }
+            if (e.target.classList.contains('submit-button')) {
+                trackEvent('Submit Click', 'Order Button');
+            }
+        });
+    </script>
+
+    <!-- SEO Keywords Script - 50 Palabras Clave -->
+    <script type="text/javascript">
+        var seoKeywords = [
+            "DetoxSi", "suplemento natural", "digestión", "intestinos", "bienestar",
+            "salud intestinal", "centella asiática", "jengibre", "cúrcuma", "vitamina C",
+            "Argentina", "pago contra entrega", "delivery", "molestias estomacales", "apetito",
+            "sueño", "vitalidad", "natural", "orgánico", "mejorar digestión",
+            "reducir molestias", "aliviar síntomas", "sistema digestivo", "flora intestinal", "purificar",
+            "renovar", "revitalizar", "energía", "wellness", "salud",
+            "nutrición", "bienestar corporal", "inmunidad", "defensas", "antioxidante",
+            "antiinflamatorio", "detox", "limpieza corporal", "suplemento dietético", "comprimidos",
+            "hierbas naturales", "plantas medicinales", "cuidado personal", "rutina saludable", "estilo de vida",
+            "alimentación", "equilibrio", "armonía", "tranquilidad", "calidad de vida"
+        ];
+    </script>
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "DetoxSi",
+        "description": "Suplemento natural para mejorar la digestión y reducir molestias intestinales",
+        "brand": "DetoxSi",
+        "category": "Suplemento Dietético"
+    }
+    </script>
+      <!-- INTH_SNIPPET_BOTTOM -->
+</body>
+
+</html>
