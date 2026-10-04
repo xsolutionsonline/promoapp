@@ -313,6 +313,45 @@ src="https://www.facebook.com/tr?id=2099883654251019&ev=PageView&noscript=1"
     </div>
 </section>
 
+<div class="popup-overlay" id="exitPopup">
+    <div class="popup-content">
+        <button class="popup-close" id="popupClose" aria-label="Cerrar">&times;</button>
+        <div class="popup-image">
+            <img src="img/product.webp" alt="Variquit PRO, oferta especial" loading="lazy" decoding="async">
+        </div>
+        <div class="popup-body">
+            <span class="eyebrow">¡Espera!</span>
+            <h3>Tenés un descuento esperando</h3>
+            <div class="price-box">
+                <div class="price-box__discount">-50%<small>OFF</small></div>
+                <div class="price-box__amounts">
+                    <span class="price-box__row">
+                        <span class="price-box__label">Antes</span>
+                        <span class="price-box__old">$71800</span>
+                    </span>
+                    <span class="price-box__new">$35990</span>
+                </div>
+            </div>
+            <p>La oferta termina hoy. Dejanos tus datos y te llamamos para confirmar.</p>
+            <form class="order-form form_order -visor-no-click orderForm" method="GET" action="https://miembros.ecomgenio.com/order">
+                <input type="hidden" name="country" value="AR">
+                <input type="hidden" name="offer" value="1545">
+                <input type="hidden" name="affiliate" value="zX0KCF7C7A">
+                <input type="hidden" name="traffic_referrer">
+                <div class="input-group">
+                    <span class="input-group__icon">👤</span>
+                    <input class="inpu -metrika-nokeys" type="text" name="name" required="required" placeholder="Nombre completo" inputmode="text" pattern="^[A-Za-zÀ-ÿĀ-žА-Яа-яĆćČčĐđŠšŽž\s'-]{2,60}$" oninput="this.value=this.value.replace(/[^A-Za-zÀ-ÿĀ-žА-Яа-яĆćČčĐđŠšŽž\s'-]/g,'')">
+                </div>
+                <div class="input-group">
+                    <span class="input-group__icon">📱</span>
+                    <input class="inpu -metrika-nokeys" type="tel" name="phone" placeholder="Número de teléfono" required="required" onkeyup="this.value=this.value.replace(/\s/,'')" minlength="5" inputmode="tel" maxlength="15" oninput="this.value=this.value.replace(/(?!^\+)[^\d]/g,'')" pattern="\+?[0-9]{5,15}">
+                </div>
+                <button class="btn btn--primary" type="submit">Confirmar pedido</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="sticky-cta" id="stickyCta">
     <div class="sticky-cta__prices">
         <span class="sticky-cta__old">$71800</span>
@@ -468,6 +507,51 @@ src="https://www.facebook.com/tr?id=2099883654251019&ev=PageView&noscript=1"
                     syncSticky();
                 });
             }, { threshold: 0.1 }).observe(orderForm);
+        }
+
+        // Popup de intención de salida
+        const exitPopup = document.getElementById('exitPopup');
+        const popupClose = document.getElementById('popupClose');
+        let popupShown = false;
+
+        function showExitPopup() {
+            if (exitPopup && !popupShown) {
+                exitPopup.classList.add('show');
+                document.body.style.overflow = 'hidden';
+                popupShown = true;
+                updateTrafficReferrerFields();
+            }
+        }
+
+        function closeExitPopup() {
+            if (exitPopup) {
+                exitPopup.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        }
+
+        if (exitPopup) {
+            document.addEventListener('mouseleave', (e) => {
+                if (e.clientY <= 0 && !popupShown) {
+                    showExitPopup();
+                }
+            });
+
+            if (popupClose) {
+                popupClose.addEventListener('click', closeExitPopup);
+            }
+
+            exitPopup.addEventListener('click', (e) => {
+                if (e.target === exitPopup) {
+                    closeExitPopup();
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && exitPopup.classList.contains('show')) {
+                    closeExitPopup();
+                }
+            });
         }
     });
 </script>
