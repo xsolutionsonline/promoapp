@@ -1,6 +1,6 @@
 ﻿import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FirestoreService } from '../../services/firestore.service';
 import { CategoryService, CategoryItem } from '../../services/category.service';
 import { DropiProductService } from '../../services/dropi-product.service';
@@ -32,11 +32,13 @@ interface QuickAddParsed {
   comparisonRows: { label: string; ours: string; others: string }[];
   faqs: { question: string; answer: string }[];
   benefits: { icon: string; title: string; text: string }[];
+  comboRows: { text: string; price: number; dprice: number; bonoFinalPrice?: number }[];
+  variantRows: { attributes: { label: string; value: string; colorCode?: string }[]; stock: number }[];
 }
 
 type QuickAddSectionKey =
   | 'main' | 'specifications' | 'experience' | 'materials' | 'howToUse'
-  | 'benefits' | 'reviewsTitle' | 'comparison' | 'faqs';
+  | 'benefits' | 'reviewsTitle' | 'comparison' | 'faqs' | 'combos' | 'variants';
 
 // Only lines that look like "<n>. <keyword...>" are treated as top-level
 // section headers. Matching on the keyword (not just "\d+\. ") matters
@@ -47,12 +49,21 @@ const QUICK_ADD_HEADER_PATTERNS: { key: QuickAddSectionKey; regex: RegExp }[] = 
   { key: 'specifications', regex: /^\s*\d+\.\s*especificaciones/i },
   { key: 'experience', regex: /^\s*\d+\.\s*experiencia/i },
   { key: 'materials', regex: /^\s*\d+\.\s*materiales/i },
-  { key: 'howToUse', regex: /^\s*\d+\.\s*c[oó]mo\s+usar/i },
+  { key: 'howToUse', regex: /^\s*\d+\.\s*¿?\s*c[oó]mo\s+usar/i },
   { key: 'benefits', regex: /^\s*\d+\..*beneficio/i },
   { key: 'reviewsTitle', regex: /^\s*\d+\..*rese[ñn]a/i },
   { key: 'comparison', regex: /^\s*\d+\.\s*nosotros/i },
   { key: 'faqs', regex: /^\s*\d+\..*pregunta/i },
+  { key: 'combos', regex: /^\s*\d+\.\s*combos/i },
+  { key: 'variants', regex: /^\s*\d+\.\s*variantes/i },
 ];
+
+// Copy pegado de redes/IA suele traer un emoji decorativo antes del número
+// ("🎄 1. COPY PRINCIPAL", "❤️ 6. 4 BENEFICIOS") — se ignora solo para
+// detectar el encabezado, sin tocar las líneas originales usadas para cortar
+// el cuerpo de cada sección.
+const QUICK_ADD_HEADER_LEADING_ICONS_RE =
+  /^(?:\p{Extended_Pictographic}(?:️)?(?:‍\p{Extended_Pictographic}(?:️)?)*\s*)+/u;
 
 @Component({
   selector: 'app-create-product',
@@ -113,23 +124,6 @@ export class CreateProductPage implements OnInit {
   // HTML (con negrillas preservadas) capturado del editor enriquecido de "Copy del producto".
   quickAddCopyHtml = '';
 
-  availableColors = [
-    { name: 'Blue', value: '#1C197A' },
-    { name: 'Purple', value: '#5A197A' },
-    { name: 'Brown', value: '#913523' },
-    { name: 'Camel', value: '#7A6719' },
-    { name: 'Green', value: '#33581A' },
-    { name: 'Black', value: '#000000' },
-    { name: 'Grey', value: '#7D7D7D' },
-    { name: 'Mustard', value: '#AF9306' },
-    { name: 'Light Blue', value: '#36BDD9' },
-    { name: 'Magenta', value: '#7A197A' },
-    { name: 'Dark Purple', value: '#40197A' },
-    { name: 'Red', value: '#72000C' }
-  ];
-
-  availableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Small', 'Medium', 'Big'];
-
   constructor(
     private fb: FormBuilder,
     private firestoreService: FirestoreService,
@@ -140,7 +134,8 @@ export class CreateProductPage implements OnInit {
     private cdr: ChangeDetectorRef,
     private modalController: ModalController,
     private alertController: AlertController,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -205,7 +200,8 @@ export class CreateProductPage implements OnInit {
       seo: this.fb.group({
         metaTitle: ['', Validators.maxLength(70)],
         metaDescription: ['', Validators.maxLength(160)],
-        ogImage: ['']
+        ogImage: [''],
+        keywords: ['', Validators.maxLength(255)]
       }),
 
       faqTitle: ['Pregúntanos lo que quieras'],
@@ -213,9 +209,10 @@ export class CreateProductPage implements OnInit {
       faqs: this.fb.array([])
     });
 
+    // Atributos 100% personalizados (cualquier nombre: Sexo, Talla, Color,
+    // Material...), no solo los 2 fijos de antes.
     this.variantForm = this.fb.group({
-      color: [''],
-      size: [''],
+      attributes: this.fb.array([]),
       stock: [0, [Validators.required, Validators.min(0)]]
     });
 
@@ -309,12 +306,10 @@ export class CreateProductPage implements OnInit {
     });
 
     (data.variants || []).forEach(variant => {
-      this.variants.push(this.fb.group({
-        color: [variant.color],
-        colorCode: [variant.colorCode],
-        size: [variant.size],
-        stock: [variant.stock, [Validators.required, Validators.min(0)]]
-      }));
+      const attrs = (variant.attributes && variant.attributes.length)
+        ? variant.attributes
+        : this.legacyVariantToAttributes(variant);
+      this.variants.push(this.buildVariantFormGroup(attrs, variant.stock));
     });
 
     (data.benefits || []).forEach(benefit => {
@@ -357,7 +352,8 @@ export class CreateProductPage implements OnInit {
     this.productForm.get('seo').patchValue({
       metaTitle: data.seo?.metaTitle || '',
       metaDescription: data.seo?.metaDescription || '',
-      ogImage: data.seo?.ogImage || ''
+      ogImage: data.seo?.ogImage || '',
+      keywords: data.seo?.keywords || ''
     });
 
     // Rich contenteditable fields aren't native form controls: hydrate them manually
@@ -754,9 +750,47 @@ export class CreateProductPage implements OnInit {
     this.faqs.removeAt(index);
   }
 
-  // ----- Variants (color/size, opcional) -----
+  // ----- Variants (atributos 100% personalizados: Sexo, Talla, Color, lo
+  // que sea — cualquier cantidad de atributos por variante, opcional) -----
+  get variantAttributeRows() { return this.variantForm.get('attributes') as FormArray; }
+
+  // Variantes guardadas antes de este cambio solo traían color/talla fijos —
+  // se convierten a `attributes` al vuelo, sin migrar nada en Firestore.
+  private legacyVariantToAttributes(variant: any): { label: string; value: string; colorCode?: string }[] {
+    const attrs: { label: string; value: string; colorCode?: string }[] = [];
+    if (variant.color) { attrs.push({ label: 'Color', value: variant.color, colorCode: variant.colorCode || undefined }); }
+    if (variant.size) { attrs.push({ label: 'Talla', value: variant.size }); }
+    return attrs;
+  }
+
+  private buildVariantFormGroup(attributes: { label: string; value: string; colorCode?: string }[], stock: number): FormGroup {
+    return this.fb.group({
+      attributes: this.fb.array(attributes.map(a => this.fb.group({
+        label: [a.label, Validators.required],
+        value: [a.value, Validators.required],
+        colorCode: [a.colorCode || '']
+      }))),
+      stock: [stock, [Validators.required, Validators.min(0)]]
+    });
+  }
+
+  // Resumen legible para la lista, ej. "Sexo: Hombre · Talla: M".
+  variantSummaryText(variantGroup: AbstractControl): string {
+    const attrs = (variantGroup.get('attributes') as FormArray).value as { label: string; value: string }[];
+    return attrs.map(a => `${a.label}: ${a.value}`).join(' · ') || 'Sin atributos';
+  }
+
+  // Círculo de muestra en la lista: el primer atributo que traiga color, si hay alguno.
+  variantSwatchColor(variantGroup: AbstractControl): string | null {
+    const attrs = (variantGroup.get('attributes') as FormArray).value as { label: string; value: string; colorCode?: string }[];
+    const withColor = attrs.find(a => a.colorCode);
+    return withColor ? withColor.colorCode : null;
+  }
+
   openVariantModal() {
     this.variantForm.reset({ stock: 0 });
+    this.variantAttributeRows.clear();
+    this.addVariantAttributeRow();
     this.isVariantModalOpen = true;
   }
 
@@ -764,13 +798,54 @@ export class CreateProductPage implements OnInit {
     this.isVariantModalOpen = false;
   }
 
-  addVariantFromModal() {
-    const color = this.variantForm.value.color;
-    const size = this.variantForm.value.size;
+  addVariantAttributeRow() {
+    this.variantAttributeRows.push(this.fb.group({
+      label: ['', Validators.required],
+      value: ['', Validators.required],
+      // isColor es solo del formulario (no se guarda) — un <input type="color">
+      // nativo siempre trae un hex por defecto (#000000) aunque el admin nunca
+      // lo toque, así que sin este flag explícito no habría forma de saber si
+      // el atributo debe mostrarse como círculo o como botón de texto.
+      isColor: [false],
+      colorCode: ['#000000']
+    }));
+  }
 
-    if (!color && !size) {
+  removeVariantAttributeRow(index: number) {
+    this.variantAttributeRows.removeAt(index);
+  }
+
+  private variantAttributeKey(attrs: { label: string; value: string }[]): string {
+    return attrs.map(a => `${(a.label || '').trim().toLowerCase()}:${(a.value || '').trim().toLowerCase()}`).sort().join('|');
+  }
+
+  addVariantFromModal() {
+    const attrs = (this.variantAttributeRows.value as { label: string; value: string; isColor?: boolean; colorCode?: string }[])
+      .map(a => ({
+        label: (a.label || '').trim(),
+        value: (a.value || '').trim(),
+        colorCode: a.isColor ? ((a.colorCode || '').trim() || undefined) : undefined
+      }))
+      .filter(a => a.label && a.value);
+
+    if (!attrs.length) {
       this.toastController.create({
-        message: 'Please select either a Color or a Size (or both).',
+        message: 'Agrega al menos un atributo con nombre y valor (ej. Talla: M).',
+        duration: 2500,
+        color: 'warning',
+        position: 'top'
+      }).then(toast => toast.present());
+      return;
+    }
+
+    const newKey = this.variantAttributeKey(attrs);
+    const isDuplicate = this.variants.controls.some(ctrl => {
+      const existingAttrs = (ctrl.get('attributes') as FormArray).value as { label: string; value: string }[];
+      return this.variantAttributeKey(existingAttrs) === newKey;
+    });
+    if (isDuplicate) {
+      this.toastController.create({
+        message: 'Ya agregaste esa combinación de atributos.',
         duration: 2000,
         color: 'warning',
         position: 'top'
@@ -779,16 +854,7 @@ export class CreateProductPage implements OnInit {
     }
 
     if (this.variantForm.valid) {
-      const selectedColorObj = this.availableColors.find(c => c.name === color);
-      const colorCode = selectedColorObj ? selectedColorObj.value : '';
-
-      const variantGroup = this.fb.group({
-        color: [color],
-        colorCode: [colorCode],
-        size: [size],
-        stock: [this.variantForm.value.stock, [Validators.required, Validators.min(0)]]
-      });
-      this.variants.push(variantGroup);
+      this.variants.push(this.buildVariantFormGroup(attrs, this.variantForm.value.stock));
       this.closeVariantModal();
     }
   }
@@ -1029,8 +1095,31 @@ export class CreateProductPage implements OnInit {
       }));
     });
 
-    // Combos (priceGroups) nunca se crean desde el alta rápida, aunque el
-    // copy pegado los mencione — quedan vacíos para que el admin los arme a mano.
+    // Combos (priceGroups): se crean con nombre/precio/oferta desde el texto
+    // pegado, pero SIN códigos Dropi — esos se asocian manualmente en el
+    // formulario con "Asociar producto(s) Dropi", igual que siempre.
+    while (this.priceGroups.length) { this.priceGroups.removeAt(0); }
+    parsed.comboRows.forEach(row => {
+      this.priceGroups.push(this.fb.group({
+        text: [row.text, Validators.required],
+        price: [row.price, [Validators.required, Validators.min(0)]],
+        dprice: [row.dprice, [Validators.required, Validators.min(0)]],
+        dropiCodes: [[]],
+        dropiMainCode: [null],
+        dropiQuantities: [{}],
+        dropiValues: [{}],
+        bonoFinalPrice: [row.bonoFinalPrice ?? null, [Validators.min(0)]],
+        dropiValuesBono: [{}]
+      }));
+    });
+
+    // Variantes (atributos personalizados): mismo formato que agrega el
+    // modal manual (addVariantFromModal) — cada fila puede traer uno o
+    // varios atributos (ej. Sexo: Hombre, Talla: M).
+    while (this.variants.length) { this.variants.removeAt(0); }
+    parsed.variantRows.forEach(row => {
+      this.variants.push(this.buildVariantFormGroup(row.attributes, row.stock));
+    });
 
     this.product.img = QUICK_ADD_NO_PHOTO_IMG;
     this.product.imgSlides = [QUICK_ADD_NO_PHOTO_IMG];
@@ -1050,7 +1139,7 @@ export class CreateProductPage implements OnInit {
       this.cdr.detectChanges();
     });
 
-    this.openAccordionSections = ['basic', 'category', 'images', 'sections', 'benefits', 'comparison', 'faq'];
+    this.openAccordionSections = ['basic', 'category', 'images', 'priceGroups', 'sections', 'benefits', 'comparison', 'faq'];
     this.showQuickAdd = false;
     this.cdr.detectChanges();
 
@@ -1066,14 +1155,17 @@ export class CreateProductPage implements OnInit {
     const result: QuickAddParsed = {
       text: '', description: '', specifications: '', experience: '',
       materials: '', howToUse: '', highlightMessage: '',
-      comparisonRows: [], faqs: [], benefits: []
+      comparisonRows: [], faqs: [], benefits: [], comboRows: [], variantRows: []
     };
     if (!raw) { return result; }
 
     const lines = raw.replace(/\r\n/g, '\n').split('\n');
     const matches: { key: QuickAddSectionKey; lineIndex: number }[] = [];
     lines.forEach((line, i) => {
-      const hit = QUICK_ADD_HEADER_PATTERNS.find(p => p.regex.test(line));
+      // Solo para detectar el encabezado — las líneas originales (con emoji,
+      // si lo traían) se preservan para cortar el cuerpo de cada sección.
+      const headerCandidate = line.replace(QUICK_ADD_HEADER_LEADING_ICONS_RE, '');
+      const hit = QUICK_ADD_HEADER_PATTERNS.find(p => p.regex.test(headerCandidate));
       if (hit) { matches.push({ key: hit.key, lineIndex: i }); }
     });
 
@@ -1102,6 +1194,12 @@ export class CreateProductPage implements OnInit {
     }
     if (bodies.benefits) {
       result.benefits = this.parseQuickAddBenefits(bodies.benefits);
+    }
+    if (bodies.combos) {
+      result.comboRows = this.parseQuickAddCombos(bodies.combos);
+    }
+    if (bodies.variants) {
+      result.variantRows = this.parseQuickAddVariants(bodies.variants);
     }
 
     return result;
@@ -1138,7 +1236,21 @@ export class CreateProductPage implements OnInit {
       if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE') { return; }
 
       const nowBold = bold || isBoldEl(el);
-      if (el.tagName === 'LI') { out += '- '; }
+      if (el.tagName === 'LI') {
+        // En un <ol> (lista numerada) el "1.", "2." que se ve en pantalla no
+        // existe como texto — lo genera el navegador. Si no se reconstruye
+        // aquí, encabezados como "1. Copy principal" pegados desde una lista
+        // numerada real (común al copiar desde un chat de IA o un editor con
+        // markdown) llegan sin número y ningún patrón de sección los detecta.
+        const parent = el.parentElement;
+        if (parent && parent.tagName === 'OL') {
+          const siblings = Array.from(parent.children).filter(c => c.tagName === 'LI');
+          const index = siblings.indexOf(el) + 1;
+          out += `${index}. `;
+        } else {
+          out += '- ';
+        }
+      }
 
       Array.from(el.childNodes).forEach(child => walk(child, nowBold));
 
@@ -1209,22 +1321,29 @@ export class CreateProductPage implements OnInit {
   }
 
   // Soporta dos formatos de tabla:
-  // - 3 columnas: aspecto | nosotros | ellos (ej. "600 ml automáticos | ✓ | ✕")
+  // - 3 columnas: aspecto | nosotros | ellos — con o sin ícono en las celdas
+  //   (ej. "600 ml automáticos | ✓ | ✕" o, igual de válido, "Diseños | 24
+  //   opciones | Pocas opciones"). Al no depender de íconos, la fila de
+  //   encabezado (ej. "Característica | Nuestro X | Otros Y") se descarta
+  //   asumiendo que es la primera línea del bloque — salvo que sí traiga
+  //   íconos, en cuyo caso se trata como dato igual que las demás.
   // - 2 columnas: nosotros | ellos, con el ✅/❌ ya incluido en el texto de
-  //   cada celda (ej. "✅ Va contigo | ❌ Depende de una ubicación") — el
-  //   "aspecto" no viene por separado, así que se deriva quitándole el ícono
-  //   a la celda "nosotros".
-  // La fila de encabezado de la tabla (ej. "Característica | Nuestro X | Otros Y")
-  // se detecta porque, a diferencia de las filas de datos, ninguna de sus
-  // celdas trae un ícono tipo ✅/❌/✓ al inicio.
+  //   cada celda (ej. "✅ Va contigo | ❌ Depende de una ubicación") — aquí el
+  //   ícono es obligatorio porque es la única forma de derivar el "aspecto"
+  //   (se obtiene quitándole el ícono a la celda "nosotros").
   private parseQuickAddComparison(body: string): { label: string; ours: string; others: string }[] {
     const rows: { label: string; ours: string; others: string }[] = [];
-    body.split('\n').map(l => l.trim()).filter(Boolean).forEach(line => {
+    const lines = body.split('\n').map(l => l.trim()).filter(Boolean);
+    lines.forEach((line, i) => {
       const parts = line.split(/\t|\||\s{2,}/).map(p => this.stripBoldMarkers(p).trim()).filter(Boolean);
 
       if (parts.length === 3) {
+        // La primera línea de un bloque de 3 columnas es casi siempre el
+        // encabezado ("Característica | Nosotros | Ellos") — se descarta sin
+        // condicionar a si trae ícono o no, porque un encabezado a veces trae
+        // uno decorativo (ej. "✨ Nuestro Set") que antes lo hacía colar como dato.
+        if (i === 0) { return; }
         const [label, ours, others] = parts;
-        if (!this.extractLeadingIcon(ours).icon && !this.extractLeadingIcon(others).icon) { return; }
         rows.push({ label, ours, others });
       } else if (parts.length === 2) {
         const [ours, others] = parts;
@@ -1291,6 +1410,82 @@ export class CreateProductPage implements OnInit {
       title: b.title,
       text: b.text.join(' ').trim() || b.title
     }));
+  }
+
+  // Quita separadores de miles (puntos/comas) para interpretar números tipo
+  // "129.900" o "129,900" como 129900, no como decimales.
+  private parseQuickAddNumber(raw: string): number | null {
+    const cleaned = (raw || '').replace(/[^\d]/g, '');
+    if (!cleaned) { return null; }
+    const n = parseInt(cleaned, 10);
+    return isNaN(n) ? null : n;
+  }
+
+  // Una línea por combo: "Nombre | Precio tachado | Precio oferta | Precio
+  // con bono (opcional)". Los códigos Dropi nunca vienen aquí — se asocian
+  // manualmente en el formulario (ver docs/DESARROLLO-VARIANTES-PRODUCTO.md, sección 7).
+  private parseQuickAddCombos(body: string): { text: string; price: number; dprice: number; bonoFinalPrice?: number }[] {
+    const rows: { text: string; price: number; dprice: number; bonoFinalPrice?: number }[] = [];
+    body.split('\n').map(l => this.stripBoldMarkers(l).trim()).filter(Boolean).forEach(line => {
+      const parts = line.split('|').map(p => p.trim()).filter(Boolean);
+      if (parts.length < 3) { return; }
+      const [text, priceStr, dpriceStr, bonoStr] = parts;
+      const price = this.parseQuickAddNumber(priceStr);
+      const dprice = this.parseQuickAddNumber(dpriceStr);
+      if (!text || price == null || dprice == null) { return; }
+
+      const row: { text: string; price: number; dprice: number; bonoFinalPrice?: number } = { text, price, dprice };
+      const bono = bonoStr ? this.parseQuickAddNumber(bonoStr) : null;
+      if (bono != null) { row.bonoFinalPrice = bono; }
+      rows.push(row);
+    });
+    return rows;
+  }
+
+  // Una línea por variante. Tres formatos posibles (ver docs/DESARROLLO-VARIANTES-PRODUCTO.md, sección 7):
+  // - Color (círculo): "Nombre del color | #hex | Stock (opcional)"
+  // - Talla/diseño (botón de texto, un solo atributo): "Nombre | Stock (opcional)"
+  // - Atributos personalizados (cualquier cantidad/nombre): "Sexo: Hombre, Talla: M | Stock (opcional)"
+  // El primero se distingue porque la 2ª columna es un código hex; el
+  // tercero porque la 1ª columna trae ":"; si no es ninguno de los dos, es
+  // el formato simple de talla/diseño (compatibilidad con el formato anterior).
+  private parseQuickAddVariants(body: string): { attributes: { label: string; value: string; colorCode?: string }[]; stock: number }[] {
+    const DEFAULT_STOCK = 999;
+    const HEX_RE = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
+    const rows: { attributes: { label: string; value: string; colorCode?: string }[]; stock: number }[] = [];
+
+    body.split('\n').map(l => this.stripBoldMarkers(l).trim()).filter(Boolean).forEach(line => {
+      const parts = line.split('|').map(p => p.trim()).filter(Boolean);
+      const descriptor = parts[0];
+      if (!descriptor) { return; }
+
+      if (parts.length >= 2 && HEX_RE.test(parts[1])) {
+        const stock = parts.length >= 3 ? (this.parseQuickAddNumber(parts[2]) ?? DEFAULT_STOCK) : DEFAULT_STOCK;
+        rows.push({ attributes: [{ label: 'Color', value: descriptor, colorCode: parts[1] }], stock });
+        return;
+      }
+
+      const stock = parts.length >= 2 ? (this.parseQuickAddNumber(parts[1]) ?? DEFAULT_STOCK) : DEFAULT_STOCK;
+
+      if (descriptor.includes(':')) {
+        const attributes = descriptor.split(',')
+          .map(chunk => {
+            const idx = chunk.indexOf(':');
+            if (idx === -1) { return null; }
+            const label = chunk.slice(0, idx).trim();
+            const value = chunk.slice(idx + 1).trim();
+            return (label && value) ? { label, value } : null;
+          })
+          .filter((a): a is { label: string; value: string } => !!a);
+        if (attributes.length) {
+          rows.push({ attributes, stock });
+          return;
+        }
+      }
+
+      rows.push({ attributes: [{ label: 'Talla', value: descriptor }], stock });
+    });
+    return rows;
   }
 
   // ----- Save -----
@@ -1433,5 +1628,16 @@ export class CreateProductPage implements OnInit {
 
   goBackToList() {
     this.navCtrl.navigateBack('/product-list');
+  }
+
+  // Si ya se estaba creando un producto nuevo (sin :id en la URL), navegar a
+  // "/create-product" otra vez es la MISMA URL — por defecto Angular ignora
+  // esa navegación y no hace nada (el formulario viejo se queda en pantalla).
+  // El rebote por "/" fuerza a Angular a destruir y recrear el componente,
+  // dejando el formulario realmente en blanco para el próximo producto.
+  createAnotherProduct() {
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate(['/create-product']);
+    });
   }
 }

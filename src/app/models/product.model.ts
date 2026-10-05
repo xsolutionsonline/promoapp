@@ -9,11 +9,27 @@ export interface Category {
   active: boolean;
 }
 
+// Un atributo libre de la variante (ej. {label:'Sexo', value:'Hombre'},
+// {label:'Talla', value:'M'}, {label:'Color', value:'Rojo', colorCode:'#E63946'}).
+// `colorCode` es opcional y solo se usa cuando ese atributo debe mostrarse
+// como círculo de color en vez de botón de texto en la página del producto.
+export interface VariantAttribute {
+  label: string;
+  value: string;
+  colorCode?: string;
+}
+
 export interface ProductVariant {
+  // Lista de atributos personalizados (cualquier nombre/cantidad), ej.
+  // [{label:'Sexo', value:'Hombre'}, {label:'Talla', value:'M'}].
+  attributes?: VariantAttribute[];
+  stock: number;
+  // Campos viejos (previos a `attributes`) — solo existen en variantes
+  // guardadas antes de este cambio. El código que los lee los convierte a
+  // `attributes` al vuelo; nunca se vuelven a escribir en variantes nuevas.
   color?: string;
   colorCode?: string;
   size?: string;
-  stock: number;
 }
 
 export interface PriceGroup {
@@ -78,6 +94,10 @@ export interface DropiOrder {
   // Sequential, human-facing order number: YYYY + 6-digit consecutive
   // (e.g. "2026000001"), tracked in parametros/contadorPedidos.
   orderNumber?: string;
+  // Atributos de la variante elegida por el comprador (ej. Sexo: Hombre,
+  // Talla: M). Informativo: el código Dropi de la orden sigue viniendo del
+  // combo elegido, asociado manualmente por el admin — no se deriva de esta variante.
+  variant?: { attributes: { label: string; value: string }[] } | null;
 }
 
 export const DROPI_ORDER_COLUMNS: (keyof DropiOrder)[] = [
@@ -124,6 +144,10 @@ export interface ProductSeo {
   metaDescription?: string;
   // Imagen usada en la tarjeta al compartir (og:image / twitter:image). Si se deja vacío, se usa la imagen principal del producto.
   ogImage?: string;
+  // Palabras clave secundarias, separadas por coma. Va en <meta name="keywords">.
+  // Peso casi nulo en el ranking de Google hoy en día, pero algunos buscadores
+  // y herramientas de catalogación todavía la leen.
+  keywords?: string;
 }
 
 export interface Product {

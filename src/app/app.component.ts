@@ -37,6 +37,7 @@ export class AppComponent {
     { icon: "assets/icon/share.svg", text: "Share", visItem: false },
     { icon: "assets/icon/rate-us.svg", text: "Rate Us", visItem: false },
     { icon: "assets/icon/settings.svg", text: "Administración", visItem: false },
+    { icon: "assets/icon/listview-side.svg", text: "Crear Producto", visItem: false },
     { icon: "assets/icon/account-user.svg", text: "Editar Perfil", visItem: true },
     { icon: "assets/icon/account-order.svg", text: "Mis Compras", visItem: true },
     { icon: "assets/icon/address.svg", text: "Mis Direcciones", visItem: true },
@@ -99,9 +100,9 @@ export class AppComponent {
       }
     });
   }
-  // The "Administración" side-menu item only makes sense for admins, so it
-  // stays hidden until we confirm customers/{uid}.role === 'admin' — the same
-  // check adminGuard uses to protect the routes it links to.
+  // "Administración" y "Crear Producto" solo hacen sentido para admins, así
+  // que quedan ocultos hasta confirmar customers/{uid}.role === 'admin' — la
+  // misma validación que usa adminGuard para proteger las rutas a las que llevan.
   private async refreshAdminMenuItem(uid: string | null) {
     let isAdmin = false;
     if (uid) {
@@ -113,6 +114,7 @@ export class AppComponent {
       }
     }
     this.listItems[10].visItem = isAdmin;
+    this.listItems[11].visItem = isAdmin;
   }
   async SplashModal() {
     console.log("splash modal fun");
@@ -199,18 +201,22 @@ export class AppComponent {
       this.menuToggle = false;
     }
     else if (i == 11) {
-      this.navCtrl.navigateForward("my-account");
+      this.navCtrl.navigateForward("create-product");
       this.menuToggle = true;
     }
     else if (i == 12) {
-      this.navCtrl.navigateForward("my-order");
+      this.navCtrl.navigateForward("my-account");
       this.menuToggle = true;
     }
     else if (i == 13) {
-      this.navCtrl.navigateForward("my-addresses");
+      this.navCtrl.navigateForward("my-order");
       this.menuToggle = true;
     }
     else if (i == 14) {
+      this.navCtrl.navigateForward("my-addresses");
+      this.menuToggle = true;
+    }
+    else if (i == 15) {
       this.navCtrl.navigateForward("reward-points");
       this.menuToggle = true;
     }

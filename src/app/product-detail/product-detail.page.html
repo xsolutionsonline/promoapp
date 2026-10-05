@@ -66,11 +66,18 @@
         <!-- Price packages -->
         <div class="pdp-groups" *ngIf="groupItems && groupItems.length > 0">
           <div class="pdp-group-card" *ngFor="let item of groupItems" [class.selected]="item.active" (click)="selectGroup(item)">
-            <span class="pdp-group-text">{{item.text}}</span>
-            <span class="pdp-group-prices">
-              <span class="striked" *ngIf="item.price">${{formatPrice(item.price)}}</span>
-              <span class="final">${{formatPrice(item.dprice)}}</span>
-            </span>
+            <div class="pdp-group-main-row">
+              <span class="pdp-group-text">{{item.text}}</span>
+              <span class="pdp-group-prices">
+                <span class="striked" *ngIf="item.price">${{formatPrice(item.price)}}</span>
+                <span class="final">${{formatPrice(item.dprice)}}</span>
+              </span>
+            </div>
+            <div class="pdp-group-bono" *ngIf="item.bonoFinalPrice != null">
+              <span class="pdp-group-bono-title">⭐ Socios de Eurocity</span>
+              <span class="pdp-group-bono-price">${{formatPrice(item.bonoFinalPrice)}}</span>
+              <a class="pdp-group-bono-link" (click)="goToRegister($event)">Regístrate y accede →</a>
+            </div>
           </div>
         </div>
         <div class="pdp-simple-price" *ngIf="!(groupItems && groupItems.length > 0)">
@@ -268,19 +275,35 @@
         </div>
       </div>
 
-      <!-- Colors Container -->
-      <ng-container *ngIf="colorItems && colorItems.length > 0 && !(groupItems && groupItems.length > 0)">
-        <h2 class="color-header">Select Colors:</h2>
-        <ion-grid class="grid-color">
+      <!-- Variant attribute groups: one per atributo personalizado (Color, Talla, Sexo, lo que sea) -->
+      <ng-container *ngFor="let group of variantAttributeGroups">
+        <h2 [class]="isColorGroup(group) ? 'color-header' : 'header-size'">Elige {{group.label}}:</h2>
+
+        <ion-grid class="grid-color" *ngIf="isColorGroup(group)">
           <ion-row>
-            <ion-col size="3" *ngFor="let item of colorItems; let i=index">
-              <div class="color-wrapper animated fadeIn" [class.selected]="item.selectSize" (click)="item.selectSize ? isSelectedColorCheck(item) : isColorCheck(item)">
+            <ion-col size="3" *ngFor="let opt of group.options">
+              <div class="color-wrapper animated fadeIn" [class.selected]="selectedAttributes[group.label] === opt.value" (click)="selectAttribute(group.label, opt.value)">
                 <div class="color-circle-container">
-                  <div class="color-circle" [style.background-color]="item.color">
+                  <div class="color-circle" [style.background-color]="opt.colorCode">
                   </div>
                 </div>
-                <p>{{item.text}}</p>
-                <div class="icon-tick" *ngIf="item.selectSize">
+                <p>{{opt.value}}</p>
+                <div class="icon-tick" *ngIf="selectedAttributes[group.label] === opt.value">
+                  <ion-icon name="checkmark" />
+                </div>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <ion-grid class="grid-size" *ngIf="!isColorGroup(group)">
+          <ion-row>
+            <ion-col size="3" *ngFor="let opt of group.options">
+              <div class="div-outer animated fadeIn" [class.div-select]="selectedAttributes[group.label] === opt.value" (click)="selectAttribute(group.label, opt.value)">
+                <div class="div-inner">
+                  {{opt.value}}
+                </div>
+                <div class="icon-tick" *ngIf="selectedAttributes[group.label] === opt.value">
                   <ion-icon name="checkmark" />
                 </div>
               </div>
@@ -289,25 +312,7 @@
         </ion-grid>
       </ng-container>
 
-      <!-- Sizes Container -->
-      <ng-container *ngIf="sizeItems && sizeItems.length > 0 && !(groupItems && groupItems.length > 0)">
-        <h2 class="header-size">Select Size:</h2>
-        <ion-grid class="grid-size">
-          <ion-row>
-            <ion-col size="3" *ngFor="let item of sizeItems; let i=index">
-              <div class="div-outer animated fadeIn" [class.div-select]="item.selectSize" (click)="item.selectSize ? isSelectSizeCheck(item) : isSizeCheck(item)">
-                <div class="div-inner">
-                  {{item.name}}
-                </div>
-                <p>{{item.text}}</p>
-                <div class="icon-tick" *ngIf="item.selectSize">
-                  <ion-icon name="checkmark" />
-                </div>
-              </div>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ng-container>
+      <p class="pdp-variant-outofstock" *ngIf="selectedVariantOutOfStock">Esta combinación está agotada, elige otra.</p>
 
       <!-- Add extra products to this order: search + slider -->
       <div class="addon-section">
@@ -464,7 +469,7 @@
           <ion-textarea placeholder="Nota para la entrega (opcional)" [(ngModel)]="checkoutData.nota" name="nota" autoGrow="true"></ion-textarea>
         </ion-item>
 
-        <ion-button expand="block" type="submit" class="checkout-submit-btn" [disabled]="isSubmittingOrder">
+        <ion-button expand="block" type="submit" class="checkout-submit-btn" [disabled]="isSubmittingOrder || selectedVariantOutOfStock">
           {{ isSubmittingOrder ? 'Enviando...' : 'COMPLETA TU COMPRA - $' + formatPrice(orderTotal) }}
         </ion-button>
       </form>

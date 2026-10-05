@@ -80,3 +80,16 @@ firebase deploy --only hosting
    ionic capacitor open android
    ```
    Una vez abierto en Android Studio, puedes generar un APK firmado para producción desde el menú `Build > Generate Signed Bundle / APK...`.
+
+---
+
+## 3. Proporciones recomendadas para imágenes de producto
+
+Al crear/editar un producto (`Configuración > Productos > Crear/Editar`), cada campo de imagen tiene una proporción recomendada para que se vea completa, sin recortes:
+
+| Imagen | Proporción | Ejemplo |
+|---|---|---|
+| Galería principal (`imgSlides`) | 1:1 (cuadrada) | 1000×1000 px |
+| Debajo de "Beneficios" (`showcaseImageUrl`/`2`) | 4:3 | 1200×900 px |
+| Imagen de cierre, después de "Nosotros vs Otros" (`closingImageUrl`/`2`) | 4:3 | 1200×900 px |
+| Promoción post-compra / upsell (`promoImageUrl`) | 1:1 (cuadrada) | 800×800 px |

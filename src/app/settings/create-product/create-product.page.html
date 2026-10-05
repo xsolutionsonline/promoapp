@@ -398,17 +398,17 @@
           <ion-button expand="block" fill="outline" (click)="addPriceGroup()">+ Agregar paquete</ion-button>
 
           <ion-item-divider class="ion-margin-top">
-            <ion-label>Variantes adicionales (opcional: color / talla)</ion-label>
+            <ion-label>Variantes adicionales (opcional: cualquier atributo — Sexo, Talla, Color...)</ion-label>
             <ion-button slot="end" size="small" (click)="openVariantModal()">Agregar</ion-button>
           </ion-item-divider>
           <div formArrayName="variants">
             <ion-item *ngFor="let variant of variants.controls; let i = index" [formGroupName]="i">
-              <div slot="start" *ngIf="variant.get('colorCode').value" [style.background]="variant.get('colorCode').value" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ccc;"></div>
+              <div slot="start" *ngIf="variantSwatchColor(variant)" [style.background]="variantSwatchColor(variant)" class="variant-list-swatch"></div>
               <ion-label>
-                <h2>Color: {{ variant.get('color').value || 'N/A' }}</h2>
-                <p>Talla: {{ variant.get('size').value || 'N/A' }}</p>
-                <p>Stock: {{ variant.get('stock').value }}</p>
+                <h2>{{ variantSummaryText(variant) }}</h2>
               </ion-label>
+              <ion-input type="number" min="0" inputmode="numeric" formControlName="stock"
+                label="Stock" labelPlacement="stacked" class="variant-stock-input" slot="end"></ion-input>
               <ion-button fill="clear" color="danger" slot="end" (click)="removeVariant(i)">
                 <ion-icon name="trash" slot="icon-only"></ion-icon>
               </ion-button>
@@ -625,6 +625,12 @@
             <ion-input formControlName="ogImage" placeholder="Por defecto usa la imagen principal del producto"></ion-input>
           </ion-item>
 
+          <ion-item lines="none">
+            <ion-label position="stacked">Palabras clave secundarias (opcional)</ion-label>
+            <ion-input formControlName="keywords" maxlength="255" placeholder="ej: cobija navideña, cobija diseños, regalo navidad"></ion-input>
+          </ion-item>
+          <p class="hint">Sepáralas por comas. Hoy en día Google casi no las usa para posicionar, pero no está de más incluirlas.</p>
+
           <p class="hint">Vista previa aproximada en Google:</p>
           <div class="seo-google-preview">
             <div class="seo-preview-url">eurocity.com › product-detail</div>
@@ -649,30 +655,39 @@
       </ion-header>
       <ion-content class="ion-padding">
         <form [formGroup]="variantForm">
-          <ion-item lines="none">
-            <ion-label position="floating">Color (opcional)</ion-label>
-            <ion-select formControlName="color" interface="popover">
-              <ion-select-option *ngFor="let color of availableColors" [value]="color.name">
-                {{ color.name }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
+          <p class="hint">Agrega los atributos que distinguen esta variante — el nombre es libre (Sexo, Talla, Color, Material...). Marca "Es color" solo si quieres que se muestre como círculo de color en vez de botón de texto.</p>
 
-          <ion-item lines="none">
-            <ion-label position="floating">Talla (opcional)</ion-label>
-            <ion-select formControlName="size">
-              <ion-select-option *ngFor="let size of availableSizes" [value]="size">
-                {{ size }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
+          <div formArrayName="attributes">
+            <div class="repeatable-card" *ngFor="let attr of variantAttributeRows.controls; let i = index" [formGroupName]="i">
+              <ion-item lines="none">
+                <ion-label position="floating">Nombre del atributo <span class="required-asterisk">*</span></ion-label>
+                <ion-input formControlName="label" placeholder="ej: Sexo"></ion-input>
+              </ion-item>
+              <ion-item lines="none">
+                <ion-label position="floating">Valor <span class="required-asterisk">*</span></ion-label>
+                <ion-input formControlName="value" placeholder="ej: Hombre"></ion-input>
+              </ion-item>
+              <ion-item lines="none">
+                <ion-checkbox slot="start" formControlName="isColor"></ion-checkbox>
+                <ion-label>Es color (círculo en vez de botón de texto)</ion-label>
+              </ion-item>
+              <div class="variant-attr-color-row" *ngIf="attr.get('isColor').value">
+                <input type="color" formControlName="colorCode" />
+                <span>{{ attr.get('colorCode').value }}</span>
+              </div>
+              <ion-button fill="clear" color="danger" size="small" (click)="removeVariantAttributeRow(i)" *ngIf="variantAttributeRows.length > 1">
+                <ion-icon name="trash" slot="start"></ion-icon> Quitar atributo
+              </ion-button>
+            </div>
+          </div>
+          <ion-button expand="block" fill="outline" size="small" (click)="addVariantAttributeRow()">+ Agregar otro atributo</ion-button>
 
-          <ion-item lines="none">
+          <ion-item lines="none" class="ion-margin-top">
             <ion-label position="floating">Stock <span class="required-asterisk">*</span></ion-label>
             <ion-input type="number" formControlName="stock"></ion-input>
           </ion-item>
 
-          <ion-button expand="block" class="ion-margin-top" (click)="addVariantFromModal()" [disabled]="variantForm.invalid">Agregar</ion-button>
+          <ion-button expand="block" class="ion-margin-top" (click)="addVariantFromModal()" [disabled]="variantForm.invalid">Agregar variante</ion-button>
         </form>
       </ion-content>
     </ng-template>
@@ -832,7 +847,10 @@
       <ion-button expand="block" class="preview-btn" (click)="goToProductPreview()">
         Ver mi página de producto
       </ion-button>
-      <ion-button expand="block" fill="outline" (click)="goBackToList()">
+      <ion-button expand="block" fill="outline" (click)="createAnotherProduct()">
+        Crear otro producto
+      </ion-button>
+      <ion-button expand="block" fill="clear" (click)="goBackToList()">
         Volver a mis productos
       </ion-button>
     </div>

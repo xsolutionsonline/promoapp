@@ -421,6 +421,14 @@
     background: #fbfaf9;
   }
 
+  .variant-stock-input {
+    flex: 0 0 72px;
+    max-width: 72px;
+    text-align: center;
+    --padding-start: 4px;
+    --padding-end: 4px;
+  }
+
   .dropi-picker {
     padding: 4px 16px 10px;
 
@@ -483,6 +491,34 @@
     --max-height: 950px;
     --border-radius: 12px;
   }
+}
+
+// The "Agregar variante" modal is portaled outside .create-product-content
+// too, so this rule lives at the top level instead of nested inside it.
+.variant-attr-color-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 16px 10px;
+  font-size: 12px;
+  color: #4d5156;
+
+  input[type="color"] {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+}
+
+.variant-list-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  flex-shrink: 0;
 }
 
 // The Dropi picker modal is portaled outside .create-product-content, so its

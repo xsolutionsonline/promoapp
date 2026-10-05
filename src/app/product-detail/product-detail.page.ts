@@ -14,7 +14,7 @@ import { CategoryService, CategoryItem } from '../services/category.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml, SafeResourceUrl, Title, Meta } from '@angular/platform-browser';
-import { ProductSections, Benefit, ComparisonRow, ProductLegal, FaqItem } from '../models/product.model';
+import { ProductSections, Benefit, ComparisonRow, ProductLegal, FaqItem, ProductVariant } from '../models/product.model';
 import {
   DEFAULT_REFUND_POLICY,
   DEFAULT_TERMS_OF_SERVICE,
@@ -74,8 +74,10 @@ export class ProductDetailPage implements OnInit, OnDestroy {
   // Starts empty (not the old leftover template shoe products) — filled in
   // from the loaded product's similarItems, if it has any.
   public productSlides = [];
-  public colorItems = [];
-  public sizeItems = [];
+  // Real variants (custom attributes: color, size, gender, etc.) saved by
+  // the admin on the product — see docs/DESARROLLO-VARIANTES-PRODUCTO.md.
+  public productVariants: ProductVariant[] = [];
+  public selectedAttributes: { [label: string]: string } = {};
   public groupItems: GroupVariant[] = [];
   private dropiProductValues: { [code: string]: number } = {};
   private dropiProductNames: { [code: string]: string } = {};
@@ -306,13 +308,8 @@ export class ProductDetailPage implements OnInit, OnDestroy {
         this.groupItems = [];
       }
 
-      if (data.variants && data.variants[0]) {
-        this.colorItems = data.variants[0].colors || [];
-        this.sizeItems = data.variants[0].sizes || [];
-      } else {
-        this.colorItems = [];
-        this.sizeItems = [];
-      }
+      this.productVariants = data.variants || [];
+      this.selectedAttributes = {};
 
       this.brandPrimary = data.primaryColor || '#6D28D9';
       this.brandSecondary = data.secondaryColor || '#111111';
@@ -366,6 +363,13 @@ export class ProductDetailPage implements OnInit, OnDestroy {
 
     this.titleService.setTitle(title);
     this.metaService.updateTag({ name: 'description', content: description });
+    // Navegar entre productos (SPA, sin recarga) no debe dejar las keywords
+    // del producto anterior si este no trae ninguna.
+    if (data.seo?.keywords) {
+      this.metaService.updateTag({ name: 'keywords', content: data.seo.keywords });
+    } else {
+      this.metaService.removeTag('name="keywords"');
+    }
     this.metaService.updateTag({ property: 'og:type', content: 'product' });
     this.metaService.updateTag({ property: 'og:title', content: title });
     this.metaService.updateTag({ property: 'og:description', content: description });
@@ -473,6 +477,68 @@ export class ProductDetailPage implements OnInit, OnDestroy {
   // Se muestra siempre como texto plano en el footer (no en un botón/modal).
   get legalDisclaimerText(): string {
     return this.legal.legalDisclaimer || DEFAULT_LEGAL_DISCLAIMER;
+  }
+
+  // ----- Variantes (atributos personalizados: Color, Talla, Sexo, lo que sea)
+  // ver docs/DESARROLLO-VARIANTES-PRODUCTO.md -----
+  // Variantes guardadas antes de `attributes` solo traían color/talla fijos —
+  // esto las sigue leyendo sin migrar nada en Firestore.
+  private normalizedAttributes(v: ProductVariant): { label: string; value: string; colorCode?: string }[] {
+    if (v.attributes && v.attributes.length) { return v.attributes; }
+    const attrs: { label: string; value: string; colorCode?: string }[] = [];
+    if (v.color) { attrs.push({ label: 'Color', value: v.color, colorCode: v.colorCode }); }
+    if (v.size) { attrs.push({ label: 'Talla', value: v.size }); }
+    return attrs;
+  }
+
+  // Un grupo de selección por cada atributo distinto presente en las
+  // variantes (ej. "Sexo" con opciones Hombre/Mujer, "Talla" con M/L/XL).
+  get variantAttributeGroups(): { label: string; options: { value: string; colorCode?: string }[] }[] {
+    const groups = new Map<string, Map<string, string | undefined>>();
+    this.productVariants.forEach(v => {
+      this.normalizedAttributes(v).forEach(a => {
+        if (!groups.has(a.label)) { groups.set(a.label, new Map()); }
+        if (!groups.get(a.label).has(a.value)) { groups.get(a.label).set(a.value, a.colorCode); }
+      });
+    });
+    return [...groups.entries()].map(([label, values]) => ({
+      label,
+      options: [...values.entries()].map(([value, colorCode]) => ({ value, colorCode }))
+    }));
+  }
+
+  isColorGroup(group: { options: { value: string; colorCode?: string }[] }): boolean {
+    return group.options.some(o => !!o.colorCode);
+  }
+
+  get allVariantAttributesSelected(): boolean {
+    return this.variantAttributeGroups.every(g => !!this.selectedAttributes[g.label]);
+  }
+
+  get matchedVariant(): ProductVariant | null {
+    if (!this.productVariants.length || !this.allVariantAttributesSelected) { return null; }
+    return this.productVariants.find(v =>
+      this.normalizedAttributes(v).every(a => this.selectedAttributes[a.label] === a.value)
+    ) || null;
+  }
+
+  get selectedVariantOutOfStock(): boolean {
+    return !!this.matchedVariant && this.matchedVariant.stock <= 0;
+  }
+
+  selectAttribute(label: string, value: string) {
+    if (this.selectedAttributes[label] === value) {
+      delete this.selectedAttributes[label];
+    } else {
+      this.selectedAttributes[label] = value;
+    }
+  }
+
+  // Link en el precio de bono de un combo ("Socios de Eurocity") — no debe
+  // seleccionar el combo al hacer click, solo llevar a registrarse.
+  goToRegister(event: Event) {
+    event.stopPropagation();
+    this.navCtrl.navigateForward('/register');
   }
 
   selectGroup(selectedGroup: GroupVariant) {
@@ -889,6 +955,7 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     if (!this.visProductSuccessful) {
       this.visProductSuccessful = true;
       this.showUpsellPromo = false;
+      this.selectedAttributes = {};
       this.checkoutData = { nombre: '', apellido: '', telefono: '', direccion: '', departamento: '', ciudad: '', email: '', nota: '' };
       this.citiesForSelectedDepartment = [];
       this.orderExtraItems = [];
@@ -896,24 +963,6 @@ export class ProductDetailPage implements OnInit, OnDestroy {
       this.removeBono();
       this.resetInlineRegisterForm();
     }
-  }
-
-  isColorCheck(item) {
-    this.colorItems.forEach(c => c.selectSize = false);
-    item.selectSize = true;
-  }
-
-  isSelectedColorCheck(item) {
-    item.selectSize = false;
-  }
-
-  isSizeCheck(item) {
-    this.sizeItems.forEach(s => s.selectSize = false);
-    item.selectSize = true;
-  }
-
-  isSelectSizeCheck(item) {
-    item.selectSize = false;
   }
 
   goToReview() {
@@ -946,6 +995,17 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     if (!d.nombre.trim() || !d.apellido.trim() || !d.telefono.trim() || !d.direccion.trim() || !d.departamento || !d.ciudad.trim()) {
       const toast = await this.toastController.create({
         message: 'Por favor completa todos los campos obligatorios.',
+        duration: 2500,
+        color: 'warning',
+        position: 'top'
+      });
+      toast.present();
+      return;
+    }
+
+    if (this.productVariants.length > 0 && !this.matchedVariant) {
+      const toast = await this.toastController.create({
+        message: 'Elige las opciones del producto antes de continuar.',
         duration: 2500,
         color: 'warning',
         position: 'top'
@@ -1033,7 +1093,13 @@ export class ProductDetailPage implements OnInit, OnDestroy {
         createdAt: new Date(),
         status: 'nuevo',
         // Lets "Mis pedidos" find this order later; null for guest checkouts.
-        userUid: this.auth.currentUser?.uid || null
+        userUid: this.auth.currentUser?.uid || null,
+        // Atributos de la variante elegida por el comprador, para que quien
+        // despache el pedido sepa qué enviar — el código Dropi del combo ya
+        // asociado por el admin no cambia según esto (ver docs/DESARROLLO-VARIANTES-PRODUCTO.md).
+        variant: this.matchedVariant
+          ? { attributes: this.normalizedAttributes(this.matchedVariant).map(a => ({ label: a.label, value: a.value })) }
+          : null
       };
 
       if (this.bonoDiscountPercent > 0) {
