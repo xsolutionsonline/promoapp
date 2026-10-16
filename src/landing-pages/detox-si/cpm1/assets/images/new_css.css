@@ -263,6 +263,47 @@ header {
   text-align: center;
 }
 
+.header-badges {
+  float: left;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: #4a5a0e;
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  flex-wrap: wrap;
+  margin: 3px 0 0 24px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.header-badge__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 12px;
+}
+
+.header-badge-divider {
+  width: 1px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
 .block-header {
   color: #aed304;
   font-size: 16px;
@@ -3271,4 +3312,9 @@ p.percentDown {
   .webp .section5 {
     background: #564131;
   }
+}
+
+/* Validacion de telefono invalido (todos los formularios) */
+input.form-control-invalid {
+  border-color: #f01d07 !important;
 }

@@ -123,9 +123,14 @@ img { max-width: 100%; display: block; }
     top: 0;
     z-index: 40;
 }
-.site-header .wrap { display: flex; align-items: center; justify-content: center; }
+.site-header .wrap { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .logo { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 21px; color: var(--green-dark); letter-spacing: 0.03em; }
 .logo span { color: var(--gold-dark); }
+
+.header-badges { display: flex; align-items: center; justify-content: center; gap: 14px; background: var(--green-dark); color: #fff; padding: 10px 20px; border-radius: 999px; font-size: 14px; font-weight: 700; flex-wrap: wrap; box-shadow: 0 4px 14px rgba(0,0,0,0.15); }
+.header-badge { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+.header-badge__icon { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); font-size: 13px; }
+.header-badge-divider { width: 1px; height: 14px; background: rgba(255, 255, 255, 0.35); }
 
 /* -------- Botones -------- */
 .btn {
@@ -468,4 +473,10 @@ img { max-width: 100%; display: block; }
     .offer .price-box { justify-content: flex-start; }
     .final-cta { max-width: var(--maxw); margin: 0 auto; }
     .sticky-cta { display: none; }
+}
+
+
+/* Validación de teléfono inválido */
+input.form-control-invalid {
+  border-color: var(--red) !important;
 }
